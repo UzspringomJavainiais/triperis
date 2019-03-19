@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+@Entity(name = "account")
 @Getter
 @Setter
 public class User implements Serializable {

@@ -14,5 +14,5 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
-    private User user;
+    private User account;
 }
