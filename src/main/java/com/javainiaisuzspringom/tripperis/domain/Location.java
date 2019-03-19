@@ -5,11 +5,11 @@ package com.javainiaisuzspringom.tripperis.domain;
  */
 public class Location
 {
-    public long id;
+    private long id;
     
-    public String geocoord;
+    private String geocoord;
     
-    public String address;
+    private String address;
     
     
 }

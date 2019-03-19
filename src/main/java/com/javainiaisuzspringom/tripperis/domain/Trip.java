@@ -1,19 +1,15 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * Trip.java
- */
-public class Trip
-{
-    public long id;
-    
-    public String name;
-    
-    public StatusCode status;
-    
-    public User users;
-    
-    public ChecklistItem items;
-    
-    
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Trip {
+
+    private long id;
+    private String name;
+    private StatusCode status;
+    private User users;
+    private ChecklistItem items;
 }

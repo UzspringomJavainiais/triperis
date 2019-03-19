@@ -1,10 +1,10 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * Attachments.java
- */
+import lombok.Getter;
+import lombok.Setter;
 
-public class Attachments
-{
-    
+@Getter
+@Setter
+public class Attachments {
+
 }

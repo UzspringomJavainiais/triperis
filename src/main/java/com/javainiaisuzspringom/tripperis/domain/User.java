@@ -1,26 +1,17 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-package com.javainiaisuzspringom.tripperis.domain;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * User.java
- */
+@Getter
+@Setter
+public class User {
 
-public class User
-{
-    public long id;
-    
-    public String name;
-    
-    public String lastName;
-    
-    public String password;
-    
-    public String email;
-    
-    public Trip trips;
-    
-    public Role roles;
-    
-    
+    private long id;
+    private String name;
+    private String lastName;
+    private String password;
+    private String email;
+    private Trip trips;
+    private Role roles;
 }

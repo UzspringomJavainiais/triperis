@@ -1,20 +1,14 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * ChecklistItem.java
- */
+import lombok.Getter;
+import lombok.Setter;
 
-public class ChecklistItem
-{
-    public long id;
-    
-    public String value;
-    
-    public Trip trip;
-    
-    public Boolean isChecked;
-    
-    public Attachments attachments;
-    
-    
+@Getter
+@Setter
+public class ChecklistItem {
+    private long id;
+    private String value;
+    private Trip trip;
+    private Boolean isChecked;
+    private Attachments attachments;
 }

@@ -1,11 +1,10 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
+import lombok.Getter;
+import lombok.Setter;
 
- * ChecklistItems.java
- */
+@Getter
+@Setter
+public class ChecklistItems {
 
-public class ChecklistItems
-{
-    
 }

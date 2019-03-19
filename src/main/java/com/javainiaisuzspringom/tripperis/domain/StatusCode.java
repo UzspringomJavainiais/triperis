@@ -1,9 +1,10 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * StatusCode.java
- */
-public class StatusCode
-{
-    
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class StatusCode {
+
 }

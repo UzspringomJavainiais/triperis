@@ -1,15 +1,14 @@
 
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * Apartment.java
- */
+import lombok.Getter;
+import lombok.Setter;
 
-public class Apartment
-{
-    public long id;
-    
-    public int maxCapacity;
-    
-    public Location location;
+@Getter
+@Setter
+public class Apartment {
+
+    private long id;
+    private int maxCapacity;
+    private Location location;
 }

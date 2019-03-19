@@ -1,9 +1,10 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
- * Role.java
- */
-public class Role
-{
-    
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Role {
+
 }

@@ -1,10 +1,10 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-/**
+import lombok.Getter;
+import lombok.Setter;
 
- * Group.java
- */
-public class Group
-{
-    
+@Getter
+@Setter
+public class Group {
+
 }
