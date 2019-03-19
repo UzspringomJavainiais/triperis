@@ -3,6 +3,8 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class User {
@@ -12,6 +14,6 @@ public class User {
     private String lastName;
     private String password;
     private String email;
-    private Trip trips;
-    private Role roles;
+    private List<Trip> trips;
+    private List<Role> roles;
 }
