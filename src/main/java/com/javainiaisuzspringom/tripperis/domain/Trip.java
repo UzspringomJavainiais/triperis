@@ -3,10 +3,7 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,7 +20,10 @@ public class Trip implements Serializable {
 
     private StatusCode status;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable()
     private List<User> users;
 
+    @OneToMany
     private List<ChecklistItem> items;
 }

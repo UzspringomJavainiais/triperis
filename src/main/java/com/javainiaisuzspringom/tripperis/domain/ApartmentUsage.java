@@ -3,10 +3,7 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,11 +17,14 @@ public class ApartmentUsage implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
+    @ManyToMany
     private List<User> users;
 
     private Apartment apartment;
 
+    @Column(name = "from_date")
     private LocalDateTime from;
 
+    @Column(name = "to_date")
     private LocalDateTime to;
 }

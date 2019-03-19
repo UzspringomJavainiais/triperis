@@ -3,10 +3,7 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
@@ -29,7 +26,9 @@ public class User implements Serializable {
     @Email
     private String email;
 
+    @ManyToMany(mappedBy = "users")
     private List<Trip> trips;
 
+    @ManyToMany
     private List<Role> roles;
 }
