@@ -1,6 +1,7 @@
-package com.javainiaisuzspringom.tripperis.apartment;
+package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
+import com.javainiaisuzspringom.tripperis.services.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class ApartmentController {
     }
 
     @PostMapping("/apartment")
-    public ResponseEntity addApartment(@RequestBody Apartment apartment) {
-        apartmentService.save(apartment);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<Apartment> addApartment(@RequestBody Apartment apartment) {
+        Apartment savedEntity = apartmentService.save(apartment);
+        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

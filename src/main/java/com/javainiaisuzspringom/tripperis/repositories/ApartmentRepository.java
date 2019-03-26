@@ -1,4 +1,4 @@
-package com.javainiaisuzspringom.tripperis.apartment;
+package com.javainiaisuzspringom.tripperis.repositories;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import org.springframework.data.jpa.repository.JpaRepository;

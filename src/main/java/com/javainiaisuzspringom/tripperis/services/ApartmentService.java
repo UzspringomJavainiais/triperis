@@ -1,5 +1,6 @@
-package com.javainiaisuzspringom.tripperis.apartment;
+package com.javainiaisuzspringom.tripperis.services;
 
+import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,11 @@ import java.util.List;
 public class ApartmentService {
 
     @Autowired
-    ApartmentRepository apartmentRepository;
+    private ApartmentRepository apartmentRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void save(Apartment apartment) {
-        apartmentRepository.save(apartment);
+    public Apartment save(Apartment apartment) {
+        return apartmentRepository.save(apartment);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
