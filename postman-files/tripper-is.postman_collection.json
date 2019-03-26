@@ -1,0 +1,623 @@
+{
+	"info": {
+		"_postman_id": "caf030a1-1ac9-4c38-b778-8baf699771e3",
+		"name": "tripper-is",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Apartment",
+			"item": [
+				{
+					"name": "Get All Appartments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/apartment",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"apartment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Appartment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/apartment",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"apartment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Apartment Usage",
+			"item": [
+				{
+					"name": "Get All Appartment Usages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/apartment-usage",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"apartment-usage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Appartment Usage",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null,\n\t\"apartment\":null,\n\t\"users\": [],\n\t\"from\":\"2019-03-26\",\n\t\"to\":\"2019-03-27\"\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/apartment-usage",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"apartment-usage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attachments",
+			"item": [
+				{
+					"name": "Get All Attachments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/attachment",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"attachment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Attachment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/attachment",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"attachment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checklist Items",
+			"item": [
+				{
+					"name": "Get All Checklist Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/checklist-item",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"checklist-item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Checklist Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"value\":\"Do this and that\",\n\t\"trip\":null,\n\t\"isChecked\":false,\n\t\"attachments\":[]\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/checklist-item",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"checklist-item"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Get All Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/location",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"geocoord\":\"meet\",\n\t\"address\":\"yeet\"\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/location",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"location"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Get All Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/role",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"account\":null\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/role",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trip",
+			"item": [
+				{
+					"name": "Get All Trips",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[]\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/trip",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Trip Step",
+			"item": [
+				{
+					"name": "Get All Trip Steps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip-step",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip-step"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip Step",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"YEET\",\n\t\"trip\":null,\n\t\"orderNo\":1,\n\t\"startDate\":\"2019-03-19 12:40\",\n\t\"endDate\":\"2019-03-19 12:41\",\n\t\"location\":null\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/trip-step",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip-step"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/user",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/user",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Status Code",
+			"item": [
+				{
+					"name": "Get All Status Codes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/status-code",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"status-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Status Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/status-code",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"status-code"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"id": "4ee755c7-2fb5-4627-be06-14c7acb92f67",
+			"key": "service-link",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
