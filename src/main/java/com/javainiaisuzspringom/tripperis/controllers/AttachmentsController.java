@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.Attachments;
+import com.javainiaisuzspringom.tripperis.domain.Attachment;
 import com.javainiaisuzspringom.tripperis.services.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class AttachmentsController {
     private AttachmentService attachmentService;
 
     @GetMapping("/attachment")
-    public List<Attachments> getAllAttachments() {
+    public List<Attachment> getAllAttachments() {
         return attachmentService.getAllAttachments();
     }
 
     @PostMapping("/attachment")
-    public ResponseEntity<Attachments> addAttachment(@RequestBody Attachments attachment) {
-        Attachments savedEntity = attachmentService.save(attachment);
+    public ResponseEntity<Attachment> addAttachment(@RequestBody Attachment attachment) {
+        Attachment savedEntity = attachmentService.save(attachment);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

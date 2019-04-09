@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -17,7 +17,7 @@ public class TripStep implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
     private Trip trip;
 
@@ -25,9 +25,9 @@ public class TripStep implements Serializable {
 
     private int orderNo;
 
-    private LocalDateTime startDate;
+    private Timestamp startDate;
 
-    private LocalDateTime endDate;
+    private Timestamp endDate;
 
     private Location location;
 }

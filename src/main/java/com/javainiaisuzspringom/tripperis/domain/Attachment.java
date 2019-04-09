@@ -12,8 +12,11 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class Attachments implements Serializable {
+public class Attachment implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
+
+    private byte[] content;
 }
