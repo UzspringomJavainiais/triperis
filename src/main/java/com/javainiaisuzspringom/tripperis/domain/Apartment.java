@@ -21,6 +21,6 @@ public class Apartment implements Serializable {
     @PositiveOrZero
     private Integer maxCapacity;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 }
