@@ -10,6 +10,20 @@
 			"item": [
 				{
 					"name": "Get All Appartments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8e013de4-c3bf-4e13-825f-594e6ffca5a2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -31,6 +45,20 @@
 				},
 				{
 					"name": "Save Appartment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ab78534f-4c97-4fb2-8937-b2323f1fda2c",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -43,7 +71,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null\n}"
+							"raw": "{\n    \"name\": \"name of apartment\",\n    \"capacity\": 10,\n    \"location\": null,\n    \"apartmentUsages\": []\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/apartment",
@@ -64,6 +92,20 @@
 			"item": [
 				{
 					"name": "Get All Appartment Usages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "88a1d231-46b1-4296-9815-64fe6c5f5b6f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -85,6 +127,20 @@
 				},
 				{
 					"name": "Save Appartment Usage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "04085513-3fd5-4bd2-865e-ee3d0435513e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -118,6 +174,20 @@
 			"item": [
 				{
 					"name": "Get All Attachments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eab452e5-9706-47b3-817b-0c373194c16d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -139,6 +209,20 @@
 				},
 				{
 					"name": "Save Attachment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "539a4c9d-16a3-4949-8b83-5fd0f0d36177",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -172,6 +256,20 @@
 			"item": [
 				{
 					"name": "Get All Checklist Items",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ea3c4544-8edb-4980-9a7a-4bdf27378740",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -193,6 +291,20 @@
 				},
 				{
 					"name": "Save Checklist Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "767c5855-5088-481e-9cac-6df8b4a8b061",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -226,6 +338,20 @@
 			"item": [
 				{
 					"name": "Get All Locations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cf837b65-f6b9-4061-8b07-58f3f92fb4e0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -247,6 +373,20 @@
 				},
 				{
 					"name": "Save Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eaac82c2-fba8-4bd0-981b-865697b25e93",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -259,7 +399,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"geocoord\":\"meet\",\n\t\"address\":\"yeet\"\n}"
+							"raw": "{\n\t\"name\": \"Vilnius Apartments\",\n\t\"geocoord\":\"meet\",\n\t\"address\":\"yeet\",\n\t\"apartment\": {\n\t\t\"name\": \"name of apartment\",\n\t\t\"capacity\": 10\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/location",
@@ -280,6 +420,20 @@
 			"item": [
 				{
 					"name": "Get All Roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "92b6dc5f-bcd8-4881-83e2-8aabfb2034d5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -301,6 +455,20 @@
 				},
 				{
 					"name": "Save Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1b4e06b5-7be6-4dd7-8ce9-358a9beda2d7",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -334,6 +502,20 @@
 			"item": [
 				{
 					"name": "Get All Trips",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -355,6 +537,20 @@
 				},
 				{
 					"name": "Save Trip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f472ee3c-2dd5-4693-a7ad-f6aa5b9c0b1f",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -410,6 +606,20 @@
 			"item": [
 				{
 					"name": "Get All Trip Steps",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "252fd973-e4f1-4a49-951f-2660b91e5568",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -431,6 +641,20 @@
 				},
 				{
 					"name": "Save Trip Step",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d088076-6ec9-4123-a082-cf2bd7489066",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -443,7 +667,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"YEET\",\n\t\"trip\":null,\n\t\"orderNo\":1,\n\t\"startDate\":\"2019-03-19 12:40\",\n\t\"endDate\":\"2019-03-19 12:41\",\n\t\"location\":null\n}"
+							"raw": "{\n\t\"name\":\"YEET\",\n\t\"trip\":null,\n\t\"orderNo\":1,\n\t\"startDate\":\"2019-03-19T12:40\",\n\t\"endDate\":\"2019-03-19T12:41\",\n\t\"location\":null\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/trip-step",
@@ -486,6 +710,20 @@
 			"item": [
 				{
 					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "da8d6900-4a50-4a3a-90e1-1193f44dfb36",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -507,6 +745,20 @@
 				},
 				{
 					"name": "Save Trip User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9762f7fe-6304-4653-a892-4684a44b4466",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -562,6 +814,20 @@
 			"item": [
 				{
 					"name": "Get All Status Codes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a74f2a56-84f3-4726-849d-c2ac29b80707",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -583,6 +849,20 @@
 				},
 				{
 					"name": "Save Status Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5815e89a-3dd0-40fa-b725-9e035df598ff",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -614,7 +894,7 @@
 	],
 	"variable": [
 		{
-			"id": "4ee755c7-2fb5-4627-be06-14c7acb92f67",
+			"id": "00dafe47-ec84-4285-85c4-07eefaf92103",
 			"key": "service-link",
 			"value": "localhost:8080",
 			"type": "string"
