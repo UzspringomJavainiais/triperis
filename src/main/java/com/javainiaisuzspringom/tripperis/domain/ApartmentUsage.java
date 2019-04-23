@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,16 +16,17 @@ public class ApartmentUsage implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
+
+    @Column(name = "from_date")
+    private Timestamp from;
+
+    @Column(name = "to_date")
+    private Timestamp to;
 
     @ManyToMany
     private List<User> users;
 
+    @ManyToOne
     private Apartment apartment;
-
-    @Column(name = "from_date")
-    private LocalDateTime from;
-
-    @Column(name = "to_date")
-    private LocalDateTime to;
 }

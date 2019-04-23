@@ -14,15 +14,17 @@ public class ChecklistItem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
-    private String value;
+    @Column(name = "NAME")
+    private String name;
 
-    @ManyToOne
-    private Trip trip;
-
+    @Column(name = "IS_CHECKED")
     private boolean isChecked;
 
     @OneToMany
     private List<Attachments> attachments;
+
+    @ManyToOne
+    private Trip trip;
 }

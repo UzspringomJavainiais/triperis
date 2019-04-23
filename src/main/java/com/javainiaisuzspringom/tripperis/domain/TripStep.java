@@ -3,12 +3,10 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -17,17 +15,21 @@ public class TripStep implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
-    private Trip trip;
-
+    @Size(max = 100)
+    @Column(name = "NAME")
     private String name;
 
-    private int orderNo;
+    @Column(name = "ORDER_NO")
+    private Integer orderNo;
 
-    private LocalDateTime startDate;
+    @Column(name = "START_DATE")
+    private Timestamp startDate;
 
-    private LocalDateTime endDate;
+    @Column(name = "END_DATE")
+    private Timestamp endDate;
 
+    @Column(name = "LOCATION")
     private Location location;
 }

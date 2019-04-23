@@ -3,11 +3,10 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -15,5 +14,21 @@ import java.io.Serializable;
 public class Attachments implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "FILE_NAME")
+    private String fileName;
+
+    @Size(max = 20971520) // 20 MB
+    @Column(name = "CONTENT")
+    private byte[] content;
+
+    @Column(name = "DATE_CREATED")
+    private Timestamp dateCreated;
+
+    @Column(name = "DATE_DELETED")
+    private Timestamp dateDeleted;
 }

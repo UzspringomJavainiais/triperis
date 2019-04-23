@@ -3,10 +3,8 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -16,9 +14,20 @@ public class Location implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
+    @Column(name = "GEOCOORD")
     private String geocoord;
 
+    @Size(max = 100)
+    @Column(name = "ADDRESS")
     private String address;
+
+    @Size(max = 100)
+    @Column(name = "COUNTRY")
+    private String country;
+
+    @Size(max = 100)
+    @Column(name = "CITY")
+    private String city;
 }

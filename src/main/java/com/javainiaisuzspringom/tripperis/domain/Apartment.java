@@ -15,10 +15,11 @@ public class Apartment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
+    @Column(name = "MAX_CAPACITY")
     @PositiveOrZero
-    private int maxCapacity;
+    private Integer maxCapacity;
 
     @OneToOne
     private Location location;

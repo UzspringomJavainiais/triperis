@@ -14,16 +14,23 @@ public class Trip implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Integer id;
 
+    @Column(name = "NAME")
     private String name;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "STATUS")
     private StatusCode status;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable()
+    @ManyToMany
     private List<User> users;
 
     @OneToMany
     private List<ChecklistItem> items;
+
+    @OneToMany
+    private List<TripStep> tripSteps;
 }
