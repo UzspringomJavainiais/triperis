@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,12 +19,36 @@ public class Trip implements Serializable {
 
     private String name;
 
+    @OneToOne
     private StatusCode status;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable()
-    private List<User> users;
+    @JoinTable(name = "trip_users",
+            joinColumns = @JoinColumn(name = "trips_id"),
+            inverseJoinColumns = @JoinColumn(name = "users_id")
+    )
+    private Set<User> users;
 
-    @OneToMany
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChecklistItem> items;
+
+    public void addChecklistItem(ChecklistItem item) {
+        items.add(item);
+        item.setTrip(this);
+    }
+
+    public void removeChecklistItem(ChecklistItem item) {
+        items.remove(item);
+        item.setTrip(null);
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+        user.getTrips().add(this);
+    }
+
+    public void removeUser(User user) {
+        users.remove(user);
+        user.getTrips().remove(this);
+    }
 }

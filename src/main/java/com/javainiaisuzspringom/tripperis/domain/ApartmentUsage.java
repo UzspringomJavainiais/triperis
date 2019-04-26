@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,11 +25,11 @@ public class ApartmentUsage implements Serializable {
     @Column(name = "to_date")
     private Timestamp to;
 
-    @ManyToMany
-    private List<User> users;
+    @ManyToMany()
+    private Set<User> users;
 
     @JsonIgnore
-    @JoinColumn(name = "apartment_id", referencedColumnName = "id")
     @ManyToOne
+    @JoinColumn(name = "apartment_id", referencedColumnName = "id")
     private Apartment apartment;
 }

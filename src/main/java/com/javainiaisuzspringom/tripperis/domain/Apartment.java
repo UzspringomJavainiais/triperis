@@ -30,4 +30,14 @@ public class Apartment implements Serializable {
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
     private List<ApartmentUsage> apartmentUsages = new LinkedList<>();
+
+    public void addChecklistItem(ApartmentUsage usage) {
+        apartmentUsages.add(usage);
+        usage.setApartment(this);
+    }
+
+    public void removeChecklistItem(ApartmentUsage usage) {
+        apartmentUsages.remove(usage);
+        usage.setApartment(null);
+    }
 }

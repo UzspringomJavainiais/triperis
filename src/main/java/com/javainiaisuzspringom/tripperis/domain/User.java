@@ -6,7 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity(name = "account")
 @Getter
@@ -27,8 +27,8 @@ public class User implements Serializable {
     private String email;
 
     @ManyToMany(mappedBy = "users")
-    private List<Trip> trips;
+    private Set<Trip> trips;
 
     @ManyToMany
-    private List<Role> roles;
+    private Set<Role> roles;
 }

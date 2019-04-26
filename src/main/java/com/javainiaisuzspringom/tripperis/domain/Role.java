@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -14,5 +15,6 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    private User account;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> account;
 }
