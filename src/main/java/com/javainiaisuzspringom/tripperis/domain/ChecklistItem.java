@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.sun.tools.javac.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,12 +16,16 @@ public class ChecklistItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    private String name;
-
-    private boolean checked;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "IS_CHECKED")
+    private boolean isChecked;
+
+//    @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
+//    private List<Attachment> attachments;
 }

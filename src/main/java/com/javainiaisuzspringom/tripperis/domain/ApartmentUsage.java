@@ -25,11 +25,12 @@ public class ApartmentUsage implements Serializable {
     @Column(name = "to_date")
     private Timestamp to;
 
-    @ManyToMany()
-    private Set<User> users;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")
+    @ManyToMany
+    private List<User> users;
+
+    @ManyToOne
     private Apartment apartment;
 }

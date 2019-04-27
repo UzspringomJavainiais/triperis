@@ -3,10 +3,8 @@ package com.javainiaisuzspringom.tripperis.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -16,4 +14,12 @@ public class StatusCode implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
+
+    @Size(max = 100)
+    @Column(name = "NAME")
+    private String name;
+
+    @Size(max = 2000)
+    @Column(name = "DESCRIPTION")
+    private String description;
 }

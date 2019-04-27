@@ -22,10 +22,14 @@ public class Apartment implements Serializable {
     @NotNull
     private String name;
 
+    @Column(name = "MAX_CAPACITY")
     @PositiveOrZero
     private Integer capacity;
 
     @OneToOne(mappedBy = "apartment", cascade = CascadeType.ALL)
+    private Integer maxCapacity;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
@@ -33,11 +37,10 @@ public class Apartment implements Serializable {
 
     public void addChecklistItem(ApartmentUsage usage) {
         apartmentUsages.add(usage);
-        usage.setApartment(this);
     }
 
     public void removeChecklistItem(ApartmentUsage usage) {
         apartmentUsages.remove(usage);
-        usage.setApartment(null);
+//        usage.setApartment(null);
     }
 }
