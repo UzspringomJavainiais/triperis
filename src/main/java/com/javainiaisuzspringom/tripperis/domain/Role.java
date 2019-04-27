@@ -7,7 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.security.Timestamp;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,9 +17,6 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> account;
 
     @Size(max = 100)
     @Column(name = "NAME")
@@ -33,4 +31,7 @@ public class Role implements Serializable {
 
     @Column(name = "DATE_DELETED")
     private Timestamp dateDeleted;
+
+    @ManyToMany(mappedBy = "roles")
+    private List<Account> account =  new ArrayList<>();
 }

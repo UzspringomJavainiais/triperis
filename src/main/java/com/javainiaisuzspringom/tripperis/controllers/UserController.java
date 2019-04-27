@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.User;
+import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user")
-    public List<User> getAllUsers() {
+    public List<Account> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User savedEntity = userService.save(user);
+    public ResponseEntity<Account> addUser(@RequestBody Account account) {
+        Account savedEntity = userService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

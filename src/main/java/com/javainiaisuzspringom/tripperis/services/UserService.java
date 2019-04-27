@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.User;
+import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public User save(User user) {
-        return userRepository.save(user);
+    public Account save(Account account) {
+        return userRepository.save(account);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<User> getAllUsers() {
+    public List<Account> getAllUsers() {
         return userRepository.findAll();
     }
 }

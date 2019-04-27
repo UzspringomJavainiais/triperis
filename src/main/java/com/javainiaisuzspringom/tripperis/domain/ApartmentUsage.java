@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -25,12 +25,12 @@ public class ApartmentUsage implements Serializable {
     @Column(name = "to_date")
     private Timestamp to;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "apartment_id", referencedColumnName = "id")
-    @ManyToMany
-    private List<User> users;
-
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "apartment_id")
+    @JsonBackReference
     private Apartment apartment;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="apartment_usage_account", joinColumns=@JoinColumn(name="account_id"), inverseJoinColumns=@JoinColumn(name="apartment_usage_id"))
+    private List<Account> accounts;
 }

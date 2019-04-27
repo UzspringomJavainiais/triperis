@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.sun.tools.javac.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,20 +7,22 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity(name = "account")
 @Getter
 @Setter
-public class User implements Serializable {
+public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @Size(max = 100)
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "FIRST_NAME")
+    private String firstName;
 
     @Size(max = 100)
     @Column(name = "LAST_NAME")
@@ -34,9 +35,10 @@ public class User implements Serializable {
     @Column(name = "EMAIL")
     private String email;
 
-//    @ManyToMany(mappedBy = "users")
-//    private List<Trip> trips;
-//
-//    @ManyToMany
-//    private List<Role> roles;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
+    private List<Role> roles = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "accounts")
+    private List<Trip> trips = new ArrayList<>();
 }

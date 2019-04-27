@@ -19,17 +19,6 @@ public class Location implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "GEOCOORD")
-    private String geocoord;
-
-    @Size(max = 100)
-    @Column(name = "ADDRESS")
-    private String address;
-
-    @OneToOne
-    @MapsId
-    private Apartment apartment;
-
     @Size(max = 100)
     @Column(name = "COUNTRY")
     private String country;
@@ -37,4 +26,11 @@ public class Location implements Serializable {
     @Size(max = 100)
     @Column(name = "CITY")
     private String city;
+
+    @Column(name = "GEOCOORD")
+    private String geocoord;
+
+    @Size(max = 100)
+    @Column(name = "ADDRESS")
+    private String address;
 }

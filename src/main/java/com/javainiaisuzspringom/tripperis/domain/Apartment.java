@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,27 +21,18 @@ public class Apartment implements Serializable {
     private Integer id;
 
     @NotNull
+    @Column(name = "NAME")
     private String name;
 
     @Column(name = "MAX_CAPACITY")
-    @PositiveOrZero
-    private Integer capacity;
-
-    @OneToOne(mappedBy = "apartment", cascade = CascadeType.ALL)
     private Integer maxCapacity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @MapsId
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ApartmentUsage> apartmentUsages = new LinkedList<>();
 
-    public void addChecklistItem(ApartmentUsage usage) {
-        apartmentUsages.add(usage);
-    }
-
-    public void removeChecklistItem(ApartmentUsage usage) {
-        apartmentUsages.remove(usage);
-//        usage.setApartment(null);
-    }
 }
