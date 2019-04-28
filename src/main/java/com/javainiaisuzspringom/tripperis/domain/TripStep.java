@@ -5,25 +5,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
 @Setter
-public class ChecklistItem implements Serializable {
+public class TripStep implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @Column(name = "NAME")
-    private String name;
-
-    @Column(name = "IS_CHECKED")
-    private boolean isChecked;
-
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
+
+    @Size(max = 100)
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "ORDER_NO")
+    private Integer orderNo;
+
+    @Column(name = "START_DATE")
+    private Timestamp startDate;
+
+    @Column(name = "END_DATE")
+    private Timestamp endDate;
+
+//    @Column(name = "LOCATION")
+//    private Location location;
 }
