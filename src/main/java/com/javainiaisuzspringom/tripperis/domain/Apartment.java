@@ -24,11 +24,12 @@ public class Apartment implements Serializable {
     @Column(name = "NAME")
     private String name;
 
+    @PositiveOrZero
     @Column(name = "MAX_CAPACITY")
     private Integer maxCapacity;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @MapsId
+//    @MapsId(value = "id")
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
