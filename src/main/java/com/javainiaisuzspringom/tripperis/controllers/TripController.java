@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class TripController {
@@ -61,5 +60,19 @@ public class TripController {
         tripService.save(mergedTrip);
 
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/tripProgress")
+    public float getProgress(@RequestBody Account account) {
+        List<Trip> trips = account.getTrips();
+
+        int completeTrips = 0;
+
+        for (Trip trip : trips) {
+            // TODO: if (trip.getStatus().getId() == STATUS_CODE)
+            //          completeTrips++;
+        }
+
+        return completeTrips / trips.size();
     }
 }
