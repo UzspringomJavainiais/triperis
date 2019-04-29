@@ -32,6 +32,16 @@ public class TripController {
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
+    @PostMapping("/tripRemove")
+    public ResponseEntity removeTrip(@RequestBody Trip trip) {
+        tripService.removeTrip(trip);
+
+        if (tripService.exists(trip)) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else
+            return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping("/tripMerge")
     public ResponseEntity<Trip> mergeTrips(@RequestBody MergeTrips mergeTrips) {
         Trip mergedTrip = new Trip();
@@ -63,16 +73,16 @@ public class TripController {
     }
 
     @PostMapping("/tripProgress")
-    public float getProgress(@RequestBody Account account) {
+    public ResponseEntity<Float> getProgress(@RequestBody Account account) {
         List<Trip> trips = account.getTrips();
 
         int completeTrips = 0;
 
         for (Trip trip : trips) {
-            // TODO: if (trip.getStatus().getId() == STATUS_CODE)
+            // TODO: if (trip.getStatus().getId() == STATUS_ID)
             //          completeTrips++;
         }
 
-        return completeTrips / trips.size();
+        return new ResponseEntity<>((float) (completeTrips / trips.size()), HttpStatus.OK);
     }
 }
