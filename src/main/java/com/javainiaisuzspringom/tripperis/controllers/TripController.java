@@ -71,18 +71,4 @@ public class TripController {
 
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
     }
-
-    @PostMapping("/tripProgress")
-    public ResponseEntity<Float> getProgress(@RequestBody Account account) {
-        List<Trip> trips = account.getTrips();
-
-        int completeTrips = 0;
-
-        for (Trip trip : trips) {
-            // TODO: if (trip.getStatus().getId() == STATUS_ID)
-            //          completeTrips++;
-        }
-
-        return new ResponseEntity<>((float) (completeTrips / trips.size()), HttpStatus.OK);
-    }
 }
