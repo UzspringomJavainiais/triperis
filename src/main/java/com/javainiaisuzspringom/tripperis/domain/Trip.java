@@ -25,7 +25,6 @@ public class Trip implements Serializable {
     @OneToOne
     private StatusCode status;
 
-//    @JsonManagedReference
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -39,7 +38,6 @@ public class Trip implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-//    @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChecklistItem> items = new ArrayList<>();
 

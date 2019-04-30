@@ -40,6 +40,6 @@ public class TripStep implements Serializable {
     @Column(name = "END_DATE")
     private Timestamp endDate;
 
-//    @Column(name = "LOCATION")
-//    private Location location;
+    @OneToOne
+    private Location location;
 }

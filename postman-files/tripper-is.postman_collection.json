@@ -74,7 +74,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/account",
@@ -89,15 +89,15 @@
 					"response": []
 				},
 				{
-					"name": "Check if account taken in period",
+					"name": "Get trips in period",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "9762f7fe-6304-4653-a892-4684a44b4466",
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -122,23 +122,23 @@
 							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/account/{{account_id}}/isTakenInPeriod?dateStart=2019-04-20&dateEnd=2019-04-27",
+							"raw": "{{service-link}}/account/{{account_id}}/tripsInPeriod?dateStart=2001-12-13&dateEnd=2020-04-27",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
 								"account",
 								"{{account_id}}",
-								"isTakenInPeriod"
+								"tripsInPeriod"
 							],
 							"query": [
 								{
 									"key": "dateStart",
-									"value": "2019-04-20"
+									"value": "2001-12-13"
 								},
 								{
 									"key": "dateEnd",
-									"value": "2019-04-27"
+									"value": "2020-04-27"
 								}
 							]
 						}
@@ -709,6 +709,155 @@
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"trip_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[],\n\t\"tripSteps\": []\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/trip",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get trip duration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip/{{trip_id}}/getTotalDuration",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip",
+								"{{trip_id}}",
+								"getTotalDuration"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "TripStep",
+			"item": [
+				{
+					"name": "Get All Trip Steps",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip-step",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip-step"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip Step",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f472ee3c-2dd5-4693-a7ad-f6aa5b9c0b1f",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -727,15 +876,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[]\n}"
+							"raw": "{\n\t\"name\":\"best trip step\",\n\t\"startDate\":\"2019-12-12T10:00\",\n\t\"endDate\":\"2019-12-12T10:00\"\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/trip",
+							"raw": "{{service-link}}/trip-step",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
-								"trip"
+								"trip-step"
 							]
 						}
 					},
@@ -790,7 +939,7 @@
 	],
 	"variable": [
 		{
-			"id": "11f6c733-c063-43d4-a17c-fcce4a7ac7f0",
+			"id": "bb73db70-6449-484d-af62-9b52fda31dfa",
 			"key": "service-link",
 			"value": "localhost:1111",
 			"type": "string"

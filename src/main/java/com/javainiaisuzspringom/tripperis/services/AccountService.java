@@ -38,7 +38,7 @@ public class AccountService {
         return accountRepository.findById(id);
     }
 
-    public List<TripDuration> getAccountFreeDates(Account account, Date periodStart, Date periodEnd) {
+    public List<TripDuration> getTripDurationsInPeriod(Account account, Date periodStart, Date periodEnd) {
         Timestamp startTimestamp = Timestamp.from(periodStart.toInstant());
         Timestamp endTimestamp = Timestamp.from(periodEnd.toInstant());
 

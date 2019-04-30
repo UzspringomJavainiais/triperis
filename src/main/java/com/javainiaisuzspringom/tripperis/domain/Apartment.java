@@ -30,7 +30,7 @@ public class Apartment implements Serializable {
     private Integer maxCapacity;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @MapsId(value = "id")
+    @MapsId(value = "id")
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
