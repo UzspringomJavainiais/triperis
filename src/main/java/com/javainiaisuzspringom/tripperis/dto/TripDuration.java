@@ -24,8 +24,7 @@ public class TripDuration {
      */
     public TripDuration(int tripId, Date startDate, Date endDate) {
         this.tripId = tripId;
-        this.start = Timestamp.from(startDate.toInstant());
-        this.end = Timestamp.from(endDate.toInstant());
-//        this.type = type;
+        this.start = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
+        this.end = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
     }
 }

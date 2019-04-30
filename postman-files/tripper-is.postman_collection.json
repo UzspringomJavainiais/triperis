@@ -782,7 +782,8 @@
 								"{{trip_id}}",
 								"getTotalDuration"
 							]
-						}
+						},
+						"description": "Gets trip duration, and if the trip has no steps, the trip start and end values will be null"
 					},
 					"response": []
 				}
@@ -939,7 +940,7 @@
 	],
 	"variable": [
 		{
-			"id": "bb73db70-6449-484d-af62-9b52fda31dfa",
+			"id": "f51dab12-bd57-4a34-895d-ce19c88dc4c1",
 			"key": "service-link",
 			"value": "localhost:1111",
 			"type": "string"
