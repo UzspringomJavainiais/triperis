@@ -32,29 +32,30 @@ public class TripController {
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
-<<<<<<< HEAD
     /**
      * Returns a single {@link TripDuration} for a given {@link Trip}.
      * Trip duration start is the smallest {@link TripStep#getStartDate()}
      * and the duration end is the biggest {@link TripStep#getEndDate()}
+     *
      * @param id id of Trip
      * @return trip duration for given trip, if trip is found. Else return a not found response
      */
     @GetMapping("/trip/{id}/getTotalDuration")
     public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
         Optional<Trip> tripResultById = tripService.getById(id);
-        if(!tripResultById.isPresent()) {
+        if (!tripResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         Trip trip = tripResultById.get();
         Optional<TripDuration> tripStartDate = tripService.getTripDuration(trip);
-        if(!tripStartDate.isPresent()) {
+        if (!tripStartDate.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(tripStartDate.get());
-=======
+    }
+
     @PostMapping("/tripRemove")
     public ResponseEntity removeTrip(@RequestBody Trip trip) {
         tripService.removeTrip(trip);
@@ -93,6 +94,5 @@ public class TripController {
         tripService.save(mergedTrip);
 
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
->>>>>>> 996413366df5e358fdf5b671cbeed944d9db6fdd
     }
 }
