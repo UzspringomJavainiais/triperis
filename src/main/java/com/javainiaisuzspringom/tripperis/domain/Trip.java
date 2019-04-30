@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "trip")
 public class Trip implements Serializable {
 
     @Id

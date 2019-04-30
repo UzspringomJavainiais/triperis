@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity(name = "account")
+@Entity(name = "Account")
 @Getter
 @Setter
+@Table(name = "account")
 public class Account implements Serializable {
 
     @Id

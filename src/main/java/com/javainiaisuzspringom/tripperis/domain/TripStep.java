@@ -12,6 +12,10 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
+@Table(name = "trip_step", indexes = {
+        @Index(columnList = "START_DATE"),
+        @Index(columnList = "END_DATE")
+})
 public class TripStep implements Serializable {
 
     @Id

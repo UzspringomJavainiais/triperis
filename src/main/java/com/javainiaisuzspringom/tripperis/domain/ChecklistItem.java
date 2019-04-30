@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@Table(name = "checklist_item")
 public class ChecklistItem implements Serializable {
 
     @Id

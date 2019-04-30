@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "apartment")
 public class Apartment implements Serializable {
 
     @Id

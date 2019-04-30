@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "apartment_usage")
 public class ApartmentUsage implements Serializable {
 
     @Id
