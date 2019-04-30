@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -20,6 +21,9 @@ public class ChecklistItem implements Serializable {
 
     @Column(name = "IS_CHECKED")
     private boolean isChecked;
+
+    @Column(name = "PRICE")
+    private BigDecimal price;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
