@@ -42,9 +42,9 @@ public class TripServiceTest {
         int tripId = 30;
         Timestamp tripStart = Timestamp.valueOf("2019-04-31 10:10:00");
         Timestamp tripEnd = Timestamp.valueOf("2019-05-01 10:10:00");
-        List<Object[]> objects = new ArrayList<>();
+        List<TripDuration> objects = new ArrayList<>();
 
-        objects.add(new Object[]{tripStart, tripEnd});
+        objects.add(new TripDuration(tripId, tripStart, tripEnd));
 
         when(mockTrip.getId())
                 .thenReturn(tripId);
@@ -62,7 +62,7 @@ public class TripServiceTest {
     @Test
     public void shouldReturnEmptyWhenNoResult() {
 
-        List<Object[]> objects = Collections.emptyList();
+        List<TripDuration> objects = Collections.emptyList();
 
         when(mockRepository.getDuration(mockTrip))
                 .thenReturn(objects);
@@ -72,22 +72,11 @@ public class TripServiceTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenQueryResultsIncorrectLessThanTwo() {
-        Object[] objects = {1};
-        List<Object[]> listOfObjects = new ArrayList<>();
-        listOfObjects.add(objects);
-
-        when(mockRepository.getDuration(mockTrip))
-                .thenReturn(listOfObjects);
-
-        accountService.getTripDuration(mockTrip);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenQueryResultsIncorrectMoreThanTwo() {
-        Object[] objects = {1, 1, 1};
-        List<Object[]> listOfObjects = new ArrayList<>();
-        listOfObjects.add(objects);
+    public void shouldThrowExceptionWhenMultipleQueryResults() {
+        List<TripDuration> listOfObjects = new ArrayList<>();
+        TripDuration duration = new TripDuration(0, Timestamp.from(Instant.now()), Timestamp.from(Instant.now()));
+        listOfObjects.add(duration);
+        listOfObjects.add(duration);
 
         when(mockRepository.getDuration(mockTrip))
                 .thenReturn(listOfObjects);

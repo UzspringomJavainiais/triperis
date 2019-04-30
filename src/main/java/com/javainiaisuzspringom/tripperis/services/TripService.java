@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,21 +32,15 @@ public class TripService {
     }
 
     public Optional<TripDuration> getTripDuration(Trip trip) {
-        // I don't know how to force the query to return objects of wanted type, so we have to do this stuff right here
-        List<Object[]> objectList = tripRepository.getDuration(trip);
-        if(objectList.isEmpty()) {
+        List<TripDuration> durationList = tripRepository.getDuration(trip);
+        if(durationList.isEmpty()) {
             return Optional.empty();
         }
-        if(objectList.size() != 1) {
-            LOGGER.error("Object list holding is not of size 1, but {}", objectList.size());
+        if(durationList.size() != 1) {
+            LOGGER.error("Duration list is not of size 1, but {}", durationList.size());
             throw new IllegalStateException("Illegal attempt to query trips");
         }
-        Object[] timestampObjs = objectList.get(0);
-        if(timestampObjs.length != 2) {
-            throw new IllegalStateException(String.format("Trip has %d start and end dates", timestampObjs.length));
-        }
-
-        return Optional.of(new TripDuration(trip.getId(), (Timestamp) timestampObjs[0], (Timestamp) timestampObjs[1]));
+        return Optional.of(durationList.get(0));
     }
 
     public Optional<Trip> getById(Integer id) {
