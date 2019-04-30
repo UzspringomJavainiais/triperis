@@ -11,5 +11,5 @@ import java.util.List;
 public interface TripRepository extends JpaRepository<Trip, Integer> {
 
     @Query(value = "SELECT MIN(ts.startDate), MAX(ts.endDate) FROM Trip t LEFT JOIN t.tripSteps ts WHERE t = :trip")
-    List<Object[]> getStartDate(Trip trip);
+    List<Object[]> getDuration(Trip trip);
 }

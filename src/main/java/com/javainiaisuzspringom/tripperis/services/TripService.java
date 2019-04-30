@@ -32,17 +32,17 @@ public class TripService {
         return tripRepository.findAll();
     }
 
-    public Optional<TripDuration> getTripStartDate(Trip trip) {
+    public Optional<TripDuration> getTripDuration(Trip trip) {
         // I don't know how to force the query to return objects of wanted type, so we have to do this stuff right here
-        List<Object[]> objectList = tripRepository.getStartDate(trip);
+        List<Object[]> objectList = tripRepository.getDuration(trip);
+        if(objectList.isEmpty()) {
+            return Optional.empty();
+        }
         if(objectList.size() != 1) {
             LOGGER.error("Object list holding is not of size 1, but {}", objectList.size());
             throw new IllegalStateException("Illegal attempt to query trips");
         }
         Object[] timestampObjs = objectList.get(0);
-        if(timestampObjs.length == 0) {
-            return Optional.empty();
-        }
         if(timestampObjs.length != 2) {
             throw new IllegalStateException(String.format("Trip has %d start and end dates", timestampObjs.length));
         }

@@ -44,7 +44,7 @@ public class TripController {
         }
 
         Trip trip = tripResultById.get();
-        Optional<TripDuration> tripStartDate = tripService.getTripStartDate(trip);
+        Optional<TripDuration> tripStartDate = tripService.getTripDuration(trip);
         if(!tripStartDate.isPresent()) {
             return ResponseEntity.notFound().build();
         }
