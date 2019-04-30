@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.AccountTripCalendarProvider;
+import com.javainiaisuzspringom.tripperis.services.calendar.CalendarEntryType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -63,5 +64,6 @@ public class AccountTripCalendarProviderTest {
         assertThat(tripDuration.getTripId(), is(tripId));
         assertThat(tripDuration.getStart(), is(tripStart));
         assertThat(tripDuration.getEnd(), is(tripEnd));
+        assertThat(tripDuration.getType(), is(CalendarEntryType.TRIP));
     }
 }

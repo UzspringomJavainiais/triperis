@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services.calendar;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
@@ -11,6 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Gets {@link Account} taken status from its related {@link Trip}s
+ */
 public class AccountTripCalendarProvider implements AccountCalendarProvider {
 
     @Autowired
