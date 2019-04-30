@@ -97,7 +97,7 @@ public class TripController {
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<Float> getProgress(@ResponseBody Trip trip) {
+    public ResponseEntity<Float> getProgress(@RequestBody Trip trip) {
         int completedItems = 0, totalItems = 0;
 
         for (ChecklistItem item : trip.getItems()) {

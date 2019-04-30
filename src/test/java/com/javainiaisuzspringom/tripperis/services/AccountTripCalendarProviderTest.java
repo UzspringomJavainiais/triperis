@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.AccountTripCalendarProvider;
 import org.junit.Before;
@@ -49,8 +50,8 @@ public class AccountTripCalendarProviderTest {
         Timestamp tripStart = Timestamp.valueOf("2019-04-31 10:10:00");
         Timestamp tripEnd = Timestamp.valueOf("2019-05-01 10:10:00");
 
-        List<CalendarEntry> listOfObjects = new ArrayList<>();
-        listOfObjects.add(new CalendarEntry(tripId, tripStart, tripEnd));
+        List<CalendarTripEntry> listOfObjects = new ArrayList<>();
+        listOfObjects.add(new CalendarTripEntry(tripId, tripStart, tripEnd));
 
         when(mockRepository.getTripDates(eq(mockAccount), any(), any()))
                 .thenReturn(listOfObjects);
@@ -58,7 +59,7 @@ public class AccountTripCalendarProviderTest {
         List<CalendarEntry> tripDurationsInPeriod = calendarProvider.getAccountCalendar(mockAccount, startDate, endDate);
         assertThat(tripDurationsInPeriod.size(), is(1));
 
-        CalendarEntry tripDuration = tripDurationsInPeriod.get(0);
+        CalendarTripEntry tripDuration = (CalendarTripEntry) tripDurationsInPeriod.get(0);
         assertThat(tripDuration.getTripId(), is(tripId));
         assertThat(tripDuration.getStart(), is(tripStart));
         assertThat(tripDuration.getEnd(), is(tripEnd));

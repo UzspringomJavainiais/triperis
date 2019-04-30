@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.repositories;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
      * @param periodEnd period until which to check
      * @return an array, where the first element is trip id, second trip start, and last is trip end
      */
-    @Query("SELECT NEW com.javainiaisuzspringom.tripperis.dto.CalendarEntry" +
+    @Query("SELECT NEW com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry" +
             "(t.id, MIN(ts.startDate), MAX(ts.endDate)) " +
             "FROM Account a " +
                 "LEFT JOIN a.trips t " +
@@ -29,6 +30,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
                 "OR (ts.endDate > :periodStart AND ts.startDate < :periodEnd)) " +
                 "AND a = :account " +
             "GROUP BY t")
-    List<CalendarEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
+    List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
 
 }
