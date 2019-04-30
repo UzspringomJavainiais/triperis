@@ -5,13 +5,11 @@ import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.services.TripService;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,5 +68,18 @@ public class TripController {
         tripService.save(mergedTrip);
 
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Float> getProgress(@ResponseBody Trip trip) {
+        int completedItems = 0, totalItems = 0;
+
+        for (ChecklistItem item : trip.getItems()) {
+            if (item.isChecked())
+                completedItems++;
+        }
+
+        totalItems = trip.getItems().size();
+
+        return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
     }
 }
