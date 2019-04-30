@@ -6,6 +6,7 @@ import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,6 @@ public class TripService {
         return tripRepository.save(trip);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public List<Trip> getAllTrips() {
         return tripRepository.findAll();
     }
@@ -45,5 +45,15 @@ public class TripService {
 
     public Optional<Trip> getById(Integer id) {
         return tripRepository.findById(id);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void removeTrip(Trip trip) {
+        tripRepository.delete(trip);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public boolean exists(Trip trip) {
+        return tripRepository.exists(Example.of(trip));
     }
 }
