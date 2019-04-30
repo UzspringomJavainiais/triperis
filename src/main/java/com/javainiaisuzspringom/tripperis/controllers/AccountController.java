@@ -36,6 +36,7 @@ public class AccountController {
                                                             @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
+
         if(!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
