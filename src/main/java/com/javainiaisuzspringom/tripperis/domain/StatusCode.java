@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@Table(name = "status_code")
 public class StatusCode implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

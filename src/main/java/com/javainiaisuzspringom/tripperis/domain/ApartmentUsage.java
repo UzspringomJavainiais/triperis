@@ -1,7 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "apartment_usage")
 public class ApartmentUsage implements Serializable {
 
     @Id

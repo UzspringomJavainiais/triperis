@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity(name = "account")
+@Entity(name = "Account")
 @Getter
 @Setter
+@Table(name = "account")
 public class Account implements Serializable {
 
     @Id
@@ -39,6 +41,7 @@ public class Account implements Serializable {
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Role> roles = new ArrayList<>();
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 }

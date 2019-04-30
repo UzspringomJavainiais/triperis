@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@Table(name = "checklist_item")
 public class ChecklistItem implements Serializable {
 
     @Id
@@ -21,6 +23,7 @@ public class ChecklistItem implements Serializable {
     @Column(name = "IS_CHECKED")
     private boolean isChecked;
 
+    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
