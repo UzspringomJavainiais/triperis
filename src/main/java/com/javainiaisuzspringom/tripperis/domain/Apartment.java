@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class Apartment implements Serializable {
     private Integer id;
 
     @NotNull
+    @Size(max = 100)
     @Column(name = "NAME")
     private String name;
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Trip implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @Size(max = 100)
     @Column(name = "NAME")
     private String name;
 
@@ -35,6 +37,7 @@ public class Trip implements Serializable {
     )
     private List<Account> accounts = new ArrayList<>();
 
+    @Size(max = 2000)
     @Column(name = "DESCRIPTION")
     private String description;
 

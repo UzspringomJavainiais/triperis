@@ -17,6 +17,7 @@ public class Location implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @Size(max = 100)
     @Column(name = "NAME")
     private String name;
 
