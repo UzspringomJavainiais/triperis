@@ -1,7 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Location;
-import com.javainiaisuzspringom.tripperis.dto.LocationDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
 import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.javainiaisuzspringom.tripperis.dto.LocationDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "location")
-public class Location implements Serializable {
+public class Location implements ConvertableEntity<Integer, LocationDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -36,8 +36,7 @@ public class Location implements Serializable {
     @Size(max = 100)
     @Column(name = "ADDRESS")
     private String address;
-
-
+    
     public LocationDTO convertToDTO() {
         LocationDTO location = new LocationDTO();
 

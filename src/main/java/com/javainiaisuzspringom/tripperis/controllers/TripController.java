@@ -2,12 +2,13 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.controllers.util.MergeTrips;
 import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.services.TripService;
-import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping("/trip")
-    public List<Trip> getAllTrips() {
+    public List<TripDTO> getAllTrips() {
         return tripService.getAllTrips();
     }
 
     @PostMapping("/trip")
-    public ResponseEntity<Trip> addTrip(@RequestBody Trip trip) {
-        Trip savedEntity = tripService.save(trip);
+    public ResponseEntity<TripDTO> addTrip(@RequestBody TripDTO trip) {
+        TripDTO savedEntity = tripService.save(trip);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
@@ -43,12 +44,12 @@ public class TripController {
      */
     @GetMapping("/trip/{id}/getTotalDuration")
     public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
-        Optional<Trip> tripResultById = tripService.getById(id);
+        Optional<TripDTO> tripResultById = tripService.getById(id);
         if (!tripResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        Trip trip = tripResultById.get();
+        TripDTO trip = tripResultById.get();
         Optional<TripDuration> tripStartDate = tripService.getTripDuration(trip);
         if (!tripStartDate.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -58,7 +59,13 @@ public class TripController {
     }
 
     @PostMapping("/tripRemove")
-    public ResponseEntity removeTrip(@RequestBody Trip trip) {
+    public ResponseEntity removeTrip(@RequestBody TripDTO trip) {
+        if(trip.getId() == null) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        if(!tripService.exists(trip)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
         tripService.removeTrip(trip);
 
         if (tripService.exists(trip)) {
@@ -68,8 +75,8 @@ public class TripController {
     }
 
     @PostMapping("/tripMerge")
-    public ResponseEntity<Trip> mergeTrips(@RequestBody MergeTrips mergeTrips) {
-        Trip mergedTrip = new Trip();
+    public ResponseEntity<TripDTO> mergeTrips(@RequestBody MergeTrips mergeTrips) {
+        TripDTO mergedTrip = new TripDTO();
 
         mergedTrip.setName(mergeTrips.getName());
         mergedTrip.setDescription(mergedTrip.getDescription());
@@ -77,15 +84,15 @@ public class TripController {
         // Add distinct accounts to the merged trip
         mergedTrip.setAccounts(mergeTrips.getTripOne().getAccounts());
 
-        for (Account account : mergeTrips.getTripTwo().getAccounts()) {
-            if (!mergedTrip.getAccounts().contains(account))
-                mergedTrip.getAccounts().add(account);
+        for (Integer accountId : mergeTrips.getTripTwo().getAccounts()) {
+            if (!mergedTrip.getAccounts().contains(accountId))
+                mergedTrip.getAccounts().add(accountId);
         }
 
         // Merge distinct checklist items
         mergedTrip.setItems(mergeTrips.getTripOne().getItems());
 
-        for (ChecklistItem item : mergeTrips.getTripTwo().getItems()) {
+        for (ChecklistItemDTO item : mergeTrips.getTripTwo().getItems()) {
             if (mergedTrip.getItems().contains(item))
                 mergedTrip.getItems().add(item);
         }
@@ -97,10 +104,10 @@ public class TripController {
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<Float> getProgress(@RequestBody Trip trip) {
+    public ResponseEntity<Float> getProgress(@RequestBody TripDTO trip) {
         int completedItems = 0, totalItems = 0;
 
-        for (ChecklistItem item : trip.getItems()) {
+        for (ChecklistItemDTO item : trip.getItems()) {
             if (item.isChecked())
                 completedItems++;
         }

@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "checklist_item")
-public class ChecklistItem implements Serializable {
+public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,4 +30,14 @@ public class ChecklistItem implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
+
+    public ChecklistItemDTO convertToDTO() {
+        ChecklistItemDTO item = new ChecklistItemDTO();
+
+//        item.setId(this.getId());
+        item.setName(this.getName());
+        item.setChecked(this.isChecked());
+
+        return item;
+    }
 }

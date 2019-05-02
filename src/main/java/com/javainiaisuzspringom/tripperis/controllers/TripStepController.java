@@ -1,7 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.TripStep;
-import com.javainiaisuzspringom.tripperis.dto.TripStepDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import com.javainiaisuzspringom.tripperis.services.TripStepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

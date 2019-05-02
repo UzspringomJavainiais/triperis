@@ -1,4 +1,4 @@
-package com.javainiaisuzspringom.tripperis.dto;
+package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Maps to {@link com.javainiaisuzspringom.tripperis.domain.TripStep}
  */
 @Data
-public class TripStepDTO {
+public class TripStepDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
 

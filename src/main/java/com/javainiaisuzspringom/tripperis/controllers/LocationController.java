@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.dto.LocationDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
 import com.javainiaisuzspringom.tripperis.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

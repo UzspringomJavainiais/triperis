@@ -1,11 +1,9 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.javainiaisuzspringom.tripperis.dto.TripStepDTO;
-import com.javainiaisuzspringom.tripperis.services.LocationService;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -19,7 +17,7 @@ import java.sql.Timestamp;
         @Index(columnList = "START_DATE"),
         @Index(columnList = "END_DATE")
 })
-public class TripStep implements Serializable {
+public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

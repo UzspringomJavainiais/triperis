@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.javainiaisuzspringom.tripperis.dto.entity.StatusCodeDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "status_code")
-public class StatusCode implements Serializable {
+public class StatusCode implements ConvertableEntity<Integer, StatusCodeDTO>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -23,4 +24,14 @@ public class StatusCode implements Serializable {
     @Size(max = 2000)
     @Column(name = "DESCRIPTION")
     private String description;
+
+    public StatusCodeDTO convertToDTO() {
+        StatusCodeDTO dto = new StatusCodeDTO();
+
+        dto.setId(this.getId());
+        dto.setName(this.getName());
+        dto.setDescription(this.getDescription());
+
+        return dto;
+    }
 }

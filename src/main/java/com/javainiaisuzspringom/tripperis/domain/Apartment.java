@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +12,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "apartment")
-public class Apartment implements Serializable {
+public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -39,4 +41,15 @@ public class Apartment implements Serializable {
     @JsonManagedReference
     private List<ApartmentUsage> apartmentUsages = new LinkedList<>();
 
+    public ApartmentDTO convertToDTO() {
+        ApartmentDTO dto = new ApartmentDTO();
+
+        dto.setId(this.getId());
+        dto.setName(this.getName());
+        dto.setMaxCapacity(this.getMaxCapacity());
+        dto.setLocationId(this.getLocation().getId());
+        dto.setApartmentUsages(this.getApartmentUsages().stream().map(ApartmentUsage::convertToDTO).collect(Collectors.toList()));
+
+        return dto;
+    }
 }

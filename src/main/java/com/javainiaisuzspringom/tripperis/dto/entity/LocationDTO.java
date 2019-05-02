@@ -1,4 +1,4 @@
-package com.javainiaisuzspringom.tripperis.dto;
+package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.Location;
 import lombok.Data;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
  * Maps to {@link Location}
  */
 @Data
-public class LocationDTO {
+public class LocationDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
 

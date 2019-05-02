@@ -1,16 +1,16 @@
 package com.javainiaisuzspringom.tripperis.controllers.util;
 
-import com.javainiaisuzspringom.tripperis.domain.Trip;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
 /**
  * Defines a wrapper object for the mergeTrips method
  */
+@Getter @Setter
 public class MergeTrips {
-    private Trip tripOne;
-    private Trip tripTwo;
+    private TripDTO tripOne;
+    private TripDTO tripTwo;
 
     private String name;
     private String description;

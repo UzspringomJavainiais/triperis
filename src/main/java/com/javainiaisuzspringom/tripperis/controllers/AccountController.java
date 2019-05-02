@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,13 +21,13 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/account")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account) {
-        Account savedEntity = accountService.save(account);
+    public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
+        AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
     @GetMapping("/account")
-    public List<Account> getAllAccounts() {
+    public List<AccountDTO> getAllAccounts() {
         return accountService.getAllAccounts();
     }
 
@@ -43,7 +44,7 @@ public class AccountController {
 
         Account account = accountResultById.get();
 
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account.convertToDTO(), dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
 }

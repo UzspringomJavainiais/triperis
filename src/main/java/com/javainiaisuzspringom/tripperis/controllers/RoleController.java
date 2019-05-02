@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.Role;
+import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import com.javainiaisuzspringom.tripperis.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping("/role")
-    public List<Role> getAllRoles() {
+    public List<RoleDTO> getAllRoles() {
         return roleService.getAllRoles();
     }
 
     @PostMapping("/role")
-    public ResponseEntity<Role> addRole(@RequestBody Role role) {
-        Role savedEntity = roleService.save(role);
+    public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO role) {
+        RoleDTO savedEntity = roleService.save(role);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

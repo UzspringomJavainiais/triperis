@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
+import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import com.javainiaisuzspringom.tripperis.services.ChecklistItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class ChecklistItemController {
     private ChecklistItemService checklistItemService;
 
     @GetMapping("/checklist-item")
-    public List<ChecklistItem> getAllChecklistItems() {
+    public List<ChecklistItemDTO> getAllChecklistItems() {
         return checklistItemService.getAllChecklistItems();
     }
 
     @PostMapping("/checklist-item")
-    public ResponseEntity<ChecklistItem> addChecklistItem(@RequestBody ChecklistItem checklistItem) {
-        ChecklistItem savedEntity = checklistItemService.save(checklistItem);
+    public ResponseEntity<ChecklistItemDTO> addChecklistItem(@RequestBody ChecklistItemDTO checklistItem) {
+        ChecklistItemDTO savedEntity = checklistItemService.save(checklistItem);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

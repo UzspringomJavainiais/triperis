@@ -3,7 +3,9 @@ package com.javainiaisuzspringom.tripperis.services;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
+import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.AccountCalendarProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,23 +30,56 @@ public class AccountService {
     @Autowired
     private List<AccountCalendarProvider> calendarProviders;
 
+    @Autowired
+    private RoleRepository roleRepo;
+
     @Transactional(propagation = Propagation.REQUIRED)
-    public Account save(Account account) {
-        return accountRepository.save(account);
+    public AccountDTO save(AccountDTO account) {
+        Account entityFromDTO = getExistingOrConvert(account);
+        Account savedEntity = accountRepository.save(entityFromDTO);
+        return savedEntity.convertToDTO();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
+    public List<AccountDTO> getAllAccounts() {
+        return accountRepository.findAll().stream().map(Account::convertToDTO).collect(Collectors.toList());
     }
 
     public Optional<Account> getById(Integer id) {
         return accountRepository.findById(id);
     }
 
-    public List<CalendarEntry> getAccountCalendar(Account account, Date periodStart, Date periodEnd) {
+    public List<CalendarEntry> getAccountCalendar(AccountDTO account, Date periodStart, Date periodEnd) {
         return calendarProviders.stream()
                 .flatMap(provider -> provider.getAccountCalendar(account, periodStart, periodEnd).stream())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Account getExistingOrConvert(AccountDTO dto) {
+        if (dto.getId() != null) {
+            Optional<Account> maybeTripStep = accountRepository.findById(dto.getId());
+            if (maybeTripStep.isPresent()) {
+                return maybeTripStep.orElseGet(() -> {
+                    // set id to null, because entity with this id does not exist
+                    dto.setId(null);
+                    return convertToEntity(dto);
+                });
+            }
+        }
+        return convertToEntity(dto);
+    }
+
+    private Account convertToEntity(AccountDTO dto) {
+        Account account = new Account();
+
+//        account.setId(dto.getId());
+        account.setFirstName(dto.getFirstName());
+        account.setLastName(dto.getLastName());
+        account.setEmail(dto.getEmail());
+        account.setPassword(dto.getPassword());
+        account.setRoles(dto.getRoleIds().stream().map(roleId -> roleRepo.getOne(roleId)).collect(Collectors.toList()));
+
+        return account;
     }
 }

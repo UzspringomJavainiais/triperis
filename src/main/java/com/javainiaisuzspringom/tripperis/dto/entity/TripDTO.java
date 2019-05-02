@@ -1,4 +1,4 @@
-package com.javainiaisuzspringom.tripperis.dto;
+package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
  * Maps to {@link Trip}. Used for data transferring and insures no nasty data mangling ahappens
  */
 @Data
-public class TripDTO {
+public class TripDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
 
