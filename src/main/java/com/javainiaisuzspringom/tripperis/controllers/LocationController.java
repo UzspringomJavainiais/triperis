@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.Location;
+import com.javainiaisuzspringom.tripperis.dto.LocationDTO;
 import com.javainiaisuzspringom.tripperis.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class LocationController {
     private LocationService locationService;
 
     @GetMapping("/location")
-    public List<Location> getAllLocations() {
+    public List<LocationDTO> getAllLocations() {
         return locationService.getAllLocations();
     }
 
     @PostMapping("/location")
-    public ResponseEntity<Location> addLocation(@RequestBody Location location) {
-        Location savedEntity = locationService.save(location);
+    public ResponseEntity<LocationDTO> addLocation(@RequestBody LocationDTO location) {
+        LocationDTO savedEntity = locationService.save(location);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

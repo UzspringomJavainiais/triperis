@@ -1,8 +1,11 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.javainiaisuzspringom.tripperis.dto.TripStepDTO;
+import com.javainiaisuzspringom.tripperis.services.LocationService;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -42,4 +45,17 @@ public class TripStep implements Serializable {
 
     @OneToOne
     private Location location;
+
+    public TripStepDTO convertToDTO() {
+        TripStepDTO tripStep = new TripStepDTO();
+
+        tripStep.setId(this.getId());
+        tripStep.setStartDate(this.getStartDate());
+        tripStep.setEndDate(this.getEndDate());
+        tripStep.setOrderNo(this.getOrderNo());
+        tripStep.setName(this.getName());
+        tripStep.setLocation(this.getLocation().convertToDTO());
+
+        return tripStep;
+    }
 }

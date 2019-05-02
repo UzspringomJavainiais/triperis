@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.javainiaisuzspringom.tripperis.dto.LocationDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,4 +36,18 @@ public class Location implements Serializable {
     @Size(max = 100)
     @Column(name = "ADDRESS")
     private String address;
+
+
+    public LocationDTO convertToDTO() {
+        LocationDTO location = new LocationDTO();
+
+        location.setId(this.getId());
+        location.setAddress(this.getAddress());
+        location.setCity(this.getCity());
+        location.setCountry(this.getCountry());
+        location.setGeocoord(this.getGeocoord());
+        location.setName(this.getName());
+
+        return location;
+    }
 }

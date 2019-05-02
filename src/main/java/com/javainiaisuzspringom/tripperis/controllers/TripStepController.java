@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.dto.TripStepDTO;
 import com.javainiaisuzspringom.tripperis.services.TripStepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,13 @@ public class TripStepController {
     private TripStepService tripStepService;
 
     @GetMapping("/trip-step")
-    public List<TripStep> getAllTripSteps() {
+    public List<TripStepDTO> getAllTripSteps() {
         return tripStepService.getAllTripSteps();
     }
 
     @PostMapping("/trip-step")
-    public ResponseEntity<TripStep> addTripStep(@RequestBody TripStep tripStep) {
-        TripStep savedEntity = tripStepService.save(tripStep);
+    public ResponseEntity<TripStepDTO> addTripStep(@RequestBody TripStepDTO tripStep) {
+        TripStepDTO savedEntity = tripStepService.save(tripStep);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }
