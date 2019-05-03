@@ -28,7 +28,7 @@ public class AccountController {
 
     @GetMapping("/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAllAccounts();
+        return accountService.getAll();
     }
 
     @GetMapping(value = "/account/{id}/tripsInPeriod")

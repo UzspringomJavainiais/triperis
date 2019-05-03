@@ -1,10 +1,8 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.controllers.util.MergeTrips;
-import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
-import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
@@ -25,7 +23,7 @@ public class TripController {
 
     @GetMapping("/trip")
     public List<TripDTO> getAllTrips() {
-        return tripService.getAllTrips();
+        return tripService.getAll();
     }
 
     @PostMapping("/trip")

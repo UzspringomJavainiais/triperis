@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-// TODO use this, maybe the generics are a bit over the top
+// TODO maybe the generics are a bit over the top?
 public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
 
     protected JpaRepository<E, I> repository;
@@ -33,6 +35,12 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
             }
         }
         return convertToEntity(dto);
+    }
+
+    public List<D> getAll() {
+        return repository.findAll().stream()
+                .map(ConvertableEntity::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     protected abstract E convertToEntity(D dto);

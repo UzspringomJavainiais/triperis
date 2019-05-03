@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.services;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.AccountTripCalendarProvider;
 import com.javainiaisuzspringom.tripperis.services.calendar.CalendarEntryType;
@@ -30,7 +31,7 @@ public class AccountTripCalendarProviderTest {
     private AccountRepository mockRepository;
 
     @Mock
-    private Account mockAccount;
+    private AccountDTO mockAccount;
 
     @InjectMocks
     private AccountTripCalendarProvider calendarProvider;
@@ -54,7 +55,11 @@ public class AccountTripCalendarProviderTest {
         List<CalendarTripEntry> listOfObjects = new ArrayList<>();
         listOfObjects.add(new CalendarTripEntry(tripId, tripStart, tripEnd));
 
-        when(mockRepository.getTripDates(eq(mockAccount), any(), any()))
+
+        Integer accountId = 120;
+        when(mockAccount.getId())
+                .thenReturn(accountId);
+        when(mockRepository.getTripDates(eq(accountId), any(), any()))
                 .thenReturn(listOfObjects);
 
         List<CalendarEntry> tripDurationsInPeriod = calendarProvider.getAccountCalendar(mockAccount, startDate, endDate);

@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class TripServiceTest {
     private TripRepository mockRepository;
 
     @Mock
-    private Trip mockTrip;
+    private TripDTO mockTrip;
 
     @InjectMocks
     private TripService accountService;
@@ -48,7 +49,7 @@ public class TripServiceTest {
 
         when(mockTrip.getId())
                 .thenReturn(tripId);
-        when(mockRepository.getDuration(mockTrip))
+        when(mockRepository.getDuration(tripId))
                 .thenReturn(objects);
 
         Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
@@ -64,7 +65,11 @@ public class TripServiceTest {
 
         List<TripDuration> objects = Collections.emptyList();
 
-        when(mockRepository.getDuration(mockTrip))
+        Integer tripId = 455;
+        when(mockTrip.getId())
+                .thenReturn(tripId);
+
+        when(mockRepository.getDuration(tripId))
                 .thenReturn(objects);
 
         Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
@@ -73,12 +78,16 @@ public class TripServiceTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenMultipleQueryResults() {
+        Integer tripId = 414;
         List<TripDuration> listOfObjects = new ArrayList<>();
-        TripDuration duration = new TripDuration(0, Timestamp.from(Instant.now()), Timestamp.from(Instant.now()));
+        TripDuration duration = new TripDuration(tripId, Timestamp.from(Instant.now()), Timestamp.from(Instant.now()));
         listOfObjects.add(duration);
         listOfObjects.add(duration);
 
-        when(mockRepository.getDuration(mockTrip))
+        when(mockTrip.getId())
+                .thenReturn(tripId);
+
+        when(mockRepository.getDuration(tripId))
                 .thenReturn(listOfObjects);
 
         accountService.getTripDuration(mockTrip);

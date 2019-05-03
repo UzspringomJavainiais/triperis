@@ -20,7 +20,7 @@ public class LocationController {
 
     @GetMapping("/location")
     public List<LocationDTO> getAllLocations() {
-        return locationService.getAllLocations();
+        return locationService.getAll();
     }
 
     @PostMapping("/location")

@@ -20,7 +20,7 @@ public class ChecklistItemController {
 
     @GetMapping("/checklist-item")
     public List<ChecklistItemDTO> getAllChecklistItems() {
-        return checklistItemService.getAllChecklistItems();
+        return checklistItemService.getAll();
     }
 
     @PostMapping("/checklist-item")

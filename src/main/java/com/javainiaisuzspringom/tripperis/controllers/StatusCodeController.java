@@ -20,7 +20,7 @@ public class StatusCodeController {
 
     @GetMapping("/status-code")
     public List<StatusCodeDTO> getAllStatusCodes() {
-        return statusCodeService.getAllStatusCodes();
+        return statusCodeService.getAll();
     }
 
     @PostMapping("/status-code")

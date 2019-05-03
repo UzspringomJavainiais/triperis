@@ -20,7 +20,7 @@ public class RoleController {
 
     @GetMapping("/role")
     public List<RoleDTO> getAllRoles() {
-        return roleService.getAllRoles();
+        return roleService.getAll();
     }
 
     @PostMapping("/role")

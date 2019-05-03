@@ -20,7 +20,7 @@ public class TripStepController {
 
     @GetMapping("/trip-step")
     public List<TripStepDTO> getAllTripSteps() {
-        return tripStepService.getAllTripSteps();
+        return tripStepService.getAll();
     }
 
     @PostMapping("/trip-step")

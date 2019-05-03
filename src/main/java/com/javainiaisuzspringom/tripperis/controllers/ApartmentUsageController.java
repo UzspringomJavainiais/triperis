@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.services.ApartmentUsageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class ApartmentUsageController {
 
     @GetMapping("/apartment-usage")
     public List<ApartmentUsageDTO> getAllApartments() {
-        return apartmentUsageService.getAllApartmentUsages();
+        return apartmentUsageService.getAll();
     }
 
     @PostMapping("/apartment-usage")
