@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,9 @@ import java.util.stream.Collectors;
 @Service
 public class ApartmentService extends AbstractBasicEntityService<Apartment, ApartmentDTO, Integer> {
 
+    @Getter
     @Autowired
-    private ApartmentRepository apartmentRepository;
+    private ApartmentRepository repository;
 
     @Autowired
     private LocationRepository locationRepo;

@@ -217,7 +217,10 @@
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
-									"});"
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"apartment_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -235,7 +238,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"name of apartment\",\n    \"capacity\": 10,\n    \"location\": null,\n    \"apartmentUsages\": []\n}"
+							"raw": "{\n    \"name\": \"name of apartment\",\n    \"capacity\": 10,\n    \"locationId\": {{location_id}},\n    \"apartmentUsages\": []\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/apartment",
@@ -317,7 +320,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null,\n\t\"apartment\":null,\n\t\"users\": [],\n\t\"from\":\"2019-03-26\",\n\t\"to\":\"2019-03-27\"\n}"
+							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null,\n\t\"apartmentId\":{{apartment_id}},\n\t\"accountIds\": [],\n\t\"from\":\"2019-03-26\",\n\t\"to\":\"2019-03-27\"\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/apartment-usage",
@@ -463,7 +466,10 @@
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
-									"});"
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"location_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -627,7 +633,10 @@
 								"exec": [
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
-									"});"
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"status_id\", jsonData.id);"
 								],
 								"type": "text/javascript"
 							}
@@ -645,7 +654,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\n}"
+							"raw": "{\n\t\"name\": \"example status\",\n\t\"description\": \"description of status\"\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/status-code",
@@ -735,7 +744,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[],\n\t\"tripSteps\": []\n}"
+							"raw": "{\n\t\"name\":\"best trip\",\n\t\"statusCode\":{{status_id}},\n\t\"users\":[],\n\t\"items\":[],\n\t\"tripSteps\": []\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/trip",
@@ -877,7 +886,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"best trip step\",\n\t\"startDate\":\"2019-12-12T10:00\",\n\t\"endDate\":\"2019-12-12T10:00\"\n}"
+							"raw": "{\n\t\"name\":\"best trip step\",\n\t\"startDate\":\"2019-12-12T10:00\",\n\t\"endDate\":\"2019-12-12T10:00\",\n\t\"location\": {\n\t\t\"id\": {{location_id}}\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/trip-step",
@@ -940,7 +949,7 @@
 	],
 	"variable": [
 		{
-			"id": "f51dab12-bd57-4a34-895d-ce19c88dc4c1",
+			"id": "6cca3835-21e7-4745-99e4-13d678f6adbc",
 			"key": "service-link",
 			"value": "localhost:1111",
 			"type": "string"

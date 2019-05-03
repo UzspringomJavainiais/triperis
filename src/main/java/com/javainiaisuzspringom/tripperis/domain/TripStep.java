@@ -52,7 +52,9 @@ public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serial
         tripStep.setEndDate(this.getEndDate());
         tripStep.setOrderNo(this.getOrderNo());
         tripStep.setName(this.getName());
-        tripStep.setLocation(this.getLocation().convertToDTO());
+        if(this.getLocation() != null) {
+            tripStep.setLocation(this.getLocation().convertToDTO());
+        }
 
         return tripStep;
     }

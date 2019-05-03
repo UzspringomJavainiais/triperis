@@ -6,6 +6,7 @@ import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,9 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TripService.class);
 
+    @Getter
     @Autowired
-    private TripRepository tripRepository;
+    private TripRepository repository;
 
     @Autowired
     private TripStepService tripStepService;
@@ -43,7 +45,7 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     private AccountRepository accountRepo;
 
     public Optional<TripDuration> getTripDuration(TripDTO trip) {
-        List<TripDuration> durationList = tripRepository.getDuration(trip.getId());
+        List<TripDuration> durationList = repository.getDuration(trip.getId());
         if(durationList.isEmpty()) {
             return Optional.empty();
         }
@@ -55,19 +57,19 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     }
 
     public Optional<TripDTO> getById(Integer id) {
-        return tripRepository.findById(id).map(Trip::convertToDTO);
+        return repository.findById(id).map(Trip::convertToDTO);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void removeTrip(TripDTO trip) {
-        if (tripRepository.existsById(trip.getId())){
-            tripRepository.deleteById(trip.getId());
+        if (repository.existsById(trip.getId())){
+            repository.deleteById(trip.getId());
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public boolean exists(TripDTO trip) {
-        if(tripRepository.existsById(trip.getId())) {
+        if(repository.existsById(trip.getId())) {
             return true;
         }
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("id")
@@ -78,7 +80,7 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
         // TODO improve?
 
         Trip tripProbe = convertToEntity(trip);
-        return tripRepository.exists(Example.of(tripProbe, matcher));
+        return repository.exists(Example.of(tripProbe, matcher));
     }
 
     protected Trip convertToEntity(TripDTO dto) {

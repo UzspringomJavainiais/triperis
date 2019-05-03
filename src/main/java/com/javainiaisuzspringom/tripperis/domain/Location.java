@@ -38,15 +38,15 @@ public class Location implements ConvertableEntity<Integer, LocationDTO>, Serial
     private String address;
     
     public LocationDTO convertToDTO() {
-        LocationDTO location = new LocationDTO();
+        LocationDTO dto = new LocationDTO();
 
-        location.setId(this.getId());
-        location.setAddress(this.getAddress());
-        location.setCity(this.getCity());
-        location.setCountry(this.getCountry());
-        location.setGeocoord(this.getGeocoord());
-        location.setName(this.getName());
+        dto.setId(this.getId());
+        dto.setAddress(this.getAddress());
+        dto.setCity(this.getCity());
+        dto.setCountry(this.getCountry());
+        dto.setGeocoord(this.getGeocoord());
+        dto.setName(this.getName());
 
-        return location;
+        return dto;
     }
 }

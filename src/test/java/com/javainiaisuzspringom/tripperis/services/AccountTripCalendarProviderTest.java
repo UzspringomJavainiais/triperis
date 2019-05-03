@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;

@@ -42,8 +42,12 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
         dto.setId(this.getId());
         dto.setFrom(this.getFrom());
         dto.setTo(this.getTo());
-        dto.setApartmentId(this.getApartment().getId());
-        dto.setAccountIds(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
+        if(this.getApartment() != null) {
+            dto.setApartmentId(this.getApartment().getId());
+        }
+        if(this.getAccounts() != null) {
+            dto.setAccountIds(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
+        }
 
         return dto;
     }

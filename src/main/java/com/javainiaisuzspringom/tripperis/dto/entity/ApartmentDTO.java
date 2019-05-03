@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import lombok.Data;
 
@@ -26,6 +25,5 @@ public class ApartmentDTO implements ConvertableDTO<Integer>{
 
     private Integer locationId;
 
-    @JsonManagedReference
     private List<ApartmentUsageDTO> apartmentUsages = new LinkedList<>();
 }

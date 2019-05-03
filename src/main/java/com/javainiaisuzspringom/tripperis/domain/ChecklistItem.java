@@ -32,12 +32,12 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     private Trip trip;
 
     public ChecklistItemDTO convertToDTO() {
-        ChecklistItemDTO item = new ChecklistItemDTO();
+        ChecklistItemDTO dto = new ChecklistItemDTO();
 
-//        item.setId(this.getId());
-        item.setName(this.getName());
-        item.setChecked(this.isChecked());
+        dto.setId(this.getId());
+        dto.setName(this.getName());
+        dto.setChecked(this.isChecked());
 
-        return item;
+        return dto;
     }
 }

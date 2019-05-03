@@ -47,8 +47,12 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
         dto.setId(this.getId());
         dto.setName(this.getName());
         dto.setMaxCapacity(this.getMaxCapacity());
-        dto.setLocationId(this.getLocation().getId());
-        dto.setApartmentUsages(this.getApartmentUsages().stream().map(ApartmentUsage::convertToDTO).collect(Collectors.toList()));
+        if(this.getLocation() != null) {
+            dto.setLocationId(this.getLocation().getId());
+        }
+        if(this.getApartmentUsages() != null) {
+            dto.setApartmentUsages(this.getApartmentUsages().stream().map(ApartmentUsage::convertToDTO).collect(Collectors.toList()));
+        }
 
         return dto;
     }

@@ -2,10 +2,17 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Role;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
+import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RoleService extends AbstractBasicEntityService<Role, RoleDTO, Integer> {
+
+    @Getter
+    @Autowired
+    private RoleRepository repository;
 
     protected Role convertToEntity(RoleDTO dto) {
         Role role = new Role();

@@ -56,10 +56,18 @@ public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
         trip.setId(this.getId());
         trip.setName(this.getName());
         trip.setDescription(this.getDescription());
-        trip.setStatusCode(this.getStatus().getId());
-        trip.setAccounts(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
-        trip.setItems(this.getItems().stream().map(ChecklistItem::convertToDTO).collect(Collectors.toList()));
-        trip.setTripSteps(this.getTripSteps().stream().map(TripStep::convertToDTO).collect(Collectors.toList()));
+        if(this.getStatus() != null) {
+            trip.setStatusCode(this.getStatus().getId());
+        }
+        if(this.getAccounts() != null) {
+            trip.setAccounts(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
+        }
+        if(this.getItems() != null) {
+            trip.setItems(this.getItems().stream().map(ChecklistItem::convertToDTO).collect(Collectors.toList()));
+        }
+        if(this.getTripSteps() != null) {
+            trip.setTripSteps(this.getTripSteps().stream().map(TripStep::convertToDTO).collect(Collectors.toList()));
+        }
 
         return trip;
     }

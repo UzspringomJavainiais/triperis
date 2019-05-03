@@ -2,11 +2,17 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripStepRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TripStepService extends AbstractBasicEntityService<TripStep, TripStepDTO, Integer> {
+
+    @Getter
+    @Autowired
+    private TripStepRepository repository;
 
     @Autowired
     private LocationService locationService;

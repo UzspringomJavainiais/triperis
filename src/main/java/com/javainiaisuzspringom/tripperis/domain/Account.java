@@ -55,7 +55,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, Serializ
         dto.setLastName(this.getLastName());
         dto.setEmail(this.getEmail());
         dto.setPassword(this.getPassword());
-        dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        if (this.getRoles() != null) {
+            dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        }
 
         return dto;
     }

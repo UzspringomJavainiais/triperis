@@ -6,6 +6,7 @@ import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.AccountCalendarProvider;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 @Service
 public class AccountService extends AbstractBasicEntityService<Account, AccountDTO, Integer> {
 
+    @Getter
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountRepository repository;
 
     @Autowired
     private List<AccountCalendarProvider> calendarProviders;
@@ -27,7 +29,7 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
     private RoleRepository roleRepo;
 
     public Optional<Account> getById(Integer id) {
-        return accountRepository.findById(id);
+        return repository.findById(id);
     }
 
     public List<CalendarEntry> getAccountCalendar(AccountDTO account, Date periodStart, Date periodEnd) {
