@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@Table(name = "location")
 public class Location implements Serializable {
 
     @Id

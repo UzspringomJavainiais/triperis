@@ -6,6 +6,170 @@
 	},
 	"item": [
 		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get All Accounts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "da8d6900-4a50-4a3a-90e1-1193f44dfb36",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/account",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9762f7fe-6304-4653-a892-4684a44b4466",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"account_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/account",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get trips in period",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9762f7fe-6304-4653-a892-4684a44b4466",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/account/{{account_id}}/tripsInPeriod?dateStart=2001-12-13&dateEnd=2020-04-27",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"account",
+								"{{account_id}}",
+								"tripsInPeriod"
+							],
+							"query": [
+								{
+									"key": "dateStart",
+									"value": "2001-12-13"
+								},
+								{
+									"key": "dateEnd",
+									"value": "2020-04-27"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "Apartment",
 			"item": [
 				{
@@ -170,88 +334,6 @@
 			]
 		},
 		{
-			"name": "Attachments",
-			"item": [
-				{
-					"name": "Get All Attachments",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "eab452e5-9706-47b3-817b-0c373194c16d",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{service-link}}/attachment",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"attachment"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save Attachment",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "539a4c9d-16a3-4949-8b83-5fd0f0d36177",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\n}"
-						},
-						"url": {
-							"raw": "{{service-link}}/attachment",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"attachment"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Checklist Items",
 			"item": [
 				{
@@ -399,7 +481,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Vilnius Apartments\",\n\t\"geocoord\":\"meet\",\n\t\"address\":\"yeet\",\n\t\"apartment\": {\n\t\t\"name\": \"name of apartment\",\n\t\t\"capacity\": 10\n\t}\n}"
+							"raw": "{\n\t\"name\": \"Vilnius Apartments2\",\n\t\"geocoord\":\"meet2\",\n\t\"address\":\"yeet2\",\n\t\"apartment\": {\n\t\t\"name\": \"name of apartment\",\n\t\t\"capacity\": 10\n\t}\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/location",
@@ -498,318 +580,6 @@
 			]
 		},
 		{
-			"name": "Trip",
-			"item": [
-				{
-					"name": "Get All Trips",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{service-link}}/trip",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"trip"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save Trip",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "f472ee3c-2dd5-4693-a7ad-f6aa5b9c0b1f",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[]\n}"
-						},
-						"url": {
-							"raw": "{{service-link}}/trip",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"trip"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d8993978-544a-49ad-9566-ffa141fce017",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "Trip Step",
-			"item": [
-				{
-					"name": "Get All Trip Steps",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "252fd973-e4f1-4a49-951f-2660b91e5568",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{service-link}}/trip-step",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"trip-step"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save Trip Step",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "3d088076-6ec9-4123-a082-cf2bd7489066",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\":\"YEET\",\n\t\"trip\":null,\n\t\"orderNo\":1,\n\t\"startDate\":\"2019-03-19T12:40\",\n\t\"endDate\":\"2019-03-19T12:41\",\n\t\"location\":null\n}"
-						},
-						"url": {
-							"raw": "{{service-link}}/trip-step",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"trip-step"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d8993978-544a-49ad-9566-ffa141fce017",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Get All Users",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "da8d6900-4a50-4a3a-90e1-1193f44dfb36",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{service-link}}/user",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save Trip User",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "9762f7fe-6304-4653-a892-4684a44b4466",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
-									"    pm.response.to.have.status(201);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
-						},
-						"url": {
-							"raw": "{{service-link}}/user",
-							"host": [
-								"{{service-link}}"
-							],
-							"path": [
-								"user"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d8993978-544a-49ad-9566-ffa141fce017",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
 			"name": "Status Code",
 			"item": [
 				{
@@ -890,13 +660,288 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Trip",
+			"item": [
+				{
+					"name": "Get All Trips",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f472ee3c-2dd5-4693-a7ad-f6aa5b9c0b1f",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.globals.set(\"trip_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"best trip\",\n\t\"status\":null,\n\t\"users\":[],\n\t\"items\":[],\n\t\"tripSteps\": []\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/trip",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get trip duration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip/{{trip_id}}/getTotalDuration",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip",
+								"{{trip_id}}",
+								"getTotalDuration"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "TripStep",
+			"item": [
+				{
+					"name": "Get All Trip Steps",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f48dd57-fa77-4bb9-9d82-89d62f8ff397",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{service-link}}/trip-step",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip-step"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Trip Step",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f472ee3c-2dd5-4693-a7ad-f6aa5b9c0b1f",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"best trip step\",\n\t\"startDate\":\"2019-12-12T10:00\",\n\t\"endDate\":\"2019-12-12T10:00\"\n}"
+						},
+						"url": {
+							"raw": "{{service-link}}/trip-step",
+							"host": [
+								"{{service-link}}"
+							],
+							"path": [
+								"trip-step"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0ddcaf97-843f-472e-95d3-61e67197b2cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8993978-544a-49ad-9566-ffa141fce017",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "860c1ab8-783e-46d1-80c6-84f7527658b2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "1e5bb506-d6ca-43e6-befc-5eff7769aa2b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
-			"id": "00dafe47-ec84-4285-85c4-07eefaf92103",
+			"id": "bb73db70-6449-484d-af62-9b52fda31dfa",
 			"key": "service-link",
-			"value": "localhost:8080",
+			"value": "localhost:1111",
 			"type": "string"
 		}
 	]

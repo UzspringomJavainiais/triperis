@@ -1,7 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.repositories.UserRepository;
+import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.repositories.TripStepRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -10,18 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class UserService {
+public class TripStepService {
 
     @Autowired
-    private UserRepository userRepository;
+    private TripStepRepository tripStepRepository;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Account save(Account account) {
-        return userRepository.save(account);
+    public TripStep save(TripStep tripStep) {
+        return tripStepRepository.save(tripStep);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Account> getAllUsers() {
-        return userRepository.findAll();
+    public List<TripStep> getAllTripSteps() {
+        return tripStepRepository.findAll();
     }
 }
