@@ -7,15 +7,16 @@ import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +75,18 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
         }
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("id")
                 .withMatcher("name", ignoreCase());
-        if(!StringUtils.isBlank(trip.getDescription())) {
+        if(!StringUtils.isEmpty(trip.getDescription())) {
             matcher.withMatcher("description", ignoreCase());
         }
         // TODO improve?
 
         Trip tripProbe = convertToEntity(trip);
         return repository.exists(Example.of(tripProbe, matcher));
+    }
+
+    @Override
+    protected JpaRepository<Trip, Integer> getRepository() {
+        return null;
     }
 
     protected Trip convertToEntity(TripDTO dto) {

@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 /**
  * Maps to {@link com.javainiaisuzspringom.tripperis.domain.TripStep}
  */
-@Data
 public class TripStepDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
@@ -23,4 +22,59 @@ public class TripStepDTO implements ConvertableDTO<Integer>{
     private Timestamp endDate;
 
     private LocationDTO location;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public TripStepDTO setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public TripStepDTO setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+        return this;
+    }
+
+    public Timestamp getStartDate() {
+        return startDate;
+    }
+
+    public TripStepDTO setStartDate(Timestamp startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    public Timestamp getEndDate() {
+        return endDate;
+    }
+
+    public TripStepDTO setEndDate(Timestamp endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    public LocationDTO getLocation() {
+        return location;
+    }
+
+    public TripStepDTO setLocation(LocationDTO location) {
+        this.location = location;
+        return this;
+    }
 }

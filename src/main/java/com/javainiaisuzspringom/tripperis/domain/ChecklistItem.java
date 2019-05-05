@@ -11,8 +11,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Getter
-@Setter
+
 @Table(name = "checklist_item")
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
 
@@ -27,13 +26,10 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     @Column(name = "IS_CHECKED")
     private boolean isChecked;
 
-<<<<<<< HEAD
     @Column(name = "PRICE")
     private BigDecimal price;
 
-=======
     @JsonBackReference
->>>>>>> 191b73cdca999be97dd935051cf4ed95b5172a51
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
@@ -46,5 +42,51 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         dto.setChecked(this.isChecked());
 
         return dto;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    public ChecklistItem setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ChecklistItem setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public ChecklistItem setChecked(boolean checked) {
+        isChecked = checked;
+        return this;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public ChecklistItem setPrice(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public ChecklistItem setTrip(Trip trip) {
+        this.trip = trip;
+        return this;
     }
 }

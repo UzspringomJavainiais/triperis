@@ -71,4 +71,68 @@ public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
 
         return trip;
     }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    public Trip setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Trip setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public StatusCode getStatus() {
+        return status;
+    }
+
+    public Trip setStatus(StatusCode status) {
+        this.status = status;
+        return this;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public Trip setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Trip setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public List<ChecklistItem> getItems() {
+        return items;
+    }
+
+    public Trip setItems(List<ChecklistItem> items) {
+        this.items = items;
+        return this;
+    }
+
+    public List<TripStep> getTripSteps() {
+        return tripSteps;
+    }
+
+    public Trip setTripSteps(List<TripStep> tripSteps) {
+        this.tripSteps = tripSteps;
+        return this;
+    }
 }

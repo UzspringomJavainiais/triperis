@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 /**
  * Maps to {@link ChecklistItem}
  */
-@Data
 public class ChecklistItemDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
@@ -17,4 +16,32 @@ public class ChecklistItemDTO implements ConvertableDTO<Integer>{
     private String name;
 
     private boolean isChecked;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ChecklistItemDTO setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public ChecklistItemDTO setChecked(boolean checked) {
+        isChecked = checked;
+        return this;
+    }
 }
