@@ -2,68 +2,97 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
+import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
 @Service
-public class TripService {
+public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integer> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TripService.class);
 
+    @Getter
     @Autowired
-    private TripRepository tripRepository;
+    private TripRepository repository;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Trip save(Trip trip) {
-        return tripRepository.save(trip);
-    }
+    @Autowired
+    private TripStepService tripStepService;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Trip> getAllTrips() {
-        return tripRepository.findAll();
-    }
+    @Autowired
+    private ChecklistItemService checklistItemService;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Optional<TripDuration> getTripDuration(Trip trip) {
-        // I don't know how to force the query to return objects of wanted type, so we have to do this stuff right here
-        List<Object[]> objectList = tripRepository.getDuration(trip);
-        if (objectList.isEmpty()) {
+    @Autowired
+    private StatusCodeRepository statusCodeRepo;
+
+    @Autowired
+    private AccountRepository accountRepo;
+
+    public Optional<TripDuration> getTripDuration(TripDTO trip) {
+        List<TripDuration> durationList = repository.getDuration(trip.getId());
+        if(durationList.isEmpty()) {
             return Optional.empty();
         }
-        if (objectList.size() != 1) {
-            LOGGER.error("Object list holding is not of size 1, but {}", objectList.size());
+        if(durationList.size() != 1) {
+            LOGGER.error("Duration list is not of size 1, but {}", durationList.size());
             throw new IllegalStateException("Illegal attempt to query trips");
         }
-        Object[] timestampObjs = objectList.get(0);
-        if (timestampObjs.length != 2) {
-            throw new IllegalStateException(String.format("Trip has %d start and end dates", timestampObjs.length));
+        return Optional.of(durationList.get(0));
+    }
+
+    public Optional<TripDTO> getById(Integer id) {
+        return repository.findById(id).map(Trip::convertToDTO);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void removeTrip(TripDTO trip) {
+        if (repository.existsById(trip.getId())){
+            repository.deleteById(trip.getId());
         }
-
-        return Optional.of(new TripDuration(trip.getId(), (Timestamp) timestampObjs[0], (Timestamp) timestampObjs[1]));
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Optional<Trip> getById(Integer id) {
-        return tripRepository.findById(id);
+    public boolean exists(TripDTO trip) {
+        if(repository.existsById(trip.getId())) {
+            return true;
+        }
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("id")
+                .withMatcher("name", ignoreCase());
+        if(!StringUtils.isBlank(trip.getDescription())) {
+            matcher.withMatcher("description", ignoreCase());
+        }
+        // TODO improve?
+
+        Trip tripProbe = convertToEntity(trip);
+        return repository.exists(Example.of(tripProbe, matcher));
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void removeTrip(Trip trip) {
-        tripRepository.delete(trip);
-    }
+    protected Trip convertToEntity(TripDTO dto) {
+        Trip trip = new Trip();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public boolean exists(Trip trip) {
-        return tripRepository.exists(Example.of(trip));
+        trip.setName(dto.getName());
+        trip.setDescription(dto.getDescription());
+        trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
+        trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
+        trip.setItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
+        trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
+
+        return trip;
     }
 }

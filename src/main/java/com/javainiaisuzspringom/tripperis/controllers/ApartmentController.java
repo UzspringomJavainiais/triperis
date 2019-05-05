@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.Apartment;
+import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.services.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class ApartmentController {
     private ApartmentService apartmentService;
 
     @GetMapping("/apartment")
-    public List<Apartment> getAllApartments() {
-        return apartmentService.getAllApartments();
+    public List<ApartmentDTO> getAllApartments() {
+        return apartmentService.getAll();
     }
 
     @PostMapping("/apartment")
-    public ResponseEntity<Apartment> addApartment(@RequestBody Apartment apartment) {
-        Apartment savedEntity = apartmentService.save(apartment);
+    public ResponseEntity<ApartmentDTO> addApartment(@RequestBody ApartmentDTO apartment) {
+        ApartmentDTO savedEntity = apartmentService.save(apartment);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

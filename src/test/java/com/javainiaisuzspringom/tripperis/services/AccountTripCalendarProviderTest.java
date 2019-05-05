@@ -1,8 +1,11 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
+import com.javainiaisuzspringom.tripperis.services.calendar.AccountTripCalendarProvider;
+import com.javainiaisuzspringom.tripperis.services.calendar.CalendarEntryType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,16 +24,16 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AccountServiceTest {
+public class AccountTripCalendarProviderTest {
 
     @Mock
     private AccountRepository mockRepository;
 
     @Mock
-    private Account mockAccount;
+    private AccountDTO mockAccount;
 
     @InjectMocks
-    private AccountService accountService;
+    private AccountTripCalendarProvider calendarProvider;
 
     @Before
     public void init() {
@@ -48,36 +51,23 @@ public class AccountServiceTest {
         Timestamp tripStart = Timestamp.valueOf("2019-04-31 10:10:00");
         Timestamp tripEnd = Timestamp.valueOf("2019-05-01 10:10:00");
 
-        Object[] objects = {tripId, tripStart, tripEnd};
-        List<Object[]> listOfObjects = new ArrayList<>();
-        listOfObjects.add(objects);
+        List<CalendarTripEntry> listOfObjects = new ArrayList<>();
+        listOfObjects.add(new CalendarTripEntry(tripId, tripStart, tripEnd));
 
-        when(mockRepository.getTripDates(eq(mockAccount), any(), any()))
+
+        Integer accountId = 120;
+        when(mockAccount.getId())
+                .thenReturn(accountId);
+        when(mockRepository.getTripDates(eq(accountId), any(), any()))
                 .thenReturn(listOfObjects);
 
-        List<TripDuration> tripDurationsInPeriod = accountService.getTripDurationsInPeriod(mockAccount, startDate, endDate);
+        List<CalendarEntry> tripDurationsInPeriod = calendarProvider.getAccountCalendar(mockAccount, startDate, endDate);
         assertThat(tripDurationsInPeriod.size(), is(1));
 
-        TripDuration tripDuration = tripDurationsInPeriod.get(0);
+        CalendarTripEntry tripDuration = (CalendarTripEntry) tripDurationsInPeriod.get(0);
         assertThat(tripDuration.getTripId(), is(tripId));
         assertThat(tripDuration.getStart(), is(tripStart));
         assertThat(tripDuration.getEnd(), is(tripEnd));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenQueryResultsIncorrect() {
-        Instant startInstant = Instant.parse("2019-04-30T10:15:30.00Z");
-        Instant endInstant = Instant.parse("2019-05-03T10:15:30.00Z");
-        Date startDate = Date.from(startInstant);
-        Date endDate = Date.from(endInstant);
-
-        Object[] objects = {1, 2};
-        List<Object[]> listOfObjects = new ArrayList<>();
-        listOfObjects.add(objects);
-
-        when(mockRepository.getTripDates(eq(mockAccount), any(), any()))
-                .thenReturn(listOfObjects);
-
-        accountService.getTripDurationsInPeriod(mockAccount, startDate, endDate);
+        assertThat(tripDuration.getType(), is(CalendarEntryType.TRIP));
     }
 }

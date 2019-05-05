@@ -1,27 +1,27 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Role;
+import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-public class RoleService {
+public class RoleService extends AbstractBasicEntityService<Role, RoleDTO, Integer> {
 
+    @Getter
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleRepository repository;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Role save(Role role) {
-        return roleRepository.save(role);
-    }
+    protected Role convertToEntity(RoleDTO dto) {
+        Role role = new Role();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        role.setName(dto.getName());
+        role.setDescription(dto.getDescription());
+        role.setDateCreated(dto.getDateCreated());
+        role.setDateDeleted(dto.getDateDeleted());
+
+        return role;
     }
 }

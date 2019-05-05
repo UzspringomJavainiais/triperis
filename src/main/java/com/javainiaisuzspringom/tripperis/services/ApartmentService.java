@@ -1,27 +1,37 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
+import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
+import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class ApartmentService {
+public class ApartmentService extends AbstractBasicEntityService<Apartment, ApartmentDTO, Integer> {
+
+    @Getter
+    @Autowired
+    private ApartmentRepository repository;
 
     @Autowired
-    private ApartmentRepository apartmentRepository;
+    private LocationRepository locationRepo;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Apartment save(Apartment apartment) {
-        return apartmentRepository.save(apartment);
-    }
+    @Autowired
+    private ApartmentUsageService apartmentUsageService;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Apartment> getAllApartments() {
-        return apartmentRepository.findAll();
+    protected Apartment convertToEntity(ApartmentDTO dto) {
+        Apartment apartment = new Apartment();
+
+        apartment.setName(dto.getName());
+        apartment.setMaxCapacity(dto.getMaxCapacity());
+        apartment.setLocation(locationRepo.getOne(dto.getLocationId()));
+        apartment.setApartmentUsages(dto.getApartmentUsages().stream()
+                .map(usage -> apartmentUsageService.getExistingOrConvert(usage)).collect(Collectors.toList()));
+
+        return apartment;
     }
 }

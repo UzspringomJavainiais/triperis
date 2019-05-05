@@ -1,8 +1,10 @@
 package com.javainiaisuzspringom.tripperis.dto;
 
+import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 public class TripDuration {
@@ -14,5 +16,14 @@ public class TripDuration {
         this.tripId = tripId;
         this.start = startDate;
         this.end = endDate;
+    }
+
+    /**
+     * This constructor is used in {@link TripRepository#getDuration(Integer)}
+     */
+    public TripDuration(int tripId, Date startDate, Date endDate) {
+        this.tripId = tripId;
+        this.start = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
+        this.end = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
     }
 }

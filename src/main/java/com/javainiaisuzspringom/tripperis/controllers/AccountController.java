@@ -1,7 +1,8 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,18 +21,18 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/account")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account) {
-        Account savedEntity = accountService.save(account);
+    public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
+        AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
     @GetMapping("/account")
-    public List<Account> getAllAccounts() {
-        return accountService.getAllAccounts();
+    public List<AccountDTO> getAllAccounts() {
+        return accountService.getAll();
     }
 
     @GetMapping(value = "/account/{id}/tripsInPeriod")
-    public ResponseEntity<List<TripDuration>> tripsInPeriod(@PathVariable(name = "id") Integer id,
+    public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
                                                             @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
@@ -43,7 +44,7 @@ public class AccountController {
 
         Account account = accountResultById.get();
 
-        List<TripDuration> accountFreeDates = accountService.getTripDurationsInPeriod(account, dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account.convertToDTO(), dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
 }

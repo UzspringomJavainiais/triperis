@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,13 +11,14 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity(name = "Account")
 @Getter
 @Setter
 @Table(name = "account")
-public class Account implements Serializable {
+public class Account implements ConvertableEntity<Integer, AccountDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -44,4 +46,19 @@ public class Account implements Serializable {
     @JsonBackReference
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
+
+    public AccountDTO convertToDTO() {
+        AccountDTO dto = new AccountDTO();
+
+        dto.setId(this.getId());
+        dto.setFirstName(this.getFirstName());
+        dto.setLastName(this.getLastName());
+        dto.setEmail(this.getEmail());
+        dto.setPassword(this.getPassword());
+        if (this.getRoles() != null) {
+            dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        }
+
+        return dto;
+    }
 }

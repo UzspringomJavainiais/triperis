@@ -1,27 +1,25 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
+import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ChecklistItemRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-public class ChecklistItemService {
+public class ChecklistItemService extends AbstractBasicEntityService<ChecklistItem, ChecklistItemDTO, Integer> {
 
+    @Getter
     @Autowired
-    private ChecklistItemRepository checklistItemRepository;
+    private ChecklistItemRepository repository;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public ChecklistItem save(ChecklistItem checklistItem) {
-        return checklistItemRepository.save(checklistItem);
-    }
+    protected ChecklistItem convertToEntity(ChecklistItemDTO dto) {
+        ChecklistItem item = new ChecklistItem();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<ChecklistItem> getAllChecklistItems() {
-        return checklistItemRepository.findAll();
+        item.setName(dto.getName());
+        item.setChecked(dto.isChecked());
+
+        return item;
     }
 }

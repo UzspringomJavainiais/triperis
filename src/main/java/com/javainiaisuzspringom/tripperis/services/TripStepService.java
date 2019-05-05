@@ -1,27 +1,31 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripStepRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-public class TripStepService {
+public class TripStepService extends AbstractBasicEntityService<TripStep, TripStepDTO, Integer> {
+
+    @Getter
+    @Autowired
+    private TripStepRepository repository;
 
     @Autowired
-    private TripStepRepository tripStepRepository;
+    private LocationService locationService;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public TripStep save(TripStep tripStep) {
-        return tripStepRepository.save(tripStep);
-    }
+    protected TripStep convertToEntity(TripStepDTO dto) {
+        TripStep tripStep = new TripStep();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<TripStep> getAllTripSteps() {
-        return tripStepRepository.findAll();
+        tripStep.setStartDate(dto.getStartDate());
+        tripStep.setEndDate(dto.getEndDate());
+        tripStep.setOrderNo(dto.getOrderNo());
+        tripStep.setName(dto.getName());
+        tripStep.setLocation(locationService.getExistingOrConvert(dto.getLocation()));
+
+        return tripStep;
     }
 }

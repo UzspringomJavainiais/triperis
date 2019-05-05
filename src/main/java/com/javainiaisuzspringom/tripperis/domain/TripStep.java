@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ import java.sql.Timestamp;
         @Index(columnList = "START_DATE"),
         @Index(columnList = "END_DATE")
 })
-public class TripStep implements Serializable {
+public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -42,4 +43,19 @@ public class TripStep implements Serializable {
 
     @OneToOne
     private Location location;
+
+    public TripStepDTO convertToDTO() {
+        TripStepDTO tripStep = new TripStepDTO();
+
+        tripStep.setId(this.getId());
+        tripStep.setStartDate(this.getStartDate());
+        tripStep.setEndDate(this.getEndDate());
+        tripStep.setOrderNo(this.getOrderNo());
+        tripStep.setName(this.getName());
+        if(this.getLocation() != null) {
+            tripStep.setLocation(this.getLocation().convertToDTO());
+        }
+
+        return tripStep;
+    }
 }

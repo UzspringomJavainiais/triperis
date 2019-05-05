@@ -1,27 +1,28 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Location;
+import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
 import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-public class LocationService {
+public class LocationService extends AbstractBasicEntityService<Location, LocationDTO, Integer> {
 
+    @Getter
     @Autowired
-    private LocationRepository locationRepository;
+    private LocationRepository repository;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Location save(Location location) {
-        return locationRepository.save(location);
-    }
+    protected Location convertToEntity(LocationDTO dto) {
+        Location location = new Location();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Location> getAllLocations() {
-        return locationRepository.findAll();
+        location.setAddress(dto.getAddress());
+        location.setCity(dto.getCity());
+        location.setCountry(dto.getCountry());
+        location.setGeocoord(dto.getGeocoord());
+        location.setName(dto.getName());
+
+        return location;
     }
 }

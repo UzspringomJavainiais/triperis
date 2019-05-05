@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "role")
-public class Role implements Serializable {
+public class Role implements ConvertableEntity<Integer, RoleDTO>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -35,4 +36,16 @@ public class Role implements Serializable {
 
     @ManyToMany(mappedBy = "roles")
     private List<Account> account =  new ArrayList<>();
+
+    public RoleDTO convertToDTO() {
+        RoleDTO dto = new RoleDTO();
+
+        dto.setId(this.getId());
+        dto.setName(this.getName());
+        dto.setDescription(this.getDescription());
+        dto.setDateDeleted(this.getDateCreated());
+        dto.setDateDeleted(this.getDateDeleted());
+
+        return dto;
+    }
 }

@@ -1,27 +1,25 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.StatusCode;
+import com.javainiaisuzspringom.tripperis.dto.entity.StatusCodeDTO;
 import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
-public class StatusCodeService {
+public class StatusCodeService extends AbstractBasicEntityService<StatusCode, StatusCodeDTO, Integer> {
 
+    @Getter
     @Autowired
-    private StatusCodeRepository statusCodeRepository;
+    private StatusCodeRepository repository;
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public StatusCode save(StatusCode statusCode) {
-        return statusCodeRepository.save(statusCode);
-    }
+    protected StatusCode convertToEntity(StatusCodeDTO dto) {
+        StatusCode statusCode = new StatusCode();
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<StatusCode> getAllStatusCodes() {
-        return statusCodeRepository.findAll();
+        statusCode.setName(dto.getName());
+        statusCode.setDescription(dto.getDescription());
+
+        return statusCode;
     }
 }

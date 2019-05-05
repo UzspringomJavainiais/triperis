@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.StatusCode;
+import com.javainiaisuzspringom.tripperis.dto.entity.StatusCodeDTO;
 import com.javainiaisuzspringom.tripperis.services.StatusCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ public class StatusCodeController {
     private StatusCodeService statusCodeService;
 
     @GetMapping("/status-code")
-    public List<StatusCode> getAllStatusCodes() {
-        return statusCodeService.getAllStatusCodes();
+    public List<StatusCodeDTO> getAllStatusCodes() {
+        return statusCodeService.getAll();
     }
 
     @PostMapping("/status-code")
-    public ResponseEntity<StatusCode> addStatusCode(@RequestBody StatusCode statusCode) {
-        StatusCode savedEntity = statusCodeService.save(statusCode);
+    public ResponseEntity<StatusCodeDTO> addStatusCode(@RequestBody StatusCodeDTO statusCode) {
+        StatusCodeDTO savedEntity = statusCodeService.save(statusCode);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }
