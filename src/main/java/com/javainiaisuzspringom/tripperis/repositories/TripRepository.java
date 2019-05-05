@@ -16,7 +16,7 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
             "(t.id, MIN(ts.startDate), MAX(ts.endDate)) " +
             "FROM Trip t " +
                 "LEFT JOIN t.tripSteps ts " +
-            "WHERE t.id = :tripId " +
+            "WHERE t = :trip " +
             "GROUP BY t")
-    List<TripDuration> getDuration(Integer tripId);
+    List<TripDuration> getDuration(Trip trip);
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maps to {@link Trip}. Used for data transferring and insures no nasty data mangling ahappens
+ * Maps to {@link Trip}. Used for data transferring and insures no nasty data mangling happens
  */
 public class TripDTO implements ConvertableDTO<Integer>{
 

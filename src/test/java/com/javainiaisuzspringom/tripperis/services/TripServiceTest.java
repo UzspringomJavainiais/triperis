@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -49,7 +50,7 @@ public class TripServiceTest {
 
         when(mockTrip.getId())
                 .thenReturn(tripId);
-        when(mockRepository.getDuration(tripId))
+        when(mockRepository.getDuration(any()))
                 .thenReturn(objects);
 
         Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
@@ -69,7 +70,7 @@ public class TripServiceTest {
         when(mockTrip.getId())
                 .thenReturn(tripId);
 
-        when(mockRepository.getDuration(tripId))
+        when(mockRepository.getDuration(any()))
                 .thenReturn(objects);
 
         Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
@@ -87,7 +88,7 @@ public class TripServiceTest {
         when(mockTrip.getId())
                 .thenReturn(tripId);
 
-        when(mockRepository.getDuration(tripId))
+        when(mockRepository.getDuration(any()))
                 .thenReturn(listOfObjects);
 
         accountService.getTripDuration(mockTrip);

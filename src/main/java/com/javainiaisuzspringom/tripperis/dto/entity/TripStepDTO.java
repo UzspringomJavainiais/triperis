@@ -1,12 +1,13 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.javainiaisuzspringom.tripperis.domain.TripStep;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 /**
- * Maps to {@link com.javainiaisuzspringom.tripperis.domain.TripStep}
+ * Maps to {@link TripStep}
  */
 public class TripStepDTO implements ConvertableDTO<Integer>{
 

@@ -1,7 +1,7 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;

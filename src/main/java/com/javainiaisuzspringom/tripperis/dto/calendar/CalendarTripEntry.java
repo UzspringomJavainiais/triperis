@@ -1,4 +1,4 @@
-package com.javainiaisuzspringom.tripperis.dto;
+package com.javainiaisuzspringom.tripperis.dto.calendar;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;

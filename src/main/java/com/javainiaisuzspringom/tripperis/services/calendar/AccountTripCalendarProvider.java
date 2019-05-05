@@ -2,8 +2,8 @@ package com.javainiaisuzspringom.tripperis.services.calendar;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
-import com.javainiaisuzspringom.tripperis.dto.CalendarEntry;
-import com.javainiaisuzspringom.tripperis.dto.CalendarTripEntry;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,9 @@ public class AccountTripCalendarProvider implements AccountCalendarProvider {
         Timestamp startTimestamp = Timestamp.from(periodStart.toInstant());
         Timestamp endTimestamp = Timestamp.from(periodEnd.toInstant());
 
-        List<CalendarTripEntry> tripDates = accountRepository.getTripDates(account.getId(), startTimestamp, endTimestamp);
+
+        Account entity = accountRepository.getOne(account.getId());
+        List<CalendarTripEntry> tripDates = accountRepository.getTripDates(entity, startTimestamp, endTimestamp);
         for(CalendarTripEntry entry : tripDates) {
             entry.setType(CalendarEntryType.TRIP);
         }

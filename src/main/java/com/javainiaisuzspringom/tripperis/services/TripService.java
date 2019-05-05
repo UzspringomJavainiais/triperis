@@ -46,7 +46,8 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     private AccountRepository accountRepo;
 
     public Optional<TripDuration> getTripDuration(TripDTO trip) {
-        List<TripDuration> durationList = repository.getDuration(trip.getId());
+        Trip entity = repository.getOne(trip.getId());
+        List<TripDuration> durationList = repository.getDuration(entity);
         if(durationList.isEmpty()) {
             return Optional.empty();
         }

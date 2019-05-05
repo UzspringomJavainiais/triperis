@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto;
 
+import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Data;
 
@@ -19,7 +20,7 @@ public class TripDuration {
     }
 
     /**
-     * This constructor is used in {@link TripRepository#getDuration(Integer)}
+     * This constructor is used in {@link TripRepository#getDuration(Trip)}}
      */
     public TripDuration(int tripId, Date startDate, Date endDate) {
         this.tripId = tripId;
