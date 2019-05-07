@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.ConvertableEntity;
 import com.javainiaisuzspringom.tripperis.dto.entity.ConvertableDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,8 +17,8 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
     protected abstract JpaRepository<E, I> getRepository();
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public D save(D checklistItem) {
-        E entityFromDTO = getExistingOrConvert(checklistItem);
+    public D save(D entityDto) {
+        E entityFromDTO = getExistingOrConvert(entityDto);
         E savedItem = getRepository().save(entityFromDTO);
         return savedItem.convertToDTO();
     }
@@ -25,9 +26,9 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
     @Transactional
     public E getExistingOrConvert(D dto) {
         if (dto.getId() != null) {
-            Optional<E> maybeTripStep = getRepository().findById(dto.getId());
-            if (maybeTripStep.isPresent()) {
-                return maybeTripStep.orElseGet(() -> {
+            Optional<E> optionalEntity = getRepository().findById(dto.getId());
+            if (optionalEntity.isPresent()) {
+                return optionalEntity.orElseGet(() -> {
                     // set id to null, because entity with this id does not exist
                     dto.setId(null);
                     return convertToEntity(dto);
@@ -44,4 +45,5 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
     }
 
     protected abstract E convertToEntity(D dto);
+
 }

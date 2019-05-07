@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.csv;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

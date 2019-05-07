@@ -4,7 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.Role;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 /**
  * Maps to {@link Role}
