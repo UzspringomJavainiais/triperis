@@ -90,11 +90,6 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
         return repository.exists(Example.of(tripProbe, matcher));
     }
 
-    @Override
-    protected JpaRepository<Trip, Integer> getRepository() {
-        return null;
-    }
-
     protected Trip convertToEntity(TripDTO dto) {
         Trip trip = new Trip();
 

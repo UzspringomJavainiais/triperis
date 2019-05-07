@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @JsonBackReference

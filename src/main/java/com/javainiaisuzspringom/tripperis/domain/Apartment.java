@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull

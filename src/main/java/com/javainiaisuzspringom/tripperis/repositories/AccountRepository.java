@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
@@ -31,4 +32,5 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
             "GROUP BY t")
     List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
 
+    Optional<Account> findByEmail(String username);
 }

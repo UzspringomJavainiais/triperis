@@ -923,8 +923,110 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Authenticate as User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd09ef61-2009-4adb-89c2-c3e44ad79da3",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"login_token\", jsonData.token);\r",
+							"pm.globals.set(\"login_username\", jsonData.username);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{user_email}}\",\n\t\"password\":\"{{user_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{service-link}}/auth/signin",
+					"host": [
+						"{{service-link}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate as Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5389276c-f5bb-4627-9a5d-cb30e9d8b448",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"login_token\", jsonData.token);\r",
+							"pm.globals.set(\"login_username\", jsonData.username);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{admin_email}}\",\n\t\"password\":\"{{admin_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{service-link}}/auth/signin",
+					"host": [
+						"{{service-link}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer_token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -949,9 +1051,33 @@
 	],
 	"variable": [
 		{
-			"id": "6cca3835-21e7-4745-99e4-13d678f6adbc",
+			"id": "ac735106-6903-4b88-83bc-7599872e22c6",
 			"key": "service-link",
 			"value": "localhost:1111",
+			"type": "string"
+		},
+		{
+			"id": "d50aa2cd-ab09-4b0d-bb60-a736dcec8c8d",
+			"key": "user_email",
+			"value": "user@user.user",
+			"type": "string"
+		},
+		{
+			"id": "f7b8c791-ffdd-4fe3-bd0a-e680557f64ea",
+			"key": "user_password",
+			"value": "user",
+			"type": "string"
+		},
+		{
+			"id": "ebd790b5-f103-44bc-aa48-8d454422f6af",
+			"key": "admin_email",
+			"value": "admin@admin.admin",
+			"type": "string"
+		},
+		{
+			"id": "46706c17-d463-4287-a644-3be685a267be",
+			"key": "admin_password",
+			"value": "admin",
 			"type": "string"
 		}
 	]

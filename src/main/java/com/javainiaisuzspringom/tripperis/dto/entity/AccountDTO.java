@@ -1,7 +1,10 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
@@ -12,6 +15,9 @@ import java.util.List;
  * Maps to {@link Account}
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
