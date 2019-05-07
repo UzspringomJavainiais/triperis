@@ -58,6 +58,11 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
         return Optional.of(durationList.get(0));
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<Trip> getAllTrips() {
+        return repository.findAll();
+    }
+
     public Optional<TripDTO> getById(Integer id) {
         return repository.findById(id).map(Trip::convertToDTO);
     }

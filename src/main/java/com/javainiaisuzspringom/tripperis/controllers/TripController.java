@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.controllers.util.MergeTrips;
+import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,9 @@ public class TripController {
 
     @Autowired
     private TripService tripService;
+
+    @Autowired
+    private CsvService csvService;
 
     @GetMapping("/trip")
     public List<TripDTO> getAllTrips() {
@@ -100,6 +105,13 @@ public class TripController {
         tripService.save(mergedTrip);
 
         return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/api/tripsInfo/csv")
+    public void getTripsInfoCSV(HttpServletResponse response){
+        response.setContentType("text/plain; charset=utf-8");
+        response.setHeader("Content-disposition", "attachment; filename="+ "trips.csv");
+        csvService.createTripsCsv(response);
     }
 
     public ResponseEntity<Float> getProgress(@RequestBody TripDTO trip) {
