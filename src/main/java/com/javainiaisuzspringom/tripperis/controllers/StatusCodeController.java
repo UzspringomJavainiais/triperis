@@ -18,12 +18,12 @@ public class StatusCodeController {
     @Autowired
     private StatusCodeService statusCodeService;
 
-    @GetMapping("/status-code")
+    @GetMapping("/api/status-code")
     public List<StatusCodeDTO> getAllStatusCodes() {
         return statusCodeService.getAll();
     }
 
-    @PostMapping("/status-code")
+    @PostMapping("/api/status-code")
     public ResponseEntity<StatusCodeDTO> addStatusCode(@RequestBody StatusCodeDTO statusCode) {
         StatusCodeDTO savedEntity = statusCodeService.save(statusCode);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);

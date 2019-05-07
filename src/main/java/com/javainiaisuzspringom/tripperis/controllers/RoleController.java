@@ -18,12 +18,12 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/role")
+    @GetMapping("/api/role")
     public List<RoleDTO> getAllRoles() {
         return roleService.getAll();
     }
 
-    @PostMapping("/role")
+    @PostMapping("/api/role")
     public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO role) {
         RoleDTO savedEntity = roleService.save(role);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);

@@ -18,12 +18,12 @@ public class TripStepController {
     @Autowired
     private TripStepService tripStepService;
 
-    @GetMapping("/trip-step")
+    @GetMapping("/api/trip-step")
     public List<TripStepDTO> getAllTripSteps() {
         return tripStepService.getAll();
     }
 
-    @PostMapping("/trip-step")
+    @PostMapping("/api/trip-step")
     public ResponseEntity<TripStepDTO> addTripStep(@RequestBody TripStepDTO tripStep) {
         TripStepDTO savedEntity = tripStepService.save(tripStep);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);

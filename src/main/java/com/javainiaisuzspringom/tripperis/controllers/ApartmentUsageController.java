@@ -18,12 +18,12 @@ public class ApartmentUsageController {
     @Autowired
     private ApartmentUsageService apartmentUsageService;
 
-    @GetMapping("/apartment-usage")
+    @GetMapping("/api/apartment-usage")
     public List<ApartmentUsageDTO> getAllApartments() {
         return apartmentUsageService.getAll();
     }
 
-    @PostMapping("/apartment-usage")
+    @PostMapping("/api/apartment-usage")
     public ResponseEntity<ApartmentUsageDTO> addApartment(@RequestBody ApartmentUsageDTO apartment) {
         ApartmentUsageDTO savedEntity = apartmentUsageService.save(apartment);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);

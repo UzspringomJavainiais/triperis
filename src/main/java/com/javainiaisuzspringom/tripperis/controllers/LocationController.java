@@ -18,12 +18,12 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
 
-    @GetMapping("/location")
+    @GetMapping("/api/location")
     public List<LocationDTO> getAllLocations() {
         return locationService.getAll();
     }
 
-    @PostMapping("/location")
+    @PostMapping("/api/location")
     public ResponseEntity<LocationDTO> addLocation(@RequestBody LocationDTO location) {
         LocationDTO savedEntity = locationService.save(location);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);

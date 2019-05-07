@@ -20,18 +20,18 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("/account")
+    @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
         AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
-    @GetMapping("/account")
+    @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
         return accountService.getAll();
     }
 
-    @GetMapping(value = "/account/{id}/tripsInPeriod")
+    @GetMapping(value = "/api/account/{id}/tripsInPeriod")
     public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
                                                             @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {

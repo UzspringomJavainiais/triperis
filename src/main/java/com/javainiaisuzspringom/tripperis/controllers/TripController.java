@@ -26,12 +26,12 @@ public class TripController {
     @Autowired
     private CsvService csvService;
 
-    @GetMapping("/trip")
+    @GetMapping("/api/trip")
     public List<TripDTO> getAllTrips() {
         return tripService.getAll();
     }
 
-    @PostMapping("/trip")
+    @PostMapping("/api/trip")
     public ResponseEntity<TripDTO> addTrip(@RequestBody TripDTO trip) {
         TripDTO savedEntity = tripService.save(trip);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
@@ -45,7 +45,7 @@ public class TripController {
      * @param id id of Trip
      * @return trip duration for given trip, if trip is found. Else return a not found response
      */
-    @GetMapping("/trip/{id}/getTotalDuration")
+    @GetMapping("/api/trip/{id}/getTotalDuration")
     public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
         Optional<TripDTO> tripResultById = tripService.getById(id);
         if (!tripResultById.isPresent()) {
@@ -61,7 +61,7 @@ public class TripController {
         return ResponseEntity.ok(tripStartDate.get());
     }
 
-    @PostMapping("/tripRemove")
+    @PostMapping("/api/tripRemove")
     public ResponseEntity removeTrip(@RequestBody TripDTO trip) {
         if(trip.getId() == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -77,7 +77,7 @@ public class TripController {
             return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/tripMerge")
+    @PostMapping("/api/tripMerge")
     public ResponseEntity<TripDTO> mergeTrips(@RequestBody MergeTrips mergeTrips) {
         TripDTO mergedTrip = new TripDTO();
 
