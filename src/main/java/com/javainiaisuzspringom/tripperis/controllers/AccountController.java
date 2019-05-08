@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class AccountController {
@@ -22,13 +23,15 @@ public class AccountController {
 
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
-        AccountDTO savedEntity = accountService.save(account);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        Account savedEntity = accountService.save(account);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll();
+        return accountService.getAll().stream()
+                .map(Account::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping(value = "/api/account/{id}/tripsInPeriod")
@@ -44,7 +47,7 @@ public class AccountController {
 
         Account account = accountResultById.get();
 
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account.convertToDTO(), dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
 }

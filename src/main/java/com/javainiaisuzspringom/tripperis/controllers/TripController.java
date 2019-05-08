@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class TripController {
@@ -28,13 +29,15 @@ public class TripController {
 
     @GetMapping("/api/trip")
     public List<TripDTO> getAllTrips() {
-        return tripService.getAll();
+        return tripService.getAll().stream()
+                .map(Trip::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/trip")
     public ResponseEntity<TripDTO> addTrip(@RequestBody TripDTO trip) {
-        TripDTO savedEntity = tripService.save(trip);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        Trip savedEntity = tripService.save(trip);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
     /**

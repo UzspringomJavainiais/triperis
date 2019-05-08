@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
+import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.services.ApartmentUsageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ApartmentUsageController {
@@ -20,12 +22,14 @@ public class ApartmentUsageController {
 
     @GetMapping("/api/apartment-usage")
     public List<ApartmentUsageDTO> getAllApartments() {
-        return apartmentUsageService.getAll();
+        return apartmentUsageService.getAll().stream()
+                .map(ApartmentUsage::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/apartment-usage")
     public ResponseEntity<ApartmentUsageDTO> addApartment(@RequestBody ApartmentUsageDTO apartment) {
-        ApartmentUsageDTO savedEntity = apartmentUsageService.save(apartment);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        ApartmentUsage savedEntity = apartmentUsageService.save(apartment);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 }

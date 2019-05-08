@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.Account;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +28,6 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     @Email
     private String email;
 
+    @NotNull
     private List<Integer> roleIds = new ArrayList<>();
 }

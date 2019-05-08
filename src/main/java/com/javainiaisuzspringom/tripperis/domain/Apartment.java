@@ -34,7 +34,6 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
     private Integer maxCapacity;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @MapsId(value = "id")
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)

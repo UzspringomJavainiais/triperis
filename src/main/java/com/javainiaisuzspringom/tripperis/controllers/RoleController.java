@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
+import com.javainiaisuzspringom.tripperis.domain.Role;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import com.javainiaisuzspringom.tripperis.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RoleController {
@@ -20,12 +22,14 @@ public class RoleController {
 
     @GetMapping("/api/role")
     public List<RoleDTO> getAllRoles() {
-        return roleService.getAll();
+        return roleService.getAll().stream()
+                .map(Role::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/role")
     public ResponseEntity<RoleDTO> addRole(@RequestBody RoleDTO role) {
-        RoleDTO savedEntity = roleService.save(role);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        Role savedEntity = roleService.save(role);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 }

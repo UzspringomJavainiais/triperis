@@ -32,7 +32,7 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
         return repository.findById(id);
     }
 
-    public List<CalendarEntry> getAccountCalendar(AccountDTO account, Date periodStart, Date periodEnd) {
+    public List<CalendarEntry> getAccountCalendar(Account account, Date periodStart, Date periodEnd) {
         return calendarProviders.stream()
                 .flatMap(provider -> provider.getAccountCalendar(account, periodStart, periodEnd).stream())
                 .collect(Collectors.toList());
@@ -45,7 +45,9 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
         account.setLastName(dto.getLastName());
         account.setEmail(dto.getEmail());
         account.setPassword(dto.getPassword());
-        account.setRoles(dto.getRoleIds().stream().map(roleId -> roleRepo.getOne(roleId)).collect(Collectors.toList()));
+        if(dto.getRoleIds() != null) {
+            account.setRoles(dto.getRoleIds().stream().map(roleId -> roleRepo.getOne(roleId)).collect(Collectors.toList()));
+        }
 
         return account;
     }

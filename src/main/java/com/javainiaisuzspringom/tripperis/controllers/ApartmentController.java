@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
+import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.services.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -18,13 +20,14 @@ public class ApartmentController {
 
     @GetMapping("/api/apartment")
     public List<ApartmentDTO> getAllApartments() {
-        return apartmentService.getAll();
+        return apartmentService.getAll().stream()
+                .map(Apartment::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/apartment")
     public ResponseEntity<ApartmentDTO> addApartment(@RequestBody ApartmentDTO apartment) {
-//        ApartmentDTO savedEntity = apartmentService.save(apartment);
-        apartmentService.save(apartment);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Apartment savedEntity = apartmentService.save(apartment);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 }
