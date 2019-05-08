@@ -9,10 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
             accounts.save(AccountDTO.builder()
                     .email("user@user.user")
                     .password("user")
-                    .roleIds(collect.get("ROLE_USER") != null ? Arrays.asList(collect.get("ROLE_USER")) : Collections.emptyList())
+                    .roleIds(Optional.ofNullable(collect.get("ROLE_USER")).map(Arrays::asList).orElseGet(ArrayList::new))
                     .build());
         }
     }
