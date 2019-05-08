@@ -31,7 +31,7 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
         apartment.setLocation(locationRepo.getOne(dto.getLocationId()));
         apartment.setApartmentUsages(
                 dto.getApartmentUsages().stream()
-                        .map(usage -> apartmentUsageService.getExistingOrConvert(usage))
+                        .map(usage -> apartmentUsageService.convertToEntity(usage))
                         .collect(Collectors.toList())
         );
 
