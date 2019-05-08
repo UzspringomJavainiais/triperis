@@ -53,7 +53,6 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
 
     @Override
     public AccountDTO save(AccountDTO entityDto) {
-        // TODO Check if username exists and if password not blank
         entityDto.setPassword(passwordEncoder.encode(entityDto.getPassword().trim()));
         entityDto.setEmail(entityDto.getEmail().toLowerCase());
         return super.save(entityDto);

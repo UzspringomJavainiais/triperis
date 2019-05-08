@@ -41,7 +41,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     private String password;
 
     @Email
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

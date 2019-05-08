@@ -23,6 +23,12 @@ public class AccountController {
 
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
+        if (accountService.exists(account.getEmail())) {
+            throw new IllegalStateException("User with this email already exists");
+        }
+        if(account.getPassword().trim().isEmpty()) {
+            throw new IllegalStateException("Password should not be empty");
+        }
         AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
