@@ -74,7 +74,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a4@a.com\",\n\t\"trips\":[],\n\t\"roleIds\":[1]\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/account",
@@ -1022,7 +1022,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{bearer_token}}",
+				"value": "{{login_token}}",
 				"type": "string"
 			}
 		]
@@ -1051,31 +1051,31 @@
 	],
 	"variable": [
 		{
-			"id": "ac735106-6903-4b88-83bc-7599872e22c6",
+			"id": "7928efe7-4662-4cfb-8686-11bb32563a2d",
 			"key": "service-link",
 			"value": "localhost:1111",
 			"type": "string"
 		},
 		{
-			"id": "d50aa2cd-ab09-4b0d-bb60-a736dcec8c8d",
+			"id": "73f00222-8f17-42f3-9fba-ee8a8480bf2c",
 			"key": "user_email",
 			"value": "user@user.user",
 			"type": "string"
 		},
 		{
-			"id": "f7b8c791-ffdd-4fe3-bd0a-e680557f64ea",
+			"id": "ac6edf29-50c7-4cd8-9522-c8a9ba4d8db0",
 			"key": "user_password",
 			"value": "user",
 			"type": "string"
 		},
 		{
-			"id": "ebd790b5-f103-44bc-aa48-8d454422f6af",
+			"id": "550f60bd-66e7-4a4e-91ce-fa8968e96d45",
 			"key": "admin_email",
 			"value": "admin@admin.admin",
 			"type": "string"
 		},
 		{
-			"id": "46706c17-d463-4287-a644-3be685a267be",
+			"id": "3191a3c3-1b60-4496-ad08-62e4e29003f7",
 			"key": "admin_password",
 			"value": "admin",
 			"type": "string"
