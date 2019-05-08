@@ -44,7 +44,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @Column(name = "EMAIL")
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Role> roles = new ArrayList<>();
 

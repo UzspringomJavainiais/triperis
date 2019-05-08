@@ -7,7 +7,6 @@ import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,9 +23,6 @@ public class DataInitializer implements CommandLineRunner {
     private AccountService accounts;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
     private RoleRepository roleRepo;
 
     public void run(String... args) {
@@ -34,15 +30,15 @@ public class DataInitializer implements CommandLineRunner {
         if(!accounts.exists("admin@admin.admin")) {
             accounts.save(AccountDTO.builder()
                     .email("admin@admin.admin")
-                    .password(encoder.encode("admin"))
+                    .password("admin")
                     .roleIds(new ArrayList<>(collect.values()))
                     .build());
         }
         if(!accounts.exists("user@user.user")) {
             accounts.save(AccountDTO.builder()
                     .email("user@user.user")
-                    .password(encoder.encode("user"))
-                    .roleIds(collect.get("USER") != null ? Arrays.asList(collect.get("ROLE_USER")) : Collections.emptyList())
+                    .password("user")
+                    .roleIds(collect.get("ROLE_USER") != null ? Arrays.asList(collect.get("ROLE_USER")) : Collections.emptyList())
                     .build());
         }
     }
