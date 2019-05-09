@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,8 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/signin").permitAll()
-                .antMatchers( "/api/**").hasAnyRole("USER", "ADMIN")
-//                .antMatchers( "/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/account/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/apartment/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/role/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/status-code/**").hasRole("ADMIN")
+                .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
