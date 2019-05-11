@@ -18,7 +18,7 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
     private ApartmentRepository repository;
 
     @Autowired
-    private LocationRepository locationRepo;
+    private LocationService locationService;
 
     @Autowired
     private ApartmentUsageService apartmentUsageService;
@@ -28,7 +28,7 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
 
         apartment.setName(dto.getName());
         apartment.setMaxCapacity(dto.getMaxCapacity());
-        apartment.setLocation(locationRepo.getOne(dto.getLocation().getId()));
+        apartment.setLocation(locationService.getExistingOrConvert(dto.getLocation()));
         apartment.setApartmentUsages(dto.getApartmentUsages().stream()
                 .map(usage -> apartmentUsageService.getExistingOrConvert(usage)).collect(Collectors.toList()));
 
