@@ -23,7 +23,7 @@ public class ApartmentDTO implements ConvertableDTO<Integer>{
     @PositiveOrZero
     private Integer maxCapacity;
 
-    private Integer locationId;
+    private LocationDTO location;
 
     private List<ApartmentUsageDTO> apartmentUsages = new LinkedList<>();
 }

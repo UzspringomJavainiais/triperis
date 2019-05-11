@@ -32,11 +32,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/account",
+							"raw": "{{service-link}}/api/account",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"account"
 							]
 						}
@@ -74,14 +75,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a4@a.com\",\n\t\"trips\":[],\n\t\"roleIds\":[1]\n}"
+							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a4@a.com\",\n\t\"trips\":[],\n\t\"roleIds\":[]\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/account",
+							"raw": "{{service-link}}/api/account",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"account"
 							]
 						}
@@ -122,11 +124,12 @@
 							"raw": "{\n\t\"name\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/account/{{account_id}}/tripsInPeriod?dateStart=2001-12-13&dateEnd=2020-04-27",
+							"raw": "{{service-link}}/api/account/{{account_id}}/tripsInPeriod?dateStart=2001-12-13&dateEnd=2020-04-27",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"account",
 								"{{account_id}}",
 								"tripsInPeriod"
@@ -173,7 +176,7 @@
 			"name": "Apartment",
 			"item": [
 				{
-					"name": "Get All Appartments",
+					"name": "Get All Apartments",
 					"event": [
 						{
 							"listen": "test",
@@ -196,11 +199,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/apartment",
+							"raw": "{{service-link}}/api/apartment",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"apartment"
 							]
 						}
@@ -208,7 +212,7 @@
 					"response": []
 				},
 				{
-					"name": "Save Appartment",
+					"name": "Save Apartment",
 					"event": [
 						{
 							"listen": "test",
@@ -238,14 +242,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"name of apartment\",\n    \"capacity\": 10,\n    \"locationId\": {{location_id}},\n    \"apartmentUsages\": []\n}"
+							"raw": "{\n    \"name\": \"name of apartment\",\n    \"maxCapacity\": 10,\n    \"location\": {\n    \t\"name\": \"Vilnius Apartments\",\n\t\t\"geocoord\":\"meet2\",\n\t\t\"address\":\"yeet2\"\n    },\n    \"apartmentUsages\": []\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/apartment",
+							"raw": "{{service-link}}/api/apartment",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"apartment"
 							]
 						}
@@ -281,11 +286,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/apartment-usage",
+							"raw": "{{service-link}}/api/apartment-usage",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"apartment-usage"
 							]
 						}
@@ -323,11 +329,12 @@
 							"raw": "{\n\t\"maxCapacity\":10,\n\t\"location\":null,\n\t\"apartmentId\":{{apartment_id}},\n\t\"accountIds\": [],\n\t\"from\":\"2019-03-26\",\n\t\"to\":\"2019-03-27\"\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/apartment-usage",
+							"raw": "{{service-link}}/api/apartment-usage",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"apartment-usage"
 							]
 						}
@@ -363,11 +370,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/checklist-item",
+							"raw": "{{service-link}}/api/checklist-item",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"checklist-item"
 							]
 						}
@@ -405,11 +413,12 @@
 							"raw": "{\n\t\"value\":\"Do this and that\",\n\t\"trip\":null,\n\t\"isChecked\":false,\n\t\"attachments\":[]\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/checklist-item",
+							"raw": "{{service-link}}/api/checklist-item",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"checklist-item"
 							]
 						}
@@ -445,11 +454,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/location",
+							"raw": "{{service-link}}/api/location",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"location"
 							]
 						}
@@ -487,14 +497,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Vilnius Apartments2\",\n\t\"geocoord\":\"meet2\",\n\t\"address\":\"yeet2\",\n\t\"apartment\": {\n\t\t\"name\": \"name of apartment\",\n\t\t\"capacity\": 10\n\t}\n}"
+							"raw": "{\n\t\"name\": \"Vilnius Apartments2\",\n\t\"geocoord\":\"meet2\",\n\t\"address\":\"yeet2\"\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/location",
+							"raw": "{{service-link}}/api/location",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"location"
 							]
 						}
@@ -530,11 +541,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/role",
+							"raw": "{{service-link}}/api/role",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"role"
 							]
 						}
@@ -572,11 +584,12 @@
 							"raw": "{\n\t\"account\":null\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/role",
+							"raw": "{{service-link}}/api/role",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"role"
 							]
 						}
@@ -612,11 +625,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/status-code",
+							"raw": "{{service-link}}/api/status-code",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"status-code"
 							]
 						}
@@ -657,11 +671,12 @@
 							"raw": "{\n\t\"name\": \"example status\",\n\t\"description\": \"description of status\"\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/status-code",
+							"raw": "{{service-link}}/api/status-code",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"status-code"
 							]
 						}
@@ -697,11 +712,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/trip",
+							"raw": "{{service-link}}/api/trip",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"trip"
 							]
 						}
@@ -747,11 +763,12 @@
 							"raw": "{\n\t\"name\":\"best trip\",\n\t\"statusCode\":{{status_id}},\n\t\"users\":[],\n\t\"items\":[],\n\t\"tripSteps\": []\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/trip",
+							"raw": "{{service-link}}/api/trip",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"trip"
 							]
 						}
@@ -782,11 +799,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/trip/{{trip_id}}/getTotalDuration",
+							"raw": "{{service-link}}/api/trip/{{trip_id}}/getTotalDuration",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"trip",
 								"{{trip_id}}",
 								"getTotalDuration"
@@ -847,11 +865,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{service-link}}/trip-step",
+							"raw": "{{service-link}}/api/trip-step",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"trip-step"
 							]
 						}
@@ -889,11 +908,12 @@
 							"raw": "{\n\t\"name\":\"best trip step\",\n\t\"startDate\":\"2019-12-12T10:00\",\n\t\"endDate\":\"2019-12-12T10:00\",\n\t\"location\": {\n\t\t\"id\": {{location_id}}\n\t}\n}"
 						},
 						"url": {
-							"raw": "{{service-link}}/trip-step",
+							"raw": "{{service-link}}/api/trip-step",
 							"host": [
 								"{{service-link}}"
 							],
 							"path": [
+								"api",
 								"trip-step"
 							]
 						}
@@ -958,11 +978,12 @@
 					"raw": "{\n\t\"username\":\"{{user_email}}\",\n\t\"password\":\"{{user_password}}\"\n}"
 				},
 				"url": {
-					"raw": "{{service-link}}/auth/signin",
+					"raw": "{{service-link}}/api/auth/signin",
 					"host": [
 						"{{service-link}}"
 					],
 					"path": [
+						"api",
 						"auth",
 						"signin"
 					]
@@ -1004,11 +1025,12 @@
 					"raw": "{\n\t\"username\":\"{{admin_email}}\",\n\t\"password\":\"{{admin_password}}\"\n}"
 				},
 				"url": {
-					"raw": "{{service-link}}/auth/signin",
+					"raw": "{{service-link}}/api/auth/signin",
 					"host": [
 						"{{service-link}}"
 					],
 					"path": [
+						"api",
 						"auth",
 						"signin"
 					]
@@ -1051,31 +1073,31 @@
 	],
 	"variable": [
 		{
-			"id": "7928efe7-4662-4cfb-8686-11bb32563a2d",
+			"id": "d2bfbeeb-e121-4fe0-97f6-d00fa4684441",
 			"key": "service-link",
 			"value": "localhost:1111",
 			"type": "string"
 		},
 		{
-			"id": "73f00222-8f17-42f3-9fba-ee8a8480bf2c",
+			"id": "c4b6b739-584a-44cc-ab25-4f147ae07194",
 			"key": "user_email",
 			"value": "user@user.user",
 			"type": "string"
 		},
 		{
-			"id": "ac6edf29-50c7-4cd8-9522-c8a9ba4d8db0",
+			"id": "737a2f3a-8709-468c-ab2d-20b027c4131e",
 			"key": "user_password",
 			"value": "user",
 			"type": "string"
 		},
 		{
-			"id": "550f60bd-66e7-4a4e-91ce-fa8968e96d45",
+			"id": "6c43d3b2-588a-49ca-acbd-aa878b19b701",
 			"key": "admin_email",
 			"value": "admin@admin.admin",
 			"type": "string"
 		},
 		{
-			"id": "3191a3c3-1b60-4496-ad08-62e4e29003f7",
+			"id": "908fcd63-555d-4d16-9655-78299b4f6ede",
 			"key": "admin_password",
 			"value": "admin",
 			"type": "string"
