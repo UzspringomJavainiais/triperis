@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 100)

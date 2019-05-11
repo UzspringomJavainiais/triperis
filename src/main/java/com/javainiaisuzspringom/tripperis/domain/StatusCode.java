@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Table(name = "status_code")
 public class StatusCode implements ConvertableEntity<Integer, StatusCodeDTO>, Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 100)

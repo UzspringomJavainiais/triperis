@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class Location implements ConvertableEntity<Integer, LocationDTO>, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 100)
