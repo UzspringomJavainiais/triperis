@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,7 +47,6 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Role> roles = new ArrayList<>();
 
-    @JsonBackReference
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 

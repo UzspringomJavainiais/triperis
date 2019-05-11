@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +36,6 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
     private Location location;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<ApartmentUsage> apartmentUsages = new LinkedList<>();
 
     public ApartmentDTO convertToDTO() {
@@ -47,7 +45,7 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
         dto.setName(this.getName());
         dto.setMaxCapacity(this.getMaxCapacity());
         if(this.getLocation() != null) {
-            dto.setLocationId(this.getLocation().getId());
+            dto.setLocation(this.getLocation().convertToDTO());
         }
         if(this.getApartmentUsages() != null) {
             dto.setApartmentUsages(this.getApartmentUsages().stream().map(ApartmentUsage::convertToDTO).collect(Collectors.toList()));
