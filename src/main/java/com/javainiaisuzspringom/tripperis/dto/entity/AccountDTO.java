@@ -28,4 +28,6 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     private String email;
 
     private List<Integer> roleIds = new ArrayList<>();
+
+    private List<Integer> tripRequestIds = new ArrayList<>();
 }

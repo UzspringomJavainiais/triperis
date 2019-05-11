@@ -28,8 +28,8 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
     @Autowired
     private RoleRepository roleRepo;
 
-    public Optional<Account> getById(Integer id) {
-        return repository.findById(id);
+    public Optional<AccountDTO> getById(Integer id) {
+        return repository.findById(id).map(Account::convertToDTO);
     }
 
     public List<CalendarEntry> getAccountCalendar(AccountDTO account, Date periodStart, Date periodEnd) {

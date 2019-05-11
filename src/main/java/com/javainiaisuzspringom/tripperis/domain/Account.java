@@ -47,6 +47,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, Serializ
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 
+    @OneToMany
+    private List<TripRequest> tripRequests = new ArrayList<>();
+
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
 
@@ -56,6 +59,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, Serializ
         dto.setEmail(this.getEmail());
         dto.setPassword(this.getPassword());
         if (this.getRoles() != null) {
+            dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
+        }
+        if (this.getTripRequests() != null) {
             dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(Collectors.toList()));
         }
 

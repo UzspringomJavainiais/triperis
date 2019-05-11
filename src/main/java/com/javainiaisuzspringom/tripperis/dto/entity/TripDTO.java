@@ -24,6 +24,8 @@ public class TripDTO implements ConvertableDTO<Integer>{
 
     private List<Integer> accounts = new ArrayList<>();
 
+    private List<Integer> organizers = new ArrayList<>();
+
     private List<ChecklistItemDTO> items = new ArrayList<>();
 
     private List<TripStepDTO> tripSteps = new ArrayList<>();
@@ -71,6 +73,15 @@ public class TripDTO implements ConvertableDTO<Integer>{
 
     public TripDTO setAccounts(List<Integer> accounts) {
         this.accounts = accounts;
+        return this;
+    }
+
+    public List<Integer> getOrganizers() {
+        return this.organizers;
+    }
+
+    public TripDTO setOrganizers(List<Integer> organizers) {
+        this.organizers = organizers;
         return this;
     }
 

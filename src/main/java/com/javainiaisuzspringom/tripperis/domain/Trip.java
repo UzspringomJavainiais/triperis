@@ -39,6 +39,16 @@ public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
     )
     private List<Account> accounts = new ArrayList<>();
 
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "trip_organizers",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id")
+    )
+    private List<Account> organizers = new ArrayList<>();
+
     @Size(max = 2000)
     @Column(name = "DESCRIPTION")
     private String description;
@@ -61,6 +71,9 @@ public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
         }
         if(this.getAccounts() != null) {
             trip.setAccounts(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
+        }
+        if(this.getOrganizers() != null) {
+            trip.setOrganizers(this.getOrganizers().stream().map(Account::getId).collect(Collectors.toList()));
         }
         if(this.getItems() != null) {
             trip.setItems(this.getItems().stream().map(ChecklistItem::convertToDTO).collect(Collectors.toList()));
