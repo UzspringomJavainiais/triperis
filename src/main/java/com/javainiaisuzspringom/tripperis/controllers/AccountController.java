@@ -32,7 +32,6 @@ public class AccountController {
         if(account.getPassword().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password should not be empty");
         }
-        account.setRoleIds(Collections.singletonList(this.roleRepository.findRoleByName("ROLE_USER").getId()));
         AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
