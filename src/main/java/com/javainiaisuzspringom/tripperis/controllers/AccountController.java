@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -21,6 +20,9 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
@@ -30,6 +32,7 @@ public class AccountController {
         if(account.getPassword().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password should not be empty");
         }
+        account.setRoleIds(Collections.singletonList(this.roleRepository.findRoleByName("ROLE_USER").getId()));
         AccountDTO savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
