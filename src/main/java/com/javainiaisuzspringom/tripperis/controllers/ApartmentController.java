@@ -23,8 +23,7 @@ public class ApartmentController {
 
     @PostMapping("/api/apartment")
     public ResponseEntity<ApartmentDTO> addApartment(@RequestBody ApartmentDTO apartment) {
-//        ApartmentDTO savedEntity = apartmentService.save(apartment);
-        apartmentService.save(apartment);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ApartmentDTO savedEntity = apartmentService.save(apartment);
+        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 }

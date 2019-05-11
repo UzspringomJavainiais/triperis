@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +45,6 @@ public class Trip implements ConvertableEntity<Integer, TripDTO>, Serializable {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChecklistItem> items = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripStep> tripSteps = new ArrayList<>();
 

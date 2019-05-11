@@ -1,9 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -29,7 +26,6 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     @Column(name = "PRICE")
     private BigDecimal price;
 
-    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;

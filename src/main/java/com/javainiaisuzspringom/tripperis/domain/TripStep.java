@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +22,6 @@ public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serial
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
