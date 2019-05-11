@@ -74,7 +74,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a@a.com\",\n\t\"trips\":[],\n\t\"roles\":[]\n}"
+							"raw": "{\n\t\"firstName\":\"YEET\",\n\t\"lastName\":\"Niet\",\n\t\"password\":\"cleartext\",\n\t\"email\":\"a4@a.com\",\n\t\"trips\":[],\n\t\"roleIds\":[1]\n}"
 						},
 						"url": {
 							"raw": "{{service-link}}/account",
@@ -923,8 +923,110 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Authenticate as User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd09ef61-2009-4adb-89c2-c3e44ad79da3",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"login_token\", jsonData.token);\r",
+							"pm.globals.set(\"login_username\", jsonData.username);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{user_email}}\",\n\t\"password\":\"{{user_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{service-link}}/auth/signin",
+					"host": [
+						"{{service-link}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate as Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5389276c-f5bb-4627-9a5d-cb30e9d8b448",
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"login_token\", jsonData.token);\r",
+							"pm.globals.set(\"login_username\", jsonData.username);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{admin_email}}\",\n\t\"password\":\"{{admin_password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{service-link}}/auth/signin",
+					"host": [
+						"{{service-link}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{login_token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -949,9 +1051,33 @@
 	],
 	"variable": [
 		{
-			"id": "6cca3835-21e7-4745-99e4-13d678f6adbc",
+			"id": "7928efe7-4662-4cfb-8686-11bb32563a2d",
 			"key": "service-link",
 			"value": "localhost:1111",
+			"type": "string"
+		},
+		{
+			"id": "73f00222-8f17-42f3-9fba-ee8a8480bf2c",
+			"key": "user_email",
+			"value": "user@user.user",
+			"type": "string"
+		},
+		{
+			"id": "ac6edf29-50c7-4cd8-9522-c8a9ba4d8db0",
+			"key": "user_password",
+			"value": "user",
+			"type": "string"
+		},
+		{
+			"id": "550f60bd-66e7-4a4e-91ce-fa8968e96d45",
+			"key": "admin_email",
+			"value": "admin@admin.admin",
+			"type": "string"
+		},
+		{
+			"id": "3191a3c3-1b60-4496-ad08-62e4e29003f7",
+			"key": "admin_password",
+			"value": "admin",
 			"type": "string"
 		}
 	]

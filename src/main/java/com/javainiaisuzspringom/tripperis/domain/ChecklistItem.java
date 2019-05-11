@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 100)

@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "role")
 public class Role implements ConvertableEntity<Integer, RoleDTO>, Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 100)
