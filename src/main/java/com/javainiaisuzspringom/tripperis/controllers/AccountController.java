@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,24 @@ public class AccountController {
 
         List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/account/{id}/trips")
+    public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
+        Optional<AccountDTO> account = accountService.getById(id);
+
+        if (!account.isPresent())
+            return ResponseEntity.notFound().build();
+
+        AccountDTO accountDTO = account.get();
+        List<TripDTO> accountTrips = new ArrayList<>();
+        for (Integer tripId : accountDTO.getTrips()) {
+            Optional<TripDTO> tripDTO = tripService.getById(tripId);
+
+            tripDTO.ifPresent(accountTrips::add);
+        }
+
+        return new ResponseEntity<>(accountTrips, HttpStatus.OK);
     }
 
     @PostMapping("/api/account/{id}/approveTrip/{tripId}")

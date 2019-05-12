@@ -223,15 +223,23 @@ public class TripController {
         csvService.createTripsCsv(response);
     }
 
-    public ResponseEntity<Float> getProgress(@RequestBody TripDTO trip) {
+    @GetMapping("/api/trip/{id}/progress")
+    public ResponseEntity<Float> getProgress(@PathVariable Integer id) {
+        Optional<TripDTO> trip = tripService.getById(id);
+
+        if (!trip.isPresent())
+            return ResponseEntity.notFound().build();
+
         int completedItems = 0, totalItems = 0;
 
-        for (ChecklistItemDTO item : trip.getItems()) {
+        TripDTO tripDTO = trip.get();
+
+        for (ChecklistItemDTO item : tripDTO.getItems()) {
             if (item.isChecked())
                 completedItems++;
         }
 
-        totalItems = trip.getItems().size();
+        totalItems = tripDTO.getItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
     }
