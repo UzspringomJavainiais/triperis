@@ -95,7 +95,8 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
 
         trip.setName(dto.getName());
         trip.setDescription(dto.getDescription());
-        trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
+        if(dto.getStatusCode() != null)
+            trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
         trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
         trip.setItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
         trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
