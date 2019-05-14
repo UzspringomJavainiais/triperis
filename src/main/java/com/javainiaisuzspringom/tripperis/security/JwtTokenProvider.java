@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
@@ -24,6 +26,8 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000; // 1h
 
+    public static final String JWT_COOKIE = "Authorization";
+    
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -55,11 +59,15 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader("Authorization");
-        String authorizationType = "Bearer ";
-        // Authorization: <type> <credentials>
-        if (bearerToken != null && bearerToken.startsWith(authorizationType)) {
-            return bearerToken.substring(authorizationType.length());
+        Cookie jwtCookie = findCookie(JWT_COOKIE, req.getCookies());
+
+        if (jwtCookie == null)
+            throw new RuntimeException("Cookies not found");
+
+        String jwtCookieValue = jwtCookie.getValue();
+
+        if (jwtCookieValue != null)  {
+            return jwtCookieValue;
         }
         return null;
     }
@@ -72,5 +80,14 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
         }
+    }
+
+    private static Cookie findCookie(String cookieName, Cookie[] cookies) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(cookieName)) {
+                return cookie;
+            }
+        }
+        return null;
     }
 }

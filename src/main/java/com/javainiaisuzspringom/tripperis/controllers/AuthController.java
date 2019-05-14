@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.security.AuthenticationRequest;
 import com.javainiaisuzspringom.tripperis.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +40,7 @@ public class AuthController {
     private AccountRepository users;
 
     @PostMapping("/signin")
-    public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
+    public ResponseEntity signin(@RequestBody AuthenticationRequest data, HttpServletResponse response, HttpServletRequest request) {
         try {
             String username = data.getUsername().toLowerCase();
             String password = data.getPassword().trim();
@@ -46,10 +50,10 @@ public class AuthController {
                     .getRoles().stream()
                     .map(Role::getName)
                     .collect(Collectors.toList()));
-            Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
-            model.put("token", token);
-            return ok(model);
+
+            addAuthorizationCookie(token, response);
+
+            return new ResponseEntity(HttpStatus.OK);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
@@ -67,4 +71,11 @@ public class AuthController {
         return ok(model);
     }
 
+    private void addAuthorizationCookie(String token, HttpServletResponse response) {
+        Cookie cookie = new Cookie("Authorization", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60*60);
+        response.addCookie(cookie);
+    }
 }
