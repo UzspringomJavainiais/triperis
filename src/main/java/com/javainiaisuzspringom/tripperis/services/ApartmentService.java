@@ -32,10 +32,12 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
 
         apartment.setName(dto.getName());
         apartment.setLocation(locationService.getExistingOrConvert(dto.getLocation()));
-        apartment.setApartmentUsages(dto.getApartmentUsages().stream()
-                .map(usage -> apartmentUsageService.getExistingOrConvert(usage)).collect(Collectors.toList()));
-        apartment.setRooms(dto.getRooms().stream()
-                .map(x -> roomService.getExistingOrConvert(x)).collect(Collectors.toList()));
+        dto.getApartmentUsages().stream()
+                .map(usage -> apartmentUsageService.getExistingOrConvert(usage))
+                .forEach(apartment::addApartmentUsage);
+        dto.getRooms().stream()
+                .map(room -> roomService.getExistingOrConvert(room))
+                .forEach(apartment::addRoom);
 
         return apartment;
     }

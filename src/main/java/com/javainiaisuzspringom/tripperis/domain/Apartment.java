@@ -53,4 +53,32 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
 
         return dto;
     }
+
+    public void addApartmentUsage(ApartmentUsage usage) {
+        if(usage != null && !apartmentUsages.contains(usage)) {
+            apartmentUsages.add(usage);
+            usage.setApartment(this);
+        }
+    }
+
+    public void removeApartmentUsage(ApartmentUsage usage) {
+        if(usage != null && apartmentUsages.contains(usage)) {
+            apartmentUsages.remove(usage);
+            usage.setApartment(null);
+        }
+    }
+
+    public void addRoom(Room room) {
+        if(room != null && !rooms.contains(room)) {
+            rooms.add(room);
+            room.setApartment(this);
+        }
+    }
+
+    public void removeRoom(Room room) {
+        if(room != null && rooms.contains(room)) {
+            rooms.remove(room);
+            room.setApartment(null);
+        }
+    }
 }
