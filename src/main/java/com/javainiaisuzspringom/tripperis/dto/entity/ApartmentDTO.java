@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,5 +26,5 @@ public class ApartmentDTO implements ConvertableDTO<Integer>{
     private LocationDTO location;
 
     @NotNull
-    private List<ApartmentUsageDTO> apartmentUsages = new LinkedList<>();
+    private List<ApartmentUsageDTO> apartmentUsages = new ArrayList<>();
 }
