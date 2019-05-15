@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
@@ -49,13 +51,13 @@ public class AccountController {
                                                              @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
                                                              @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
-        Optional<AccountDTO> accountResultById = accountService.getById(id);
+        Optional<Account> accountResultById = accountService.getById(id);
 
         if(!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        AccountDTO account = accountResultById.get();
+        AccountDTO account = accountResultById.get().convertToDTO();
 
         List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
@@ -63,12 +65,12 @@ public class AccountController {
 
     @GetMapping("/api/account/{id}/trips")
     public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
-        Optional<AccountDTO> account = accountService.getById(id);
+        Optional<Account> account = accountService.getById(id);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
 
-        AccountDTO accountDTO = account.get();
+        AccountDTO accountDTO = account.get().convertToDTO();
         List<TripDTO> accountTrips = new ArrayList<>();
         for (Integer tripId : accountDTO.getTrips()) {
             Optional<TripDTO> tripDTO = tripService.getById(tripId);
@@ -82,7 +84,7 @@ public class AccountController {
     @PostMapping("/api/account/{id}/approveTrip/{tripId}")
     public ResponseEntity<Account> approveTrip(@PathVariable Integer id,
                                                @PathVariable Integer tripId) {
-        Optional<AccountDTO> account = accountService.getById(id);
+        Optional<Account> account = accountService.getById(id);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
@@ -92,7 +94,7 @@ public class AccountController {
         if (!trip.isPresent())
             return ResponseEntity.notFound().build();
 
-        AccountDTO accountDTO = account.get();
+        AccountDTO accountDTO = account.get().convertToDTO();
 
         // TODO: Implement TripRequest search by Trip id
 

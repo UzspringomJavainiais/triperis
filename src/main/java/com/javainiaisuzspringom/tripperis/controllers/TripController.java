@@ -145,9 +145,9 @@ public class TripController {
         List<AccountDTO> accountsInTrip = new ArrayList<>();
 
         for (Integer accountId : trip.get().getAccounts()) {
-            Optional<AccountDTO> account = accountService.getById(accountId);
+            Optional<Account> account = accountService.getById(accountId);
 
-            account.ifPresent(accountsInTrip::add);
+            account.ifPresent(value -> accountsInTrip.add(value.convertToDTO()));
         }
 
         return new ResponseEntity<>(accountsInTrip, HttpStatus.OK);
@@ -161,13 +161,13 @@ public class TripController {
         if (!trip.isPresent())
             return ResponseEntity.notFound().build();
 
-        Optional<AccountDTO> account = accountService.getById(organizerId);
+        Optional<Account> account = accountService.getById(organizerId);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
 
         TripDTO tripDTO = trip.get();
-        AccountDTO accountDTO = account.get();
+        AccountDTO accountDTO = account.get().convertToDTO();
         if (!tripDTO.getOrganizers().contains(accountDTO.getId())) {
             tripDTO.getOrganizers().add(accountDTO.getId());
             tripService.save(tripDTO);
@@ -187,9 +187,9 @@ public class TripController {
         List<AccountDTO> organizers = new ArrayList<>();
 
         for (Integer accountId : trip.get().getOrganizers()) {
-            Optional<AccountDTO> account = accountService.getById(accountId);
+            Optional<Account> account = accountService.getById(accountId);
 
-            account.ifPresent(organizers::add);
+            account.ifPresent(value -> organizers.add(value.convertToDTO()));
         }
 
         return new ResponseEntity<>(organizers, HttpStatus.OK);
@@ -203,12 +203,12 @@ public class TripController {
         if (!trip.isPresent())
             return ResponseEntity.notFound().build();
 
-        Optional<AccountDTO> account = accountService.getById(organizerId);
+        Optional<Account> account = accountService.getById(organizerId);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
 
-        AccountDTO accountDTO = account.get();
+        AccountDTO accountDTO = account.get().convertToDTO();
         TripDTO tripDTO = trip.get();
 
         tripDTO.getOrganizers().remove(accountDTO.getId());
