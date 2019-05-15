@@ -45,9 +45,8 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     @Autowired
     private AccountRepository accountRepo;
 
-    public Optional<TripDuration> getTripDuration(TripDTO trip) {
-        Trip entity = repository.getOne(trip.getId());
-        List<TripDuration> durationList = repository.getDuration(entity);
+    public Optional<TripDuration> getTripDuration(Trip trip) {
+        List<TripDuration> durationList = repository.getDuration(trip);
         if(durationList.isEmpty()) {
             return Optional.empty();
         }
@@ -61,10 +60,6 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Trip> getAllTrips() {
         return repository.findAll();
-    }
-
-    public Optional<TripDTO> getById(Integer id) {
-        return repository.findById(id).map(Trip::convertToDTO);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
