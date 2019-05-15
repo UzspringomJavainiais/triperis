@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TripService tripService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -46,15 +49,53 @@ public class AccountController {
                                                              @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
                                                              @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
-        Optional<Account> accountResultById = accountService.getById(id);
+        Optional<AccountDTO> accountResultById = accountService.getById(id);
 
         if(!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        Account account = accountResultById.get();
+        AccountDTO account = accountResultById.get();
 
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account.convertToDTO(), dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/account/{id}/trips")
+    public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
+        Optional<AccountDTO> account = accountService.getById(id);
+
+        if (!account.isPresent())
+            return ResponseEntity.notFound().build();
+
+        AccountDTO accountDTO = account.get();
+        List<TripDTO> accountTrips = new ArrayList<>();
+        for (Integer tripId : accountDTO.getTrips()) {
+            Optional<TripDTO> tripDTO = tripService.getById(tripId);
+
+            tripDTO.ifPresent(accountTrips::add);
+        }
+
+        return new ResponseEntity<>(accountTrips, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/account/{id}/approveTrip/{tripId}")
+    public ResponseEntity<Account> approveTrip(@PathVariable Integer id,
+                                               @PathVariable Integer tripId) {
+        Optional<AccountDTO> account = accountService.getById(id);
+
+        if (!account.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Optional<TripDTO> trip = tripService.getById(tripId);
+
+        if (!trip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        AccountDTO accountDTO = account.get();
+
+        // TODO: Implement TripRequest search by Trip id
+
+        throw new NotImplementedException();
     }
 }
