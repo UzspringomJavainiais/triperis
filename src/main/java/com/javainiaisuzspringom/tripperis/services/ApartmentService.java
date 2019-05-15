@@ -37,10 +37,4 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
 
         return apartment;
     }
-
-
-    @Override
-    public Apartment save(ApartmentDTO entityDto) {
-        return super.save(entityDto);
-    }
 }

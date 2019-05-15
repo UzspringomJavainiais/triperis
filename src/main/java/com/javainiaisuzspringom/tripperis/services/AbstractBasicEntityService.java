@@ -2,8 +2,6 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.ConvertableEntity;
 import com.javainiaisuzspringom.tripperis.dto.entity.ConvertableDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * TODO Maybe make this an interface and make the methods {@code default}
- */
 public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
 
     protected abstract JpaRepository<E, I> getRepository();

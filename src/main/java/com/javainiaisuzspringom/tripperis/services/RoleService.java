@@ -15,12 +15,6 @@ public class RoleService extends AbstractBasicEntityService<Role, RoleDTO, Integ
     @Autowired
     private RoleRepository repository;
 
-    public RoleDTO saveRole(RoleDTO role) {
-        role.setDateCreated(DateUtils.now());
-        save(role);
-        return role;
-    }
-
     protected Role convertToEntity(RoleDTO dto) {
         Role role = new Role();
 

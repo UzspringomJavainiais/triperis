@@ -10,19 +10,13 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
 @Service
 public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integer> {
@@ -60,29 +54,6 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Trip> getAllTrips() {
         return repository.findAll();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void removeTrip(TripDTO trip) {
-        if (repository.existsById(trip.getId())){
-            repository.deleteById(trip.getId());
-        }
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public boolean exists(TripDTO trip) {
-        if(repository.existsById(trip.getId())) {
-            return true;
-        }
-        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("id")
-                .withMatcher("name", ignoreCase());
-        if(!StringUtils.isEmpty(trip.getDescription())) {
-            matcher.withMatcher("description", ignoreCase());
-        }
-        // TODO improve?
-
-        Trip tripProbe = convertToEntity(trip);
-        return repository.exists(Example.of(tripProbe, matcher));
     }
 
     protected Trip convertToEntity(TripDTO dto) {
