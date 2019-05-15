@@ -35,12 +35,16 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     @Email
     private String email;
 
+    @Builder.Default
     @NotNull
     private List<Integer> roleIds = new ArrayList<>();
 
+    @Builder.Default
     private List<Integer> tripRequestIds = new ArrayList<>();
 
+    @Builder.Default
     private List<Integer> trips = new ArrayList<>();
 
+    @Builder.Default
     private List<Integer> organizedTrips = new ArrayList<>();
 }

@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class AccountController {
     private AccountService accountService;
     @Autowired
     private TripService tripService;
+    @Autowired
+    private TripRepository tripRepository;
 
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
@@ -82,17 +85,17 @@ public class AccountController {
     @PostMapping("/api/account/{id}/approveTrip/{tripId}")
     public ResponseEntity<AccountDTO> approveTrip(@PathVariable Integer id,
                                                @PathVariable Integer tripId) {
-        Optional<Account> account = accountService.getById(id);
+        Optional<Account> maybeAccount = accountService.getById(id);
 
-        if (!account.isPresent())
+        if (!maybeAccount.isPresent())
             return ResponseEntity.notFound().build();
 
-        Optional<TripDTO> trip = tripService.getById(tripId);
+        Optional<Trip> maybeTrip = tripRepository.findById(tripId);
 
-        if (!trip.isPresent())
+        if (!maybeTrip.isPresent())
             return ResponseEntity.notFound().build();
 
-        Account accountDTO = account.get();
+        Account account = maybeAccount.get();
 
         // TODO: Implement TripRequest search by Trip id
 
