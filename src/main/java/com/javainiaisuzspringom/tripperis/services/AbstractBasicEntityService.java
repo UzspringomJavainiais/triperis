@@ -2,8 +2,6 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.ConvertableEntity;
 import com.javainiaisuzspringom.tripperis.dto.entity.ConvertableDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

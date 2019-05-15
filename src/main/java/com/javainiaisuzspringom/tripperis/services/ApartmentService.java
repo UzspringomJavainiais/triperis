@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
+import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
@@ -23,21 +24,23 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
     @Autowired
     private ApartmentUsageService apartmentUsageService;
 
+    @Autowired
+    private RoomService roomService;
+
     protected Apartment convertToEntity(ApartmentDTO dto) {
         Apartment apartment = new Apartment();
 
         apartment.setName(dto.getName());
-        apartment.setMaxCapacity(dto.getMaxCapacity());
         apartment.setLocation(locationService.getExistingOrConvert(dto.getLocation()));
         apartment.setApartmentUsages(dto.getApartmentUsages().stream()
                 .map(usage -> apartmentUsageService.getExistingOrConvert(usage)).collect(Collectors.toList()));
+        apartment.setRooms(dto.getRooms().stream()
+                .map(x -> roomService.getExistingOrConvert(x)).collect(Collectors.toList()));
 
         return apartment;
     }
 
-
-    @Override
-    public ApartmentDTO save(ApartmentDTO entityDto) {
-        return super.save(entityDto);
+    public Long getApartmentCapacity(Apartment apartment) {
+        return repository.getCapacity(apartment);
     }
 }
