@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TODO Maybe make this an interface and make the methods {@code default}
+ */
 public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
 
     protected abstract JpaRepository<E, I> getRepository();

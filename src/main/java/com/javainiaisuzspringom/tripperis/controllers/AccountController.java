@@ -1,15 +1,19 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +26,8 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TripService tripService;
 
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
@@ -57,5 +63,39 @@ public class AccountController {
 
         List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/account/{id}/trips")
+    public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
+        Optional<Account> account = accountService.getById(id);
+
+        if (!account.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Account accountDTO = account.get();
+        List<TripDTO> accountTrips = accountDTO.getTrips().stream()
+                .map(Trip::convertToDTO).collect(Collectors.toList());
+
+        return new ResponseEntity<>(accountTrips, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/account/{id}/approveTrip/{tripId}")
+    public ResponseEntity<AccountDTO> approveTrip(@PathVariable Integer id,
+                                               @PathVariable Integer tripId) {
+        Optional<Account> account = accountService.getById(id);
+
+        if (!account.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Optional<TripDTO> trip = tripService.getById(tripId);
+
+        if (!trip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Account accountDTO = account.get();
+
+        // TODO: Implement TripRequest search by Trip id
+
+        throw new NotImplementedException();
     }
 }

@@ -40,13 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/signin").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/account/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/apartment/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/role/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/status-code/**").hasRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }

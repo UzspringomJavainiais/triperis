@@ -30,7 +30,8 @@ public class ApartmentUsageService extends AbstractBasicEntityService<ApartmentU
 
         usage.setFrom(dto.getFrom());
         usage.setTo(dto.getTo());
-        usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
+        if(dto.getApartmentId() != null)
+            usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
         usage.setAccounts(dto.getAccountIds().stream().map(accountRepo::getOne).collect(Collectors.toList()));
 
         return usage;

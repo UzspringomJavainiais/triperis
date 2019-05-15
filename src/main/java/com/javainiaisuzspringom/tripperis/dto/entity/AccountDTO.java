@@ -37,4 +37,10 @@ public class AccountDTO implements ConvertableDTO<Integer>{
 
     @NotNull
     private List<Integer> roleIds = new ArrayList<>();
+
+    private List<Integer> tripRequestIds = new ArrayList<>();
+
+    private List<Integer> trips = new ArrayList<>();
+
+    private List<Integer> organizedTrips = new ArrayList<>();
 }
