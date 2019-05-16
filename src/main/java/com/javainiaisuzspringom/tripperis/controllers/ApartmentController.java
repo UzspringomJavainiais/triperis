@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 @RestController
@@ -29,13 +30,15 @@ public class ApartmentController {
 
     @GetMapping("/api/apartment")
     public List<ApartmentDTO> getAllApartments() {
-        return apartmentService.getAll();
+        return apartmentService.getAll().stream()
+                .map(Apartment::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/apartment")
     public ResponseEntity<ApartmentDTO> addApartment(@RequestBody ApartmentDTO apartment) {
-        ApartmentDTO savedEntity = apartmentService.save(apartment);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        Apartment savedEntity = apartmentService.save(apartment);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
     @PostMapping("/api/apartment/{id}/rooms")

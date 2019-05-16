@@ -21,7 +21,7 @@ public class AccountTripCalendarProvider implements AccountCalendarProvider {
     @Autowired
     private AccountRepository accountRepository;
 
-    public List<CalendarEntry> getAccountCalendar(AccountDTO account, Date periodStart, Date periodEnd) {
+    public List<CalendarEntry> getAccountCalendar(Account account, Date periodStart, Date periodEnd) {
         Timestamp startTimestamp = Timestamp.from(periodStart.toInstant());
         Timestamp endTimestamp = Timestamp.from(periodEnd.toInstant());
 

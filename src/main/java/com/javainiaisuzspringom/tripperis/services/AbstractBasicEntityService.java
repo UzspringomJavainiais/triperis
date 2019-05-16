@@ -8,17 +8,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
 
     protected abstract JpaRepository<E, I> getRepository();
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public D save(D entityDto) {
+    public E save(D entityDto) {
         E entityFromDTO = getExistingOrConvert(entityDto);
-        E savedItem = getRepository().save(entityFromDTO);
-        return savedItem.convertToDTO();
+        return getRepository().save(entityFromDTO);
     }
 
     @Transactional
@@ -36,12 +34,9 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
         return convertToEntity(dto);
     }
 
-    public List<D> getAll() {
-        return getRepository().findAll().stream()
-                .map(ConvertableEntity::convertToDTO)
-                .collect(Collectors.toList());
+    public List<E> getAll() {
+        return getRepository().findAll();
     }
 
     protected abstract E convertToEntity(D dto);
-
 }
