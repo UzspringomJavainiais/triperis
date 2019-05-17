@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -30,7 +30,7 @@ public class ApartmentController {
 
     @GetMapping("/api/apartment")
     public List<ApartmentDTO> getAllApartments() {
-        return apartmentService.getAll().stream()
+        return apartmentRepository.findAll().stream()
                 .map(Apartment::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -48,10 +48,9 @@ public class ApartmentController {
             return ResponseEntity.notFound().build();
         }
         Apartment apartment = maybeApartment.get();
-        rooms.stream()
+        apartmentService.addRooms(apartment, rooms.stream()
                 .map(dto -> roomService.getExistingOrConvert(dto))
-                .forEach(apartment::addRoom);
-        apartmentRepository.save(apartment);
+                .collect(Collectors.toList()));
         return new ResponseEntity<>(apartment.convertToDTO(), HttpStatus.CREATED);
     }
 }

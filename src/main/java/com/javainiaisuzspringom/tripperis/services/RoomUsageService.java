@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
 @Service
-public class RoomUsageService extends AbstractBasicEntityService<RoomUsage, RoomUsageDTO, Integer> {
+public class RoomUsageService implements BasicDtoToEntityService<RoomUsage, RoomUsageDTO, Integer> {
 
     @Autowired
     @Getter
@@ -25,7 +25,7 @@ public class RoomUsageService extends AbstractBasicEntityService<RoomUsage, Room
     private AccountRepository accountRepository;
 
     @Override
-    protected RoomUsage convertToEntity(RoomUsageDTO dto) {
+    public RoomUsage convertToEntity(RoomUsageDTO dto) {
         RoomUsage entity = new RoomUsage();
 
         if(dto.getRoomId() != null) {
@@ -36,5 +36,11 @@ public class RoomUsageService extends AbstractBasicEntityService<RoomUsage, Room
         }
 
         return entity;
+    }
+
+    public int getFreeSpaces(RoomUsage roomUsage) {
+        Integer maxCapacity = roomUsage.getRoom().getMaxCapacity();
+        Integer usersInPeriod = repository.findAllUsersUsingRoomInPeriod(roomUsage);
+        return maxCapacity - usersInPeriod;
     }
 }

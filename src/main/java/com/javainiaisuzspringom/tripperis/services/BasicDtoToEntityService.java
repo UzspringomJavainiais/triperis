@@ -6,21 +6,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
+public interface BasicDtoToEntityService<E extends ConvertableEntity<I, D>, D extends ConvertableDTO<I>, I> {
 
-    protected abstract JpaRepository<E, I> getRepository();
+    JpaRepository<E, I> getRepository();
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public E save(D entityDto) {
+    default E save(D entityDto) {
         E entityFromDTO = getExistingOrConvert(entityDto);
         return getRepository().save(entityFromDTO);
     }
 
     @Transactional
-    public E getExistingOrConvert(D dto) {
+    default E getExistingOrConvert(D dto) {
         if (dto.getId() != null) {
             Optional<E> optionalEntity = getRepository().findById(dto.getId());
             if (optionalEntity.isPresent()) {
@@ -34,9 +33,5 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
         return convertToEntity(dto);
     }
 
-    public List<E> getAll() {
-        return getRepository().findAll();
-    }
-
-    protected abstract E convertToEntity(D dto);
+    E convertToEntity(D dto);
 }

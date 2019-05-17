@@ -1,7 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
-import lombok.Data;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;

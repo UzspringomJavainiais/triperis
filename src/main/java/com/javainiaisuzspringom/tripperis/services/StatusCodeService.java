@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StatusCodeService extends AbstractBasicEntityService<StatusCode, StatusCodeDTO, Integer> {
+public class StatusCodeService implements BasicDtoToEntityService<StatusCode, StatusCodeDTO, Integer> {
 
     @Getter
     @Autowired
     private StatusCodeRepository repository;
 
-    protected StatusCode convertToEntity(StatusCodeDTO dto) {
+    public StatusCode convertToEntity(StatusCodeDTO dto) {
         StatusCode statusCode = new StatusCode();
 
         statusCode.setName(dto.getName());

@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.StatusCode;
 import com.javainiaisuzspringom.tripperis.dto.entity.StatusCodeDTO;
+import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
 import com.javainiaisuzspringom.tripperis.services.StatusCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,12 @@ public class StatusCodeController {
 
     @Autowired
     private StatusCodeService statusCodeService;
+    @Autowired
+    private StatusCodeRepository statusCodeRepository;
 
     @GetMapping("/api/status-code")
     public List<StatusCodeDTO> getAllStatusCodes() {
-        return statusCodeService.getAll().stream()
+        return statusCodeRepository.findAll().stream()
                 .map(StatusCode::convertToDTO)
                 .collect(Collectors.toList());
     }

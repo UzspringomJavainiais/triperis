@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripStepRepository;
 import com.javainiaisuzspringom.tripperis.services.TripStepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,12 @@ public class TripStepController {
 
     @Autowired
     private TripStepService tripStepService;
+    @Autowired
+    private TripStepRepository tripStepRepository;
 
     @GetMapping("/api/trip-step")
     public List<TripStepDTO> getAllTripSteps() {
-        return tripStepService.getAll().stream()
+        return tripStepRepository.findAll().stream()
                 .map(TripStep::convertToDTO)
                 .collect(Collectors.toList());
     }

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integer> {
+public class TripService implements BasicDtoToEntityService<Trip, TripDTO, Integer> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TripService.class);
 
@@ -56,7 +56,7 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
         return repository.findAll();
     }
 
-    protected Trip convertToEntity(TripDTO dto) {
+    public Trip convertToEntity(TripDTO dto) {
         Trip trip = new Trip();
 
         trip.setName(dto.getName());

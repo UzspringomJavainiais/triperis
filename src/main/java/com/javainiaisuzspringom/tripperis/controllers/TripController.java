@@ -37,7 +37,7 @@ public class TripController {
 
     @GetMapping("/api/trip")
     public List<TripDTO> getAllTrips() {
-        return tripService.getAll().stream()
+        return tripRepository.findAll().stream()
                 .map(Trip::convertToDTO)
                 .collect(Collectors.toList());
     }

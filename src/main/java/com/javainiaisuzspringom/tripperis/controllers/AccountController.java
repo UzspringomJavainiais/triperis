@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
     private TripRepository tripRepository;
 
     @PostMapping("/api/account")
@@ -43,7 +46,7 @@ public class AccountController {
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll().stream()
+        return accountRepository.findAll().stream()
                 .map(Account::convertToDTO)
                 .collect(Collectors.toList());
     }
