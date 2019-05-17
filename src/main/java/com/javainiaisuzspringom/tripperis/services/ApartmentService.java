@@ -29,15 +29,12 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
         apartment.setName(dto.getName());
         apartment.setMaxCapacity(dto.getMaxCapacity());
         apartment.setLocation(locationService.getExistingOrConvert(dto.getLocation()));
-        apartment.setApartmentUsages(dto.getApartmentUsages().stream()
-                .map(usage -> apartmentUsageService.getExistingOrConvert(usage)).collect(Collectors.toList()));
+        apartment.setApartmentUsages(
+                dto.getApartmentUsages().stream()
+                        .map(usage -> apartmentUsageService.convertToEntity(usage))
+                        .collect(Collectors.toList())
+        );
 
         return apartment;
-    }
-
-
-    @Override
-    public ApartmentDTO save(ApartmentDTO entityDto) {
-        return super.save(entityDto);
     }
 }

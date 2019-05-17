@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.services;
 
+import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
@@ -28,7 +29,7 @@ public class TripServiceTest {
     private TripRepository mockRepository;
 
     @Mock
-    private TripDTO mockTrip;
+    private Trip mockTrip;
 
     @InjectMocks
     private TripService accountService;

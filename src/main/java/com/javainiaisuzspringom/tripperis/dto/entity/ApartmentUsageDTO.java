@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,5 +20,5 @@ public class ApartmentUsageDTO implements ConvertableDTO<Integer>{
 
     private Integer apartmentId;
 
-    private List<Integer> accountIds;
+    private List<Integer> accountIds = new ArrayList<>();
 }

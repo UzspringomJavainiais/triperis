@@ -2,12 +2,13 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
-import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -27,6 +28,8 @@ public class TripController {
     @Autowired
     private TripService tripService;
     @Autowired
+    private TripRepository tripRepository;
+    @Autowired
     private AccountService accountService;
 
     @Autowired
@@ -34,23 +37,15 @@ public class TripController {
 
     @GetMapping("/api/trip")
     public List<TripDTO> getAllTrips() {
-        return tripService.getAll();
+        return tripService.getAll().stream()
+                .map(Trip::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/api/trip")
     public ResponseEntity<TripDTO> addTrip(@RequestBody TripDTO trip) {
-        TripDTO savedEntity = tripService.save(trip);
-
-        /**
-        for (Integer id : savedEntity.getAccounts()) {
-            Optional<AccountDTO> account = accountService.getById(id);
-
-            if (account.isPresent())
-                account.get().getTripRequestIds();
-        }
-         */
-
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+        Trip savedEntity = tripService.save(trip);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
     /**
@@ -63,12 +58,12 @@ public class TripController {
      */
     @GetMapping("/api/trip/{id}/getTotalDuration")
     public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
-        Optional<TripDTO> tripResultById = tripService.getById(id);
+        Optional<Trip> tripResultById = tripRepository.findById(id);
         if (!tripResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        TripDTO trip = tripResultById.get();
+        Trip trip = tripResultById.get();
         Optional<TripDuration> tripStartDate = tripService.getTripDuration(trip);
         if (!tripStartDate.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -82,32 +77,27 @@ public class TripController {
         if(id == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
 
-        if(!trip.isPresent()) {
+        if(!maybeTrip.isPresent()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-
-        tripService.removeTrip(trip.get());
-
-        if (tripService.exists(trip.get())) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        } else
-            return new ResponseEntity(HttpStatus.OK);
+        tripRepository.delete(maybeTrip.get());
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
     public ResponseEntity<TripDTO> mergeTrips(@PathVariable Integer idOne,
                                               @PathVariable Integer idTwo) {
-        Optional<TripDTO> tripOneOptional = tripService.getById(idOne);
-        Optional<TripDTO> tripTwoOptional = tripService.getById(idTwo);
+        Optional<Trip> tripOneOptional = tripRepository.findById(idOne);
+        Optional<Trip> tripTwoOptional = tripRepository.findById(idTwo);
 
         if (!tripOneOptional.isPresent() || !tripTwoOptional.isPresent())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        TripDTO tripOne = tripOneOptional.get();
-        TripDTO tripTwo = tripTwoOptional.get();
-        TripDTO mergedTrip = new TripDTO();
+        Trip tripOne = tripOneOptional.get();
+        Trip tripTwo = tripTwoOptional.get();
+        Trip mergedTrip = new Trip();
 
         mergedTrip.setName(tripOne + " & " + tripTwo);
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
@@ -115,40 +105,36 @@ public class TripController {
         // Add distinct accounts to the merged trip
         mergedTrip.setAccounts(tripOne.getAccounts());
 
-        for (Integer accountId : tripTwo.getAccounts()) {
-            if (!mergedTrip.getAccounts().contains(accountId))
-                mergedTrip.getAccounts().add(accountId);
+        for (Account account : tripTwo.getAccounts()) {
+            if (!mergedTrip.getAccounts().contains(account))
+                mergedTrip.getAccounts().add(account);
         }
 
         // Merge distinct checklist items
         mergedTrip.setItems(tripOne.getItems());
 
-        for (ChecklistItemDTO item : tripTwo.getItems()) {
+        for (ChecklistItem item : tripTwo.getItems()) {
             if (mergedTrip.getItems().contains(item))
                 mergedTrip.getItems().add(item);
         }
 
         // TODO: mergedTrip.setStatus();
 
-        tripService.save(mergedTrip);
+        tripRepository.save(mergedTrip);
 
-        return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
+        return new ResponseEntity<>(mergedTrip.convertToDTO(), HttpStatus.CREATED);
     }
 
     @GetMapping("api/trip/{id}/employees")
     public ResponseEntity<List<AccountDTO>> getEmployeesByTrip(@PathVariable Integer id) {
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> trip = tripRepository.findById(id);
 
         if (!trip.isPresent())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<AccountDTO> accountsInTrip = new ArrayList<>();
-
-        for (Integer accountId : trip.get().getAccounts()) {
-            Optional<Account> account = accountService.getById(accountId);
-
-            account.ifPresent(value -> accountsInTrip.add(value.convertToDTO()));
-        }
+        List<AccountDTO> accountsInTrip = trip.get().getAccounts().stream()
+                .map(Account::convertToDTO)
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(accountsInTrip, HttpStatus.OK);
     }
@@ -156,65 +142,60 @@ public class TripController {
     @PostMapping("api/trip/{id}/addOrganizer/{organizerId}")
     public ResponseEntity<TripDTO> addOrganizerToTrip(@PathVariable Integer id,
                                                       @PathVariable Integer organizerId) {
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
 
-        if (!trip.isPresent())
+        if (!maybeTrip.isPresent())
             return ResponseEntity.notFound().build();
 
-        Optional<Account> account = accountService.getById(organizerId);
+        Optional<Account> maybeAccount = accountService.getById(organizerId);
 
-        if (!account.isPresent())
+        if (!maybeAccount.isPresent())
             return ResponseEntity.notFound().build();
 
-        TripDTO tripDTO = trip.get();
-        AccountDTO accountDTO = account.get().convertToDTO();
-        if (!tripDTO.getOrganizers().contains(accountDTO.getId())) {
-            tripDTO.getOrganizers().add(accountDTO.getId());
-            tripService.save(tripDTO);
+        Trip trip = maybeTrip.get();
+        Account account = maybeAccount.get();
+        if (!trip.getOrganizers().contains(account)) {
+            trip.getOrganizers().add(account);
+            tripRepository.save(trip);
         }
 
-        return new ResponseEntity<>(trip.get(), HttpStatus.OK);
+        return new ResponseEntity<>(trip.convertToDTO(), HttpStatus.OK);
     }
 
     @GetMapping("api/trip/{id}/organizers")
     public ResponseEntity<List<AccountDTO>> getOrganizersByTrip(@PathVariable Integer id,
                                                                 @PathVariable Integer organizerId) {
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
 
-        if (!trip.isPresent())
+        if (!maybeTrip.isPresent())
             return ResponseEntity.notFound().build();
 
-        List<AccountDTO> organizers = new ArrayList<>();
-
-        for (Integer accountId : trip.get().getOrganizers()) {
-            Optional<Account> account = accountService.getById(accountId);
-
-            account.ifPresent(value -> organizers.add(value.convertToDTO()));
-        }
-
+        List<AccountDTO> organizers = maybeTrip.get().getOrganizers().stream()
+                .map(Account::convertToDTO)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(organizers, HttpStatus.OK);
     }
 
     @PostMapping("api/trip/{id}/removeOrganizer/{organizerId}")
     public ResponseEntity<TripDTO> removeOrganizerFromTrip(@PathVariable Integer id,
                                                            @PathVariable Integer organizerId) {
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
 
-        if (!trip.isPresent())
+        if (!maybeTrip.isPresent())
             return ResponseEntity.notFound().build();
 
-        Optional<Account> account = accountService.getById(organizerId);
+        Optional<Account> maybeAccount = accountService.getById(organizerId);
 
-        if (!account.isPresent())
+        if (!maybeAccount.isPresent())
             return ResponseEntity.notFound().build();
 
-        AccountDTO accountDTO = account.get().convertToDTO();
-        TripDTO tripDTO = trip.get();
+        Account account = maybeAccount.get();
+        Trip trip = maybeTrip.get();
 
-        tripDTO.getOrganizers().remove(accountDTO.getId());
-        tripService.save(tripDTO);
+        trip.getOrganizers().remove(account);
+        tripRepository.save(trip);
 
-        return new ResponseEntity<>(tripDTO, HttpStatus.OK);
+        return new ResponseEntity<>(trip.convertToDTO(), HttpStatus.OK);
     }
 
     @GetMapping("/api/tripsInfo/csv")
@@ -226,21 +207,21 @@ public class TripController {
 
     @GetMapping("/api/trip/{id}/progress")
     public ResponseEntity<Float> getProgress(@PathVariable Integer id) {
-        Optional<TripDTO> trip = tripService.getById(id);
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
 
-        if (!trip.isPresent())
+        if (!maybeTrip.isPresent())
             return ResponseEntity.notFound().build();
 
         int completedItems = 0, totalItems = 0;
 
-        TripDTO tripDTO = trip.get();
+        Trip trip = maybeTrip.get();
 
-        for (ChecklistItemDTO item : tripDTO.getItems()) {
+        for (ChecklistItem item : trip.getItems()) {
             if (item.isChecked())
                 completedItems++;
         }
 
-        totalItems = tripDTO.getItems().size();
+        totalItems = trip.getItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
     }
