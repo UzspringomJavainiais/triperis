@@ -29,7 +29,6 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     @Size(max = 100)
     private String lastName;
 
-    // TODO ignore password on get requests
     private String password;
 
     @Email

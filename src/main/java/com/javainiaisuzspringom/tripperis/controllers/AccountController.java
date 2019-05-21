@@ -34,9 +34,13 @@ public class AccountController {
         if (accountService.exists(account.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with this email already exists");
         }
-        if(account.getPassword().trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password should not be empty");
+        if (account.getPassword().trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must not be empty");
         }
+        if (account.getRoleIds().size() < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have roles");
+        }
+
         Account savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
@@ -51,11 +55,11 @@ public class AccountController {
     @GetMapping(value = "/api/account/{id}/tripsInPeriod")
     public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
                                                              @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
 
-        if(!accountResultById.isPresent()) {
+        if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -81,7 +85,7 @@ public class AccountController {
 
     @PostMapping("/api/account/{id}/approveTrip/{tripId}")
     public ResponseEntity<AccountDTO> approveTrip(@PathVariable Integer id,
-                                               @PathVariable Integer tripId) {
+                                                  @PathVariable Integer tripId) {
         Optional<Account> maybeAccount = accountService.getById(id);
 
         if (!maybeAccount.isPresent())
