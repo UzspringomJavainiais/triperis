@@ -30,6 +30,14 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
     @Column(name = "ACTION")
     private String action;
 
+    @Size(max = 200)
+    @Column(name = "ip_address")
+    private String ipAddress;
+
+    @Size(max = 200)
+    @Column(name = "requestor_info")
+    private String requestorInfo;
+
     @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToOne
     @JoinColumn(name = "account_id")

@@ -32,11 +32,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
         log.setType(request.getMethod());
         log.setAction(request.getRequestURI());
         log.setDate(DateUtils.now());
+        log.setIpAddress(request.getRemoteAddr());
+        log.setRequestorInfo(request.getHeader("User-Agent"));
 
         if (obj instanceof Account) {
             Account account = (Account) obj;
             log.setAccount(account);
         }
+
         accessLogRepository.save(log);
     }
 }
