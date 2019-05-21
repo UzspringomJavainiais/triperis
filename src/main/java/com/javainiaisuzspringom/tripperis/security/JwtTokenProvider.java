@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private long validityInMilliseconds = 3600000; // 1h
 
     public static final String JWT_COOKIE = "Authorization";
-    
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -62,11 +62,11 @@ public class JwtTokenProvider {
         Cookie jwtCookie = findCookie(JWT_COOKIE, req.getCookies());
 
         if (jwtCookie == null)
-            throw new RuntimeException("Cookies not found");
+            return null;
 
         String jwtCookieValue = jwtCookie.getValue();
 
-        if (jwtCookieValue != null)  {
+        if (jwtCookieValue != null) {
             return jwtCookieValue;
         }
         return null;
@@ -83,6 +83,9 @@ public class JwtTokenProvider {
     }
 
     private static Cookie findCookie(String cookieName, Cookie[] cookies) {
+        if (cookies == null) {
+            return null;
+        }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(cookieName)) {
                 return cookie;
