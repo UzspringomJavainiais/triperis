@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
 
 import javax.validation.constraints.Size;
@@ -17,8 +18,10 @@ public class TripStepDTO implements ConvertableDTO<Integer>{
 
     private Integer orderNo;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp startDate;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp endDate;
 
     private LocationDTO location;

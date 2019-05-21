@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,6 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     @Size(max = 100)
     private String lastName;
 
-    // TODO ignore password on get requests
     private String password;
 
     @Email

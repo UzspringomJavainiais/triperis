@@ -4,7 +4,6 @@ import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
@@ -12,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @CrossOrigin
@@ -32,14 +34,30 @@ public class AccountController {
     @Autowired
     private TripRepository tripRepository;
 
+    @GetMapping("/api/me")
+    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
+        Map<Object, Object> model = new HashMap<>();
+        model.put("username", userDetails.getUsername());
+        model.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList())
+        );
+        return ok(model);
+    }
+
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
         if (accountService.exists(account.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with this email already exists");
         }
-        if(account.getPassword().trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password should not be empty");
+        if (account.getPassword().trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must not be empty");
         }
+        if (account.getRoleIds().size() < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have roles");
+        }
+
         Account savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
@@ -54,11 +72,11 @@ public class AccountController {
     @GetMapping(value = "/api/account/{id}/tripsInPeriod")
     public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
                                                              @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
 
-        if(!accountResultById.isPresent()) {
+        if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -69,22 +87,21 @@ public class AccountController {
     }
 
     @GetMapping("/api/account/{id}/trips")
-    public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
+    public ResponseEntity<List<Trip>> getTripsByAccount(@PathVariable Integer id) {
         Optional<Account> account = accountService.getById(id);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
 
         Account accountDTO = account.get();
-        List<TripDTO> accountTrips = accountDTO.getTrips().stream()
-                .map(Trip::convertToDTO).collect(Collectors.toList());
+        List<Trip> accountTrips = accountDTO.getTrips();
 
         return new ResponseEntity<>(accountTrips, HttpStatus.OK);
     }
 
     @PostMapping("/api/account/{id}/approveTrip/{tripId}")
     public ResponseEntity<AccountDTO> approveTrip(@PathVariable Integer id,
-                                               @PathVariable Integer tripId) {
+                                                  @PathVariable Integer tripId) {
         Optional<Account> maybeAccount = accountService.getById(id);
 
         if (!maybeAccount.isPresent())

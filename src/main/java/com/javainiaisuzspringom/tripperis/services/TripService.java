@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TripService implements BasicDtoToEntityService<Trip, TripDTO, Integer> {
+public class TripService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TripService.class);
 
@@ -41,10 +41,10 @@ public class TripService implements BasicDtoToEntityService<Trip, TripDTO, Integ
 
     public Optional<TripDuration> getTripDuration(Trip trip) {
         List<TripDuration> durationList = repository.getDuration(trip);
-        if(durationList.isEmpty()) {
+        if (durationList.isEmpty()) {
             return Optional.empty();
         }
-        if(durationList.size() != 1) {
+        if (durationList.size() != 1) {
             LOGGER.error("Duration list is not of size 1, but {}", durationList.size());
             throw new IllegalStateException("Illegal attempt to query trips");
         }
@@ -64,7 +64,7 @@ public class TripService implements BasicDtoToEntityService<Trip, TripDTO, Integ
         if(dto.getStatusCode() != null)
             trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
         trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
-        trip.setItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
+        trip.setChecklistItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
         trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
 
         return trip;

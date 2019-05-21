@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.Role;
 import lombok.Data;
 
@@ -19,7 +20,9 @@ public class RoleDTO implements ConvertableDTO<Integer> {
     @Size(max = 100)
     private String description;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateCreated;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateDeleted;
 }

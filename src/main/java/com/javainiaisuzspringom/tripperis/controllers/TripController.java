@@ -1,13 +1,9 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.csv.CsvService;
-import com.javainiaisuzspringom.tripperis.domain.Account;
-import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
-import com.javainiaisuzspringom.tripperis.domain.Trip;
-import com.javainiaisuzspringom.tripperis.domain.TripStep;
+import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
@@ -27,8 +23,10 @@ public class TripController {
 
     @Autowired
     private TripService tripService;
+
     @Autowired
     private TripRepository tripRepository;
+
     @Autowired
     private AccountService accountService;
 
@@ -36,26 +34,53 @@ public class TripController {
     private CsvService csvService;
 
     @GetMapping("/api/trip")
-    public List<TripDTO> getAllTrips() {
-        return tripRepository.findAll().stream()
-                .map(Trip::convertToDTO)
-                .collect(Collectors.toList());
+    public List<Trip> getAllTrips() {
+        return tripService.getAll();
+    }
+
+    @GetMapping("/api/trip/{id}")
+    public Trip getTripById(@PathVariable Integer id) {
+        return tripService.getTripById(id);
     }
 
     @PostMapping("/api/trip")
-    public ResponseEntity<TripDTO> addTrip(@RequestBody TripDTO trip) {
-        Trip savedEntity = tripService.save(trip);
-        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
+    public Trip addTrip(@RequestBody Trip trip) {
+        attachTripToEntities(trip);
+        createTripRequsts(trip);
+        return tripService.save(trip);
     }
 
-    /**
-     * Returns a single {@link TripDuration} for a given {@link Trip}.
-     * Trip duration start is the smallest {@link TripStep#getStartDate()}
-     * and the duration end is the biggest {@link TripStep#getEndDate()}
-     *
-     * @param id id of Trip
-     * @return trip duration for given trip, if trip is found. Else return a not found response
-     */
+    private void createTripRequsts(Trip trip) {
+        List<TripRequest> tripRequests = trip.getAccounts()
+                .stream()
+                .map(account -> createTripRequest(account, trip))
+                .collect(Collectors.toList());
+
+        trip.setTripRequests(tripRequests);
+    }
+
+    private TripRequest createTripRequest(Account account, Trip trip) {
+        TripRequest tripRequest = new TripRequest();
+        tripRequest.setAccount(account);
+        tripRequest.setStatus(TripRequestType.NEW_TRIP);
+        tripRequest.setTrip(trip);
+        return tripRequest;
+    }
+
+    @DeleteMapping("/api/trip/{id}")
+    public ResponseEntity removeTrip(@PathVariable Integer id) {
+        if (id == null) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent()) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        tripRepository.delete(maybeTrip.get());
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @GetMapping("/api/trip/{id}/getTotalDuration")
     public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
         Optional<Trip> tripResultById = tripRepository.findById(id);
@@ -72,23 +97,10 @@ public class TripController {
         return ResponseEntity.ok(tripStartDate.get());
     }
 
-    @DeleteMapping("/api/trip/{id}")
-    public ResponseEntity removeTrip(@PathVariable Integer id) {
-        if(id == null) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        Optional<Trip> maybeTrip = tripRepository.findById(id);
-
-        if(!maybeTrip.isPresent()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-        tripRepository.delete(maybeTrip.get());
-        return new ResponseEntity(HttpStatus.OK);
-    }
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
-    public ResponseEntity<TripDTO> mergeTrips(@PathVariable Integer idOne,
-                                              @PathVariable Integer idTwo) {
+    public ResponseEntity<Trip> mergeTrips(@PathVariable Integer idOne,
+                                           @PathVariable Integer idTwo) {
         Optional<Trip> tripOneOptional = tripRepository.findById(idOne);
         Optional<Trip> tripTwoOptional = tripRepository.findById(idTwo);
 
@@ -111,21 +123,21 @@ public class TripController {
         }
 
         // Merge distinct checklist items
-        mergedTrip.setItems(tripOne.getItems());
+        mergedTrip.setChecklistItems(tripOne.getChecklistItems());
 
-        for (ChecklistItem item : tripTwo.getItems()) {
-            if (mergedTrip.getItems().contains(item))
-                mergedTrip.getItems().add(item);
+        for (ChecklistItem item : tripTwo.getChecklistItems()) {
+            if (mergedTrip.getChecklistItems().contains(item))
+                mergedTrip.getChecklistItems().add(item);
         }
 
         // TODO: mergedTrip.setStatus();
 
         tripRepository.save(mergedTrip);
 
-        return new ResponseEntity<>(mergedTrip.convertToDTO(), HttpStatus.CREATED);
+        return new ResponseEntity<>(mergedTrip, HttpStatus.CREATED);
     }
 
-    @GetMapping("api/trip/{id}/employees")
+    @GetMapping("/api/trip/{id}/employees")
     public ResponseEntity<List<AccountDTO>> getEmployeesByTrip(@PathVariable Integer id) {
         Optional<Trip> trip = tripRepository.findById(id);
 
@@ -140,8 +152,8 @@ public class TripController {
     }
 
     @PostMapping("api/trip/{id}/addOrganizer/{organizerId}")
-    public ResponseEntity<TripDTO> addOrganizerToTrip(@PathVariable Integer id,
-                                                      @PathVariable Integer organizerId) {
+    public ResponseEntity<Trip> addOrganizerToTrip(@PathVariable Integer id,
+                                                   @PathVariable Integer organizerId) {
         Optional<Trip> maybeTrip = tripRepository.findById(id);
 
         if (!maybeTrip.isPresent())
@@ -159,7 +171,7 @@ public class TripController {
             tripRepository.save(trip);
         }
 
-        return new ResponseEntity<>(trip.convertToDTO(), HttpStatus.OK);
+        return new ResponseEntity<>(trip, HttpStatus.OK);
     }
 
     @GetMapping("api/trip/{id}/organizers")
@@ -177,8 +189,8 @@ public class TripController {
     }
 
     @PostMapping("api/trip/{id}/removeOrganizer/{organizerId}")
-    public ResponseEntity<TripDTO> removeOrganizerFromTrip(@PathVariable Integer id,
-                                                           @PathVariable Integer organizerId) {
+    public ResponseEntity<Trip> removeOrganizerFromTrip(@PathVariable Integer id,
+                                                        @PathVariable Integer organizerId) {
         Optional<Trip> maybeTrip = tripRepository.findById(id);
 
         if (!maybeTrip.isPresent())
@@ -195,13 +207,13 @@ public class TripController {
         trip.getOrganizers().remove(account);
         tripRepository.save(trip);
 
-        return new ResponseEntity<>(trip.convertToDTO(), HttpStatus.OK);
+        return new ResponseEntity<>(trip, HttpStatus.OK);
     }
 
     @GetMapping("/api/tripsInfo/csv")
-    public void getTripsInfoCSV(HttpServletResponse response){
+    public void getTripsInfoCSV(HttpServletResponse response) {
         response.setContentType("text/plain; charset=utf-8");
-        response.setHeader("Content-disposition", "attachment; filename="+ "trips.csv");
+        response.setHeader("Content-disposition", "attachment; filename=" + "trips.csv");
         csvService.createTripsCsv(response);
     }
 
@@ -216,13 +228,18 @@ public class TripController {
 
         Trip trip = maybeTrip.get();
 
-        for (ChecklistItem item : trip.getItems()) {
+        for (ChecklistItem item : trip.getChecklistItems()) {
             if (item.isChecked())
                 completedItems++;
         }
 
-        totalItems = trip.getItems().size();
+        totalItems = trip.getChecklistItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
+    }
+
+    private void attachTripToEntities(Trip trip) {
+        trip.getTripSteps().forEach(tripStep -> tripStep.setTrip(trip));
+        trip.getChecklistItems().forEach(checklistItem -> checklistItem.setTrip(trip));
     }
 }

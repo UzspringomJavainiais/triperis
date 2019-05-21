@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +22,11 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     @Column(name = "from_date")
     private Timestamp from;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     @Column(name = "to_date")
     private Timestamp to;
 

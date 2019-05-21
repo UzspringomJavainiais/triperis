@@ -59,17 +59,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
-        Map<Object, Object> model = new HashMap<>();
-        model.put("username", userDetails.getUsername());
-        model.put("roles", userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())
-        );
-        return ok(model);
-    }
 
     private void addAuthorizationCookie(String token, HttpServletResponse response) {
         Cookie cookie = new Cookie("Authorization", token);
