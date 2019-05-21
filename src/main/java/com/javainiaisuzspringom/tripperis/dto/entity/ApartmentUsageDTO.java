@@ -11,7 +11,7 @@ import java.util.List;
  * Maps to {@link ApartmentUsage}
  */
 @Data
-public class ApartmentUsageDTO implements ConvertableDTO<Integer>{
+public class ApartmentUsageDTO implements ConvertableDTO<Integer> {
     private Integer id;
 
     private Timestamp from;
@@ -20,5 +20,5 @@ public class ApartmentUsageDTO implements ConvertableDTO<Integer>{
 
     private Integer apartmentId;
 
-    private List<Integer> accountIds = new ArrayList<>();
+    private List<RoomUsageDTO> roomsToUsers = new ArrayList<>();
 }

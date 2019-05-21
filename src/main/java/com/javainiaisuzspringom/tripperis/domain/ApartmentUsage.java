@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,9 +31,8 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="apartment_usage_account", joinColumns=@JoinColumn(name="account_id"), inverseJoinColumns=@JoinColumn(name="apartment_usage_id"))
-    private List<Account> accounts;
+    @OneToMany(mappedBy = "apartmentUsage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomUsage> roomsToUsers = new ArrayList<>();
 
     public ApartmentUsageDTO convertToDTO() {
         ApartmentUsageDTO dto = new ApartmentUsageDTO();
@@ -43,8 +43,8 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
         if(this.getApartment() != null) {
             dto.setApartmentId(this.getApartment().getId());
         }
-        if(this.getAccounts() != null) {
-            dto.setAccountIds(this.getAccounts().stream().map(Account::getId).collect(Collectors.toList()));
+        if(this.getRoomsToUsers() != null) {
+            dto.setRoomsToUsers(getRoomsToUsers().stream().map(RoomUsage::convertToDTO).collect(Collectors.toList()));
         }
 
         return dto;

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  * Maps to {@link Role}
  */
 @Data
-public class RoleDTO implements ConvertableDTO<Integer>{
+public class RoleDTO implements ConvertableDTO<Integer> {
     private Integer id;
 
     @Size(max = 100)

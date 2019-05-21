@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +27,7 @@ public class CsvService {
 
         String[] headers = new String[]{"name", "description"};
 
-        List<String[]> csvLines = new LinkedList<>();
+        List<String[]> csvLines = new ArrayList<>();
         trips.forEach(trip -> csvLines.add(new String[]{trip.getName(), trip.getDescription()}));
 
         createCsv(headers, csvLines, response);
