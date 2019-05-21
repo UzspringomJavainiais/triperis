@@ -21,8 +21,8 @@ public class TripRequest implements Serializable {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @Column(name = "STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TripRequestType status;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
