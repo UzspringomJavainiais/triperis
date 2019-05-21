@@ -39,12 +39,16 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
     @Autowired
     private AccountRepository accountRepo;
 
+    public Trip getTripById(Integer tripId) {
+        return repository.getOne(tripId);
+    }
+
     public Optional<TripDuration> getTripDuration(Trip trip) {
         List<TripDuration> durationList = repository.getDuration(trip);
-        if(durationList.isEmpty()) {
+        if (durationList.isEmpty()) {
             return Optional.empty();
         }
-        if(durationList.size() != 1) {
+        if (durationList.size() != 1) {
             LOGGER.error("Duration list is not of size 1, but {}", durationList.size());
             throw new IllegalStateException("Illegal attempt to query trips");
         }
@@ -61,7 +65,7 @@ public class TripService extends AbstractBasicEntityService<Trip, TripDTO, Integ
 
         trip.setName(dto.getName());
         trip.setDescription(dto.getDescription());
-        if(dto.getStatusCode() != null)
+        if (dto.getStatusCode() != null)
             trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
         trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
         trip.setItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
