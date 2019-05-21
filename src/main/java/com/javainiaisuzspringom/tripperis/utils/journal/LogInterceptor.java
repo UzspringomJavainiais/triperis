@@ -7,9 +7,12 @@ import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,17 +23,13 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private AccessLogRepository accessLogRepository;
 
-    @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView)
-        throws Exception {
+    public void afterCompletion(HttpServletRequest request,
+                                HttpServletResponse response,
+                                Object handler,
+                                @Nullable Exception ex) throws Exception {
         Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (obj instanceof Account) {
             Account account = (Account) obj;
-
-
 
             AccessLog log = new AccessLog();
             log.setType(request.getMethod());
