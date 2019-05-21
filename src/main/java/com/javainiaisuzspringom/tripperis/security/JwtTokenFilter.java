@@ -15,7 +15,7 @@ import java.util.List;
 
 public class JwtTokenFilter extends GenericFilterBean {
 
-    private static List<String> urisToSkip = Arrays.asList("/api/auth/");
+    private static List<String> urisToSkip = Arrays.asList("/api/auth/", "/auth/");
 
     private JwtTokenProvider jwtTokenProvider;
 
