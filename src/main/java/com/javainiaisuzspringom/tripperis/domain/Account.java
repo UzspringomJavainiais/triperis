@@ -66,6 +66,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessLog> accessLog = new ArrayList<>();
+
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
 
