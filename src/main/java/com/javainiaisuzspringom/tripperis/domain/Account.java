@@ -90,6 +90,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         if (this.getOrganizedTrips() != null) {
             dto.setOrganizedTrips(this.getOrganizedTrips().stream().map(Trip::getId).collect(Collectors.toList()));
         }
+        if (this.getAccessLog() != null) {
+            dto.setAccessLog(this.getAccessLog().stream().map(AccessLog::getId).collect(Collectors.toList()));
+        }
 
         return dto;
     }

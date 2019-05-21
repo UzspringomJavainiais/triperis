@@ -11,7 +11,9 @@ public class AccessLogDTO implements ConvertableDTO<Integer> {
 
     private Timestamp date;
 
-    private Account account;
+    private AccountDTO account;
+
+    private String type;
 
     private String action;
 }

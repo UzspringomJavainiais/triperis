@@ -24,6 +24,10 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
     @OneToOne
     private Account account;
 
+    @Size(max = 20)
+    @Column(name = "TYPE")
+    private String type;
+
     @Size(max = 200)
     @Column(name = "ACTION")
     private String action;
@@ -34,7 +38,8 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
 
         dto.setId(getId());
         dto.setDate(getDate());
-        dto.setAccount(getAccount());
+        dto.setAccount(getAccount().convertToDTO());
+        dto.setType(getType());
         dto.setAction(getAction());
 
         return dto;
