@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccessLogDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +22,6 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
     @Column(name = "DATE")
     private Timestamp date;
 
-    @OneToOne
-    private Account account;
-
     @Size(max = 20)
     @Column(name = "TYPE")
     private String type;
@@ -31,6 +29,11 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
     @Size(max = 200)
     @Column(name = "ACTION")
     private String action;
+
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Override
     public AccessLogDTO convertToDTO() {
