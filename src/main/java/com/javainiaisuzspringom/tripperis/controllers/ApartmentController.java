@@ -32,6 +32,16 @@ public class ApartmentController {
         return apartmentService.getAll();
     }
 
+    @GetMapping("/api/apartment/{id}")
+    public ResponseEntity<ApartmentDTO> getApartment(@PathVariable Integer id) {
+        Optional<Apartment> apartment = apartmentRepository.findById(id);
+
+        if (!apartment.isPresent())
+            return ResponseEntity.notFound().build();
+
+        return new ResponseEntity<>(apartment.get().convertToDTO(), HttpStatus.OK);
+    }
+
     @PostMapping("/api/apartment")
     public ResponseEntity<ApartmentDTO> addApartment(@RequestBody ApartmentDTO apartment) {
         ApartmentDTO savedEntity = apartmentService.save(apartment);
