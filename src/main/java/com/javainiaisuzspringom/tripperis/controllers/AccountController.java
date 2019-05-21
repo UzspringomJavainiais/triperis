@@ -70,15 +70,14 @@ public class AccountController {
     }
 
     @GetMapping("/api/account/{id}/trips")
-    public ResponseEntity<List<TripDTO>> getTripsByAccount(@PathVariable Integer id) {
+    public ResponseEntity<List<Trip>> getTripsByAccount(@PathVariable Integer id) {
         Optional<Account> account = accountService.getById(id);
 
         if (!account.isPresent())
             return ResponseEntity.notFound().build();
 
         Account accountDTO = account.get();
-        List<TripDTO> accountTrips = accountDTO.getTrips().stream()
-                .map(Trip::convertToDTO).collect(Collectors.toList());
+        List<Trip> accountTrips = accountDTO.getTrips();
 
         return new ResponseEntity<>(accountTrips, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

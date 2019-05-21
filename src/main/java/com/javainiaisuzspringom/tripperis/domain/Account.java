@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +49,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
+    @JsonIgnoreProperties("account")
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 
