@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Data;
@@ -10,7 +11,11 @@ import java.util.Date;
 @Data
 public class TripDuration {
     private Integer tripId;
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp start;
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp end;
 
     public TripDuration(Integer tripId, Timestamp startDate, Timestamp endDate) {

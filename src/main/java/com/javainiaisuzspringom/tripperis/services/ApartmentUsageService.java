@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
+import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
@@ -22,16 +23,18 @@ public class ApartmentUsageService extends AbstractBasicEntityService<ApartmentU
     private ApartmentRepository apartmentRepo;
 
     @Autowired
-    private AccountRepository accountRepo;
-
+    private RoomUsageService roomUsageService;
 
     protected ApartmentUsage convertToEntity(ApartmentUsageDTO dto) {
         ApartmentUsage usage = new ApartmentUsage();
 
         usage.setFrom(dto.getFrom());
         usage.setTo(dto.getTo());
+        if(dto.getApartmentId() != null)
+            usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
         usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
-        usage.setAccounts(dto.getAccountIds().stream().map(accountRepo::getOne).collect(Collectors.toList()));
+        usage.setRoomsToUsers(dto.getRoomsToUsers().stream()
+                .map(x -> roomUsageService.convertToEntity(x)).collect(Collectors.toList()));
 
         return usage;
     }

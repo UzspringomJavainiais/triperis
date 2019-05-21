@@ -1,5 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripStepDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +14,8 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@Table(name = "trip_step", indexes = {
-        @Index(columnList = "START_DATE"),
-        @Index(columnList = "END_DATE")
-})
+@Table(name = "trip_step", indexes = {@Index(columnList = "START_DATE"), @Index(columnList = "END_DATE")})
+@JsonIgnoreProperties("trip")
 public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serializable {
 
     @Id
@@ -33,9 +33,11 @@ public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serial
     @Column(name = "ORDER_NO")
     private Integer orderNo;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     @Column(name = "START_DATE")
     private Timestamp startDate;
 
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     @Column(name = "END_DATE")
     private Timestamp endDate;
 

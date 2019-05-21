@@ -4,9 +4,8 @@ import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,10 +19,9 @@ public class ApartmentDTO implements ConvertableDTO<Integer>{
     @Size(max = 100)
     private String name;
 
-    @PositiveOrZero
-    private Integer maxCapacity;
-
     private LocationDTO location;
 
-    private List<ApartmentUsageDTO> apartmentUsages = new LinkedList<>();
+    private List<ApartmentUsageDTO> apartmentUsages = new ArrayList<>();
+
+    private List<RoomDTO> rooms = new ArrayList<>();
 }

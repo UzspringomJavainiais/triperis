@@ -1,7 +1,8 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Size;
 
@@ -10,22 +11,14 @@ import javax.validation.constraints.Size;
  */
 public class ChecklistItemDTO implements ConvertableDTO<Integer>{
 
+    @Getter
+    @Setter
     private Integer id;
 
     @Size(max = 100)
     private String name;
 
     private boolean isChecked;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

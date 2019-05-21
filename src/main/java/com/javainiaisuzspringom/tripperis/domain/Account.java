@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,11 +46,25 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
+    @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
+    @JsonIgnoreProperties("account")
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
+
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "trip_organizers",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "trip_id")
+    )
+    private List<Trip> organizedTrips;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripRequest> tripRequests = new ArrayList<>();
 
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
@@ -57,9 +73,19 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         dto.setFirstName(this.getFirstName());
         dto.setLastName(this.getLastName());
         dto.setEmail(this.getEmail());
-        dto.setPassword(this.getPassword());
+        dto.setPassword(null);
+
         if (this.getRoles() != null) {
             dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(toList()));
+        }
+//        if (this.getTripRequests() != null) {
+//            dto.setTripRequestIds(this.getTripRequests().stream().map(TripRequest::getId).collect(Collectors.toList()));
+//        }
+        if (this.getTrips() != null) {
+            dto.setTrips(this.getTrips().stream().map(Trip::getId).collect(Collectors.toList()));
+        }
+        if (this.getOrganizedTrips() != null) {
+            dto.setOrganizedTrips(this.getOrganizedTrips().stream().map(Trip::getId).collect(Collectors.toList()));
         }
 
         return dto;
