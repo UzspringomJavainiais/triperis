@@ -53,9 +53,6 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 
-    @OneToMany
-    private List<TripRequest> tripRequests = new ArrayList<>();
-
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -65,6 +62,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
             inverseJoinColumns = @JoinColumn(name = "trip_id")
     )
     private List<Trip> organizedTrips;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripRequest> tripRequests = new ArrayList<>();
 
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
@@ -78,9 +78,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         if (this.getRoles() != null) {
             dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(toList()));
         }
-        if (this.getTripRequests() != null) {
-            dto.setTripRequestIds(this.getTripRequests().stream().map(TripRequest::getId).collect(Collectors.toList()));
-        }
+//        if (this.getTripRequests() != null) {
+//            dto.setTripRequestIds(this.getTripRequests().stream().map(TripRequest::getId).collect(Collectors.toList()));
+//        }
         if (this.getTrips() != null) {
             dto.setTrips(this.getTrips().stream().map(Trip::getId).collect(Collectors.toList()));
         }

@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
+import com.javainiaisuzspringom.tripperis.domain.TripRequest;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
@@ -48,7 +49,25 @@ public class TripController {
     @PostMapping("/api/trip")
     public Trip addTrip(@RequestBody Trip trip) {
         attachTripToEntities(trip);
+        createTripRequsts(trip);
         return tripService.save(trip);
+    }
+
+    private void createTripRequsts(Trip trip) {
+        List<TripRequest> tripRequests = trip.getAccounts()
+                .stream()
+                .map(account -> createTripRequest(account, trip))
+                .collect(Collectors.toList());
+
+        trip.setTripRequests(tripRequests);
+    }
+
+    private TripRequest createTripRequest(Account account, Trip trip) {
+        TripRequest tripRequest = new TripRequest();
+        tripRequest.setAccount(account);
+        tripRequest.setStatus("NOT SENT");
+        tripRequest.setTrip(trip);
+        return tripRequest;
     }
 
     @DeleteMapping("/api/trip/{id}")
