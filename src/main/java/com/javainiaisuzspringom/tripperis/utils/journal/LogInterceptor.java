@@ -28,17 +28,15 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
                                 Object handler,
                                 @Nullable Exception ex) throws Exception {
         Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AccessLog log = new AccessLog();
+        log.setType(request.getMethod());
+        log.setAction(request.getRequestURI());
+        log.setDate(DateUtils.now());
+
         if (obj instanceof Account) {
             Account account = (Account) obj;
-
-            AccessLog log = new AccessLog();
-            log.setType(request.getMethod());
             log.setAccount(account);
-            log.setAction(request.getRequestURI());
-            log.setDate(DateUtils.now());
-            log.setAccount(account);
-
-            accessLogRepository.save(log);
         }
+        accessLogRepository.save(log);
     }
 }
