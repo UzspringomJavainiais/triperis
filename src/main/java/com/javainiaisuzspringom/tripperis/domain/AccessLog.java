@@ -43,6 +43,9 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @Column(name = "roles")
+    private String roles;
+
     @Override
     public AccessLogDTO convertToDTO() {
         AccessLogDTO dto = new AccessLogDTO();
@@ -52,6 +55,7 @@ public class AccessLog implements ConvertableEntity<Integer, AccessLogDTO>, Seri
         dto.setAccount(getAccount().convertToDTO());
         dto.setType(getType());
         dto.setAction(getAction());
+        dto.setRoles(getRoles());
 
         return dto;
     }

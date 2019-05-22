@@ -16,4 +16,6 @@ public class AccessLogDTO implements ConvertableDTO<Integer> {
     private String type;
 
     private String action;
+
+    private String roles;
 }

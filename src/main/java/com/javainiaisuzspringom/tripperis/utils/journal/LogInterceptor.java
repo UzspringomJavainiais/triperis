@@ -2,14 +2,10 @@ package com.javainiaisuzspringom.tripperis.utils.journal;
 
 import com.javainiaisuzspringom.tripperis.domain.AccessLog;
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.domain.Role;
 import com.javainiaisuzspringom.tripperis.repositories.AccessLogRepository;
-import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
-import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -37,6 +33,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
         if (obj instanceof Account) {
             Account account = (Account) obj;
+
+            StringBuilder roles = new StringBuilder();
+
+            for (Role role : account.getRoles())
+                roles.append(role.getId()).append(";");
+
+            log.setRoles(roles.toString().equals("") ? null : roles.toString());
+
             log.setAccount(account);
         }
 
