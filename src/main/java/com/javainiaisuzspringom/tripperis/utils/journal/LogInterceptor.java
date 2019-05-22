@@ -39,7 +39,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             for (Role role : account.getRoles())
                 roles.append(role.getId()).append(";");
 
-            log.setRoles(roles.toString().equals("") ? null : roles.toString());
+            log.setRoles(roles.toString().isEmpty() ? null : roles.toString());
 
             log.setAccount(account);
         }
