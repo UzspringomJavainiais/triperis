@@ -66,6 +66,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessLog> accessLog = new ArrayList<>();
+
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
 
@@ -86,6 +89,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         }
         if (this.getOrganizedTrips() != null) {
             dto.setOrganizedTrips(this.getOrganizedTrips().stream().map(Trip::getId).collect(Collectors.toList()));
+        }
+        if (this.getAccessLog() != null) {
+            dto.setAccessLog(this.getAccessLog().stream().map(AccessLog::getId).collect(Collectors.toList()));
         }
 
         return dto;

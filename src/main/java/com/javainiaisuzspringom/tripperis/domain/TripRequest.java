@@ -16,7 +16,7 @@ public class TripRequest implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests"})
+@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
