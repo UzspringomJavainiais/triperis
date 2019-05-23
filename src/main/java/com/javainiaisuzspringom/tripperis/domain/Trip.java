@@ -36,12 +36,12 @@ public class Trip implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateTo;
 
-@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_account", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> accounts = new ArrayList<>();
 
-@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_organizers", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> organizers = new ArrayList<>();
