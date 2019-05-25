@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -103,6 +104,24 @@ public class TripController {
 
         return ResponseEntity.ok(tripStartDate.get());
     }
+
+    @GetMapping("/api/trip/{id}/getTotalPrice")
+    public ResponseEntity<BigDecimal> getTotalPrice(@PathVariable Integer id) {
+        Optional<Trip> tripResultById = tripRepository.findById(id);
+        if (!tripResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip trip = tripResultById.get();
+        List<ChecklistItem> checklistItems = trip.getChecklistItems();
+
+        BigDecimal result = checklistItems.stream()
+                .map(ChecklistItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return ResponseEntity.ok(result);
+    }
+
 
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
