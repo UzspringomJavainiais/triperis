@@ -235,11 +235,11 @@ public class TripController {
         TripAttachment attachment = new TripAttachment();
 
         attachment.setTrip(maybeTrip.get());
-        attachment.setFileName(file.getName());
+        attachment.setFileName(file.getOriginalFilename().split("\\.")[0]);
 
         // Extract extension from filename
-        if (file.getOriginalFilename().split(".").length > 1)
-            attachment.setExtension(file.getOriginalFilename().split(".")[1]);
+        if (file.getOriginalFilename().split("\\.").length > 1)
+            attachment.setExtension(file.getOriginalFilename().split("\\.")[1]);
 
         try {
             attachment.setFileData(file.getBytes());
@@ -249,6 +249,9 @@ public class TripController {
         }
 
         tripAttachmentRepository.save(attachment);
+
+        // Dont send the file data back
+        attachment.setFileData(null);
 
         return new ResponseEntity<>(attachment, HttpStatus.OK);
     }
