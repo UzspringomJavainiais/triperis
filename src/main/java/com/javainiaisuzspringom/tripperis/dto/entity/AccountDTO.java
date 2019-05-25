@@ -47,4 +47,7 @@ public class AccountDTO implements ConvertableDTO<Integer>{
 
     @Builder.Default
     private List<Integer> organizedTrips = new ArrayList<>();
+
+    @Builder.Default
+    private List<Integer> accessLog = new ArrayList<>();
 }
