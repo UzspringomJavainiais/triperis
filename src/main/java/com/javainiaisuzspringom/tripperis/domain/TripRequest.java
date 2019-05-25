@@ -16,7 +16,7 @@ public class TripRequest implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
@@ -27,4 +27,5 @@ public class TripRequest implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
+
 }

@@ -132,4 +132,14 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
