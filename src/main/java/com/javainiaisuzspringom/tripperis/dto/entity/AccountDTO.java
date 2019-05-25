@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(Include.NON_ABSENT)
 public class AccountDTO implements ConvertableDTO<Integer>{
 
     private Integer id;
@@ -47,4 +49,7 @@ public class AccountDTO implements ConvertableDTO<Integer>{
 
     @Builder.Default
     private List<Integer> organizedTrips = new ArrayList<>();
+
+    @Builder.Default
+    private List<Integer> accessLog = new ArrayList<>();
 }

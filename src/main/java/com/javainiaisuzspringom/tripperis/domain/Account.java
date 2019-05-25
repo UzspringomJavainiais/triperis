@@ -1,6 +1,8 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Getter
 @Setter
 @Table(name = "account")
+@JsonInclude(Include.NON_NULL)
 public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDetails, Serializable {
 
     @Id
@@ -47,6 +51,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @NotEmpty
     private List<Role> roles = new ArrayList<>();
 
     @JsonIgnoreProperties("account")
@@ -65,6 +70,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessLog> accessLog = new ArrayList<>();
 
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
@@ -86,6 +94,9 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         }
         if (this.getOrganizedTrips() != null) {
             dto.setOrganizedTrips(this.getOrganizedTrips().stream().map(Trip::getId).collect(Collectors.toList()));
+        }
+        if (this.getAccessLog() != null) {
+            dto.setAccessLog(this.getAccessLog().stream().map(AccessLog::getId).collect(Collectors.toList()));
         }
 
         return dto;

@@ -2,7 +2,6 @@ package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +11,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -38,12 +36,12 @@ public class Trip implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateTo;
 
-    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_account", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> accounts = new ArrayList<>();
 
-    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_organizers", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> organizers = new ArrayList<>();

@@ -46,6 +46,12 @@ public class AccountController {
         return ok(model);
     }
 
+    @GetMapping("/api/me/trips")
+    public List<Trip> currentUserTrips(@AuthenticationPrincipal UserDetails userDetails){
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        return account.getTrips();
+    }
+
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
         if (accountService.exists(account.getEmail())) {
@@ -54,13 +60,49 @@ public class AccountController {
         if (account.getPassword().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must not be empty");
         }
-        if (account.getRoleIds().size() < 1) {
+        if (account.getRoleIds().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have roles");
         }
 
         Account savedEntity = accountService.save(account);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
+
+    @PutMapping("/api/account/{id}")
+    public ResponseEntity<AccountDTO> editAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        Account newVersion = accountService.convertToEntity(newVersionDto);
+        newVersion.setId(account.getId());
+        newVersion.setPassword(account.getPassword());
+        newVersion.setEmail(account.getEmail());
+
+        Account savedEntity = accountRepository.save(newVersion);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
+
+    @PatchMapping("/api/account/{id}")
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        Account newVersion = accountService.convertToEntity(newVersionDto);
+        account = accountService.mergeChanges(account, newVersion);
+
+        Account savedEntity = accountRepository.save(account);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {

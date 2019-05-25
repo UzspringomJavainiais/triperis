@@ -10,9 +10,13 @@ import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,13 +48,16 @@ public class TripController {
     }
 
     @PostMapping("/api/trip")
-    public Trip addTrip(@RequestBody Trip trip) {
+    public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
         attachTripToEntities(trip);
-        createTripRequsts(trip);
+        createTripRequests(trip);
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        account.setPassword(null);
+        trip.setOrganizers(Collections.singletonList(account));
         return tripService.save(trip);
     }
 
-    private void createTripRequsts(Trip trip) {
+    private void createTripRequests(Trip trip) {
         List<TripRequest> tripRequests = trip.getAccounts()
                 .stream()
                 .map(account -> createTripRequest(account, trip))
@@ -96,6 +103,24 @@ public class TripController {
 
         return ResponseEntity.ok(tripStartDate.get());
     }
+
+    @GetMapping("/api/trip/{id}/getTotalPrice")
+    public ResponseEntity<BigDecimal> getTotalPrice(@PathVariable Integer id) {
+        Optional<Trip> tripResultById = tripRepository.findById(id);
+        if (!tripResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip trip = tripResultById.get();
+        List<ChecklistItem> checklistItems = trip.getChecklistItems();
+
+        BigDecimal result = checklistItems.stream()
+                .map(ChecklistItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return ResponseEntity.ok(result);
+    }
+
 
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
