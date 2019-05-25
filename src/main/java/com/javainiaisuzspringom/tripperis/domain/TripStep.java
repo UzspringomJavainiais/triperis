@@ -60,66 +60,15 @@ public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serial
     }
 
     @Override
-    public Integer getId() {
-        return id;
-    }
-
-    public TripStep setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public TripStep setTrip(Trip trip) {
-        this.trip = trip;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public TripStep setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Integer getOrderNo() {
-        return orderNo;
-    }
-
-    public TripStep setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-        return this;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public TripStep setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public TripStep setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-        return this;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public TripStep setLocation(Location location) {
-        this.location = location;
-        return this;
+    public String toString() {
+        return "TripStep{" +
+                "id=" + id +
+                ", trip=" + trip +
+                ", name='" + name + '\'' +
+                ", orderNo=" + orderNo +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", location=" + location +
+                '}';
     }
 }
