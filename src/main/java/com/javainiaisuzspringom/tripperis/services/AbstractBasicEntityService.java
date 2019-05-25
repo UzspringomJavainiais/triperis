@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.OptimisticLockException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,13 @@ public abstract class AbstractBasicEntityService<E extends ConvertableEntity<I, 
     @Transactional(propagation = Propagation.REQUIRED)
     public E save(D entityDto) {
         E entityFromDTO = getExistingOrConvert(entityDto);
-        return getRepository().save(entityFromDTO);
+
+        try {
+            return getRepository().save(entityFromDTO);
+        } catch (OptimisticLockException e) {
+            // Optimistic lock exception is thrown, so return newest version of entity
+            return getExistingOrConvert(entityDto);
+        }
     }
 
     @Transactional

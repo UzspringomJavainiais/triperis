@@ -25,6 +25,10 @@ public class StatusCode implements ConvertableEntity<Integer, StatusCodeDTO>, Se
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public StatusCodeDTO convertToDTO() {
         StatusCodeDTO dto = new StatusCodeDTO();
 

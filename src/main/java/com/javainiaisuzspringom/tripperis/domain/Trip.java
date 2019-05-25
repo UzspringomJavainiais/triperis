@@ -61,6 +61,10 @@ public class Trip implements Serializable {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public Integer getId() {
         return id;
     }

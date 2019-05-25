@@ -37,6 +37,10 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
     @OneToMany(mappedBy = "apartmentUsage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomUsage> roomsToUsers = new ArrayList<>();
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public ApartmentUsageDTO convertToDTO() {
         ApartmentUsageDTO dto = new ApartmentUsageDTO();
 

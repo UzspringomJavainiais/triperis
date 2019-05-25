@@ -40,6 +40,10 @@ public class Role implements ConvertableEntity<Integer, RoleDTO>, Serializable {
     @ManyToMany(mappedBy = "roles")
     private List<Account> account =  new ArrayList<>();
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public RoleDTO convertToDTO() {
         RoleDTO dto = new RoleDTO();
 

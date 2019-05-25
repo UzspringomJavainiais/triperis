@@ -31,6 +31,10 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public ChecklistItemDTO convertToDTO() {
         ChecklistItemDTO dto = new ChecklistItemDTO();
 

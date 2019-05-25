@@ -27,4 +27,8 @@ public class TripRequest implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Trip trip;
+
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
 }

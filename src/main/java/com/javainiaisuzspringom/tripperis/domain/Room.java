@@ -30,6 +30,10 @@ public class Room implements ConvertableEntity<Integer, RoomDTO>, Serializable {
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     @Override
     public RoomDTO convertToDTO() {
         RoomDTO dto = new RoomDTO();

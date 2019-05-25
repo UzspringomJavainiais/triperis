@@ -36,6 +36,10 @@ public class Location implements ConvertableEntity<Integer, LocationDTO>, Serial
     @Size(max = 100)
     @Column(name = "ADDRESS")
     private String address;
+
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
     
     public LocationDTO convertToDTO() {
         LocationDTO dto = new LocationDTO();

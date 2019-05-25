@@ -44,6 +44,10 @@ public class TripStep implements ConvertableEntity<Integer, TripStepDTO>, Serial
     @OneToOne
     private Location location;
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public TripStepDTO convertToDTO() {
         TripStepDTO tripStep = new TripStepDTO();
 
