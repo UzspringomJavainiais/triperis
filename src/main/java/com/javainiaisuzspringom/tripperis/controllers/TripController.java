@@ -4,6 +4,8 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripAttachmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
@@ -11,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +31,9 @@ public class TripController {
 
     @Autowired
     private TripRepository tripRepository;
+
+    @Autowired
+    private TripAttachmentRepository tripAttachmentRepository;
 
     @Autowired
     private AccountService accountService;
@@ -215,6 +223,50 @@ public class TripController {
         response.setContentType("text/plain; charset=utf-8");
         response.setHeader("Content-disposition", "attachment; filename=" + "trips.csv");
         csvService.createTripsCsv(response);
+    }
+
+    @PostMapping("/api/trip/{id}/addFile")
+    public ResponseEntity<TripAttachment> addFileToTrip(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        TripAttachment attachment = new TripAttachment();
+
+        attachment.setTrip(maybeTrip.get());
+        attachment.setFileName(file.getName());
+
+        // Extract extension from filename
+        if (file.getOriginalFilename().split(".").length > 1)
+            attachment.setExtension(file.getOriginalFilename().split(".")[1]);
+
+        try {
+            attachment.setFileData(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        tripAttachmentRepository.save(attachment);
+
+        return new ResponseEntity<>(attachment, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/{id}/attachments")
+    public ResponseEntity<List<TripAttachmentDTO>> getAttachments(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+        List<TripAttachmentDTO> list = new ArrayList<>();
+
+        for (TripAttachment attachment : trip.getTripAttachments())
+            list.add(attachment.convertToDTO());
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/api/trip/{id}/progress")
