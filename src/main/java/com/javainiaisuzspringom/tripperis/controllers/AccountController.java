@@ -78,11 +78,31 @@ public class AccountController {
         }
         Account account = accountResultById.get();
         Account newVersion = accountService.convertToEntity(newVersionDto);
+        newVersion.setId(account.getId());
+        newVersion.setPassword(account.getPassword());
+        newVersion.setEmail(account.getEmail());
+
+        Account savedEntity = accountRepository.save(newVersion);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
+
+    @PatchMapping("/api/account/{id}")
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        Account newVersion = accountService.convertToEntity(newVersionDto);
         account = accountService.mergeChanges(account, newVersion);
 
         Account savedEntity = accountRepository.save(account);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
     }
+
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
