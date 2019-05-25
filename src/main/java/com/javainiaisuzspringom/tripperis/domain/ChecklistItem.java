@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 
 import javax.persistence.*;
@@ -8,8 +9,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-
 @Table(name = "checklist_item")
+@JsonIgnoreProperties("trip")
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
 
     @Id
@@ -84,5 +85,15 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     public ChecklistItem setTrip(Trip trip) {
         this.trip = trip;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "ChecklistItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isChecked=" + isChecked +
+                ", price=" + price +
+                '}';
     }
 }

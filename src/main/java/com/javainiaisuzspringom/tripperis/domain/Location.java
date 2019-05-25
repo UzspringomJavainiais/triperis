@@ -49,4 +49,58 @@ public class Location implements ConvertableEntity<Integer, LocationDTO>, Serial
 
         return dto;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Location setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Location setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public Location setCountry(String country) {
+        this.country = country;
+        return this;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public Location setCity(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public String getGeocoord() {
+        return geocoord;
+    }
+
+    public Location setGeocoord(String geocoord) {
+        this.geocoord = geocoord;
+        return this;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public Location setAddress(String address) {
+        this.address = address;
+        return this;
+    }
 }

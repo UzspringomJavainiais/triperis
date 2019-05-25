@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.dto.calendar;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.services.calendar.CalendarEntryType;
@@ -12,8 +13,13 @@ import java.util.Date;
 public class CalendarTripEntry implements CalendarEntry {
 
     private Integer tripId;
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp start;
+
+    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp end;
+
     private CalendarEntryType type;
 
     public CalendarTripEntry(Integer tripId, Timestamp startDate, Timestamp endDate) {

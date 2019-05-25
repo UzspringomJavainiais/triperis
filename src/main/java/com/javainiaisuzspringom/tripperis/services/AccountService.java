@@ -1,5 +1,7 @@
 package com.javainiaisuzspringom.tripperis.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
@@ -11,14 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,7 +61,8 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
         return super.save(entityDto);
     }
 
-    protected Account convertToEntity(AccountDTO dto) {
+    @Valid
+    public Account convertToEntity(AccountDTO dto) {
         Account account = new Account();
 
         account.setFirstName(dto.getFirstName());
@@ -73,7 +77,7 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public Account loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
     }
@@ -86,5 +90,25 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
                 .withMatcher("email", ignoreCase());
 
         return repository.exists(Example.of(probeAccount, matcher));
+    }
+
+    @Valid
+    public Account mergeChanges(Account account, Account delta) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> mapOriginal = mapper.convertValue(account.convertToDTO(), new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> mapDelta = mapper.convertValue(delta.convertToDTO(), new TypeReference<Map<String, Object>>() {});
+        mapDelta.remove("id");
+        mapDelta.remove("email");
+        mapDelta.computeIfPresent("password", (key, value) -> passwordEncoder.encode((String)value));
+
+        mapDelta.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> !(entry.getValue() instanceof List) || !((List) entry.getValue()).isEmpty())
+                .forEach(notEmptyEntry -> mapOriginal.put(notEmptyEntry.getKey(), notEmptyEntry.getValue()));
+
+        AccountDTO accountDTO = mapper.convertValue(mapOriginal, AccountDTO.class);
+        Account merged = convertToEntity(accountDTO);
+        merged.setId(account.getId());
+        return merged;
     }
 }
