@@ -7,6 +7,7 @@ import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,9 @@ public class TripController {
 
     @Autowired
     private CsvService csvService;
+
+    @Autowired
+    private TripRequestService tripRequestService;
 
     @GetMapping("/api/trip")
     public List<Trip> getAllTrips() {
@@ -100,8 +104,9 @@ public class TripController {
     private TripRequest createTripRequest(Account account, Trip trip) {
         TripRequest tripRequest = new TripRequest();
         tripRequest.setAccount(account);
-        tripRequest.setStatus(TripRequestType.NEW_TRIP);
+        tripRequest.setType(TripRequestType.NEW_TRIP);
         tripRequest.setTrip(trip);
+        tripRequest.setStatus(TripRequestStatus.NEW);
         return tripRequest;
     }
 
@@ -153,7 +158,6 @@ public class TripController {
     }
 
 
-
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
     public ResponseEntity<Trip> mergeTrips(@PathVariable Integer idOne,
                                            @PathVariable Integer idTwo) {
@@ -186,7 +190,7 @@ public class TripController {
                 mergedTrip.getChecklistItems().add(item);
         }
 
-        // TODO: mergedTrip.setStatus();
+        // TODO: mergedTrip.setType();
 
         tripRepository.save(mergedTrip);
 
@@ -292,6 +296,16 @@ public class TripController {
         totalItems = trip.getChecklistItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/requests/{id}")
+    public List<TripRequest> getTripRequestsByTripId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer id) {
+        return tripRequestService.getMyPendingRequestByTripId(userDetails, id);
+    }
+
+    @PatchMapping("/api/trip/requests")
+    public TripRequest patchTripRequest(@RequestBody TripRequestPatchDTO tripRequestPatchDTO) {
+        return tripRequestService.patchTripRequest(tripRequestPatchDTO);
     }
 
     private void attachTripToEntities(Trip trip) {

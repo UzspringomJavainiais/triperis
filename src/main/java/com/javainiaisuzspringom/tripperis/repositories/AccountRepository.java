@@ -22,14 +22,12 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
      * @return an array, where the first element is trip id, second trip start, and last is trip end
      */
     @Query("SELECT NEW com.javainiaisuzspringom.tripperis.dto.calendar.CalendarTripEntry" +
-            "(t.id, MIN(ts.startDate), MAX(ts.endDate)) " +
+            "(t.id, t.dateFrom, t.dateTo) " +
             "FROM Account a " +
                 "LEFT JOIN a.trips t " +
-                "LEFT JOIN t.tripSteps ts " +
-            "WHERE ((ts.startDate >= :periodStart AND ts.endDate <= :periodEnd) " +
-                "OR (ts.endDate > :periodStart AND ts.startDate < :periodEnd)) " +
-                "AND a = :account " +
-            "GROUP BY t")
+            "WHERE ((t.dateFrom >= :periodStart AND t.dateTo <= :periodEnd) " +
+                "OR (t.dateTo > :periodStart AND t.dateFrom < :periodEnd)) " +
+                "AND a = :account ")
     List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
 
     Optional<Account> findByEmail(String username);
