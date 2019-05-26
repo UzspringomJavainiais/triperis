@@ -142,4 +142,12 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Account)
+            return ((Account)obj).getId().equals(getId());
+        else
+            return obj.equals(this);
+    }
 }

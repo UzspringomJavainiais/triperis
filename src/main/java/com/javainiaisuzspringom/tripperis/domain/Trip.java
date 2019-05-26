@@ -142,6 +142,6 @@ public class Trip implements Serializable {
         if (obj instanceof Trip)
             return ((Trip)obj).getId().equals(getId());
         else
-            return false;
+            return obj.equals(this);
     }
 }

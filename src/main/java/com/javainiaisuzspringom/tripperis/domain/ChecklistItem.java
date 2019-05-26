@@ -102,6 +102,6 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         if (obj instanceof ChecklistItem)
             return ((ChecklistItem)obj).getId().equals(getId());
         else
-            return false;
+            return obj.equals(this);
     }
 }
