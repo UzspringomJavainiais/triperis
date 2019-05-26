@@ -52,7 +52,7 @@ public class ApartmentUsageController {
 
         Apartment apartment = maybeApartment.get();
 
-        List<ApartmentUsageDTO> usagesForApartment = apartmentUsageRepository.findUsagesForApartment(apartment).stream()
+        List<ApartmentUsageDTO> usagesForApartment = apartment.getApartmentUsages().stream()
                 .map(ApartmentUsage::convertToDTO)
                 .collect(Collectors.toList());
 

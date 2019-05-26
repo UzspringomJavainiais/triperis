@@ -51,7 +51,7 @@ public class ApartmentController {
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/apartment/{id}/rooms")
+    @PutMapping("/api/apartment/{id}/rooms")
     public ResponseEntity<ApartmentDTO> addRooms(@PathVariable(name = "id") Integer id, @RequestBody List<RoomDTO> rooms) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
