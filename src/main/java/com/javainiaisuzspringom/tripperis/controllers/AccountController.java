@@ -62,6 +62,12 @@ public class AccountController {
         return account.getTrips();
     }
 
+    @GetMapping("/api/me/organizing")
+    public List<Trip> getMyOrganizingTrips(@AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        return account.getOrganizedTrips();
+    }
+
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
         if (accountService.exists(account.getEmail())) {
