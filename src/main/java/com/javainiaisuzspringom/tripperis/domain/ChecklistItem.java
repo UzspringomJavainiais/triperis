@@ -96,4 +96,12 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
                 ", price=" + price +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChecklistItem)
+            return ((ChecklistItem)obj).getId().equals(getId());
+        else
+            return false;
+    }
 }
