@@ -86,4 +86,14 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         this.trip = trip;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "ChecklistItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isChecked=" + isChecked +
+                ", price=" + price +
+                '}';
+    }
 }

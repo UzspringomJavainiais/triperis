@@ -24,9 +24,7 @@ public class AccountTripCalendarProvider implements AccountCalendarProvider {
         Timestamp startTimestamp = Timestamp.from(periodStart.toInstant());
         Timestamp endTimestamp = Timestamp.from(periodEnd.toInstant());
 
-
-        Account entity = accountRepository.getOne(account.getId());
-        List<CalendarTripEntry> tripDates = accountRepository.getTripDates(entity, startTimestamp, endTimestamp);
+        List<CalendarTripEntry> tripDates = accountRepository.getTripDates(account, startTimestamp, endTimestamp);
         for(CalendarTripEntry entry : tripDates) {
             entry.setType(CalendarEntryType.TRIP);
         }

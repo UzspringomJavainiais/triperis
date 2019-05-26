@@ -2,11 +2,13 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
+import com.javainiaisuzspringom.tripperis.domain.TripRequest;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -32,10 +35,12 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
+    private TripRequestService tripRequestService;
+    @Autowired
     private TripRepository tripRepository;
 
     @GetMapping("/api/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities()
@@ -46,8 +51,13 @@ public class AccountController {
         return ok(model);
     }
 
+    @GetMapping("/api/me/pendingRequests")
+    public List<TripRequest> getMyPendingRequests(@AuthenticationPrincipal UserDetails userDetails) {
+        return tripRequestService.getMyPendingRequests(userDetails);
+    }
+
     @GetMapping("/api/me/trips")
-    public List<Trip> currentUserTrips(@AuthenticationPrincipal UserDetails userDetails){
+    public List<Trip> currentUserTrips(@AuthenticationPrincipal UserDetails userDetails) {
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         return account.getTrips();
     }
@@ -126,6 +136,24 @@ public class AccountController {
 
         List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/account/{id}/isAccountFree")
+    public ResponseEntity<Boolean> isAccountFree(@PathVariable(name = "id") Integer id,
+                                                 @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                 @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+        Optional<Account> accountResultById = accountService.getById(id);
+
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Account account = accountResultById.get();
+
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+
+        Boolean isAccountFreeInPeriod = accountFreeDates.isEmpty();
+        return new ResponseEntity<>(isAccountFreeInPeriod, HttpStatus.OK);
     }
 
     @GetMapping("/api/account/{id}/trips")
