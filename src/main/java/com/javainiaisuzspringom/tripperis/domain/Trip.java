@@ -60,4 +60,8 @@ public class Trip implements Serializable {
     @JsonIgnoreProperties("trip")
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
+
+    @JsonIgnoreProperties({"trip", "fileData"})
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripAttachment> tripAttachments = new ArrayList<>();
 }
