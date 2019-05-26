@@ -9,13 +9,14 @@ import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentUsageRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentUsage, ApartmentUsageDTO, Integer> {
@@ -38,9 +39,11 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
         usage.setTo(dto.getTo());
         if(dto.getApartmentId() != null)
             usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
-        usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
-        usage.setRoomsToUsers(dto.getRoomsToUsers().stream()
-                .map(x -> roomUsageService.convertToEntity(x)).collect(Collectors.toList()));
+        if(dto.getApartmentId() != null)
+            usage.setApartment(apartmentRepo.getOne(dto.getApartmentId()));
+        dto.getRoomsToUsers().stream()
+                .map(x -> roomUsageService.convertToEntity(x))
+                .forEach(usage::addRoomUsage);
 
         return usage;
     }
@@ -52,11 +55,11 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
     public void validateUsageToApartment(ApartmentUsage apartmentUsage) {
 
         for(RoomUsage roomUsage: apartmentUsage.getRoomsToUsers()) {
-            if(roomUsage.getAccounts().size() >= roomUsage.getRoom().getMaxCapacity()) {
-                throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
+            if(roomUsage.getAccounts().size() > roomUsage.getRoom().getMaxCapacity()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trying to cram too many people into room. Not enough room");
             }
-            if(roomUsageService.isAvailableForUsage(roomUsage)) {
-                throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
+            if(!roomUsageService.isAvailableForUsage(roomUsage)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trying to cram too many people into room. Not enough room");
             }
         }
     }

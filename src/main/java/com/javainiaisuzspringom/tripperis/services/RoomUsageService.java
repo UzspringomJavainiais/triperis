@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +56,9 @@ public class RoomUsageService implements BasicDtoToEntityService<RoomUsage, Room
         Room room = usage.getRoom();
 
         List<ReservationInfo> reservedList = getReservedCapacities(room, usageFrom, usageTo);
+        if (reservedList.isEmpty()) {
+            return true;
+        }
 
         // If there exists a moment in given period, where available capacity is less than needed, then return false
         return reservedList.stream()
@@ -67,6 +67,9 @@ public class RoomUsageService implements BasicDtoToEntityService<RoomUsage, Room
 
     public List<ReservationInfo> getReservedCapacities(Room room, Timestamp usageFrom, Timestamp usageTo) {
         List<RoomUsage> usagesInPeriod = repository.findAllRoomUsagesBetweenDates(room, usageFrom, usageTo);
+        if(usagesInPeriod.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<ReservationInfo> durations = usagesInPeriod.stream()
                 .map(x -> new ReservationInfo(x.getApartmentUsage().getFrom(), x.getApartmentUsage().getTo(), x.getAccounts().size()))
                 .collect(Collectors.toList());

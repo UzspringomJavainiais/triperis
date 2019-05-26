@@ -66,7 +66,7 @@ public class ApartmentUsageController {
             throw new IllegalStateException("Apartment doesn't exist");
         }
         // or simply set it to null?
-        if(!apartmentUsage.getApartmentId().equals(id) || apartmentUsage.getApartmentId() != null) {
+        if(apartmentUsage.getApartmentId() != null && !apartmentUsage.getApartmentId().equals(id)) {
             throw new IllegalStateException(String.format("Apartment id should not be declared in the payload, or should be equal to the path parameter %d != %d", apartmentUsage.getApartmentId(), id));
         }
 
@@ -75,7 +75,7 @@ public class ApartmentUsageController {
         apartmentUsageService.validateUsageToApartment(apartmentUsageEntity);
         apartment.addApartmentUsage(apartmentUsageEntity);
 
-        ApartmentUsage savedEntity = apartmentUsageService.save(apartmentUsageEntity.convertToDTO());
+        ApartmentUsage savedEntity = apartmentUsageRepository.save(apartmentUsageEntity);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
