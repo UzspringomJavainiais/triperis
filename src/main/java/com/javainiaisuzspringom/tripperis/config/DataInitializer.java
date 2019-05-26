@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@Profile("!Production")
+@Profile("!production")
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired
