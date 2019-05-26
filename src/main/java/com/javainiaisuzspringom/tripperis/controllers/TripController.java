@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,12 +50,42 @@ public class TripController {
 
     @PostMapping("/api/trip")
     public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        trip.setStatus(TripStatus.TRIP_CREATED);
+
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         account.setPassword(null);
         trip.setOrganizers(Collections.singletonList(account));
         return tripService.save(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/cancelTrip")
+    public ResponseEntity<Trip> cancelTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_CANCELLED);
+
+        return ResponseEntity.ok(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/startTrip")
+    public ResponseEntity<Trip> startTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_IN_PROGRESS);
+
+        return ResponseEntity.ok(trip);
     }
 
     private void createTripRequests(Trip trip) {

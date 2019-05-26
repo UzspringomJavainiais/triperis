@@ -27,8 +27,8 @@ public class Trip implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @OneToOne
-    private StatusCode status;
+    @Column(name = "trip_status")
+    private TripStatus status;
 
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateFrom;
@@ -79,11 +79,11 @@ public class Trip implements Serializable {
         return this;
     }
 
-    public StatusCode getStatus() {
+    public TripStatus getStatus() {
         return status;
     }
 
-    public Trip setStatus(StatusCode status) {
+    public Trip setStatus(TripStatus status) {
         this.status = status;
         return this;
     }
