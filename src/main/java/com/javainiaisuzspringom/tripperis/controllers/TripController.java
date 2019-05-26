@@ -148,11 +148,12 @@ public class TripController {
         Trip tripTwo = tripTwoOptional.get();
         Trip mergedTrip = new Trip();
 
-        mergedTrip.setName(tripOne + " & " + tripTwo);
+        mergedTrip.setName(tripOne.getName() + " & " + tripTwo.getName());
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
 
         // Add distinct accounts to the merged trip
-        mergedTrip.setAccounts(tripOne.getAccounts());
+        for (Account account : tripOne.getAccounts())
+            mergedTrip.getAccounts().add(account);
 
         for (Account account : tripTwo.getAccounts()) {
             if (!mergedTrip.getAccounts().contains(account))
@@ -160,11 +161,21 @@ public class TripController {
         }
 
         // Merge distinct checklist items
-        mergedTrip.setChecklistItems(tripOne.getChecklistItems());
+        for (ChecklistItem item : tripOne.getChecklistItems())
+            mergedTrip.getChecklistItems().add(item);
 
         for (ChecklistItem item : tripTwo.getChecklistItems()) {
-            if (mergedTrip.getChecklistItems().contains(item))
+            if (!mergedTrip.getChecklistItems().contains(item))
                 mergedTrip.getChecklistItems().add(item);
+        }
+
+        // Merge distinct organizers
+        for (Account account : tripOne.getOrganizers())
+            mergedTrip.getOrganizers().add(account);
+
+        for (Account organizer : tripTwo.getOrganizers()) {
+            if (!mergedTrip.getOrganizers().contains(organizer))
+                mergedTrip.getOrganizers().add(organizer);
         }
 
         // TODO: mergedTrip.setType();

@@ -136,4 +136,12 @@ public class Trip implements Serializable {
         this.tripSteps = tripSteps;
         return this;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Trip)
+            return ((Trip)obj).getId().equals(getId());
+        else
+            return false;
+    }
 }
