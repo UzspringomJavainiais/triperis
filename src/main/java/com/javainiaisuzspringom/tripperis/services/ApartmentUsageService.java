@@ -52,7 +52,7 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
             if(roomUsage.getAccounts().size() != roomUsage.getRoom().getMaxCapacity()) {
                 throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
             }
-            if(roomUsage.getAccounts().size() > roomUsageService.getFreeSpaces(roomUsage)) {
+            if(roomUsageService.isAvailableForUsage(roomUsage)) {
                 throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
             }
         }
