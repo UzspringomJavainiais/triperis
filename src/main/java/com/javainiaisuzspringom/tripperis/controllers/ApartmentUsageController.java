@@ -59,7 +59,7 @@ public class ApartmentUsageController {
         return new ResponseEntity<>(usagesForApartment, HttpStatus.OK);
     }
 
-    @PostMapping("/api/apartment/{id}/usage")
+    @PutMapping("/api/apartment/{id}/usage")
     public ResponseEntity<ApartmentUsageDTO> addApartmentUsageToApartment(@PathVariable(name= "id") Integer id, @RequestBody ApartmentUsageDTO apartmentUsage) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
@@ -76,7 +76,7 @@ public class ApartmentUsageController {
         apartment.addApartmentUsage(apartmentUsageEntity);
 
         ApartmentUsage savedEntity = apartmentUsageRepository.save(apartmentUsageEntity);
-        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
     }
 
     @GetMapping("/api/apartment/{id}/room/{roomId}")

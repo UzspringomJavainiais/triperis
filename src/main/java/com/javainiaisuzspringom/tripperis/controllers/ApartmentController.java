@@ -58,9 +58,10 @@ public class ApartmentController {
             return ResponseEntity.notFound().build();
         }
         Apartment apartment = maybeApartment.get();
-        apartmentService.addRooms(apartment, rooms.stream()
+        rooms.stream()
                 .map(dto -> roomService.getExistingOrConvert(dto))
-                .collect(Collectors.toList()));
-        return new ResponseEntity<>(apartment.convertToDTO(), HttpStatus.CREATED);
+                .forEach(apartment::addRoom);
+
+        return new ResponseEntity<>(apartment.convertToDTO(), HttpStatus.OK);
     }
 }

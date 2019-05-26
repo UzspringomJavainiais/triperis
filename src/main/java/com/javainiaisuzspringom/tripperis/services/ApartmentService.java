@@ -46,9 +46,4 @@ public class ApartmentService implements BasicDtoToEntityService<Apartment, Apar
     public Long getApartmentCapacity(Apartment apartment) {
         return repository.getCapacity(apartment);
     }
-
-    @Transactional
-    public void addRooms(Apartment apartment, List<Room> roomsToAdd) {
-        roomsToAdd.forEach(apartment::addRoom);
-    }
 }
