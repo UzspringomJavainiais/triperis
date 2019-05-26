@@ -4,8 +4,11 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripAttachmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,10 +38,16 @@ public class TripController {
     private TripRepository tripRepository;
 
     @Autowired
+    private TripAttachmentRepository tripAttachmentRepository;
+
+    @Autowired
     private AccountService accountService;
 
     @Autowired
     private CsvService csvService;
+
+    @Autowired
+    private TripRequestService tripRequestService;
 
     @GetMapping("/api/trip")
     public List<Trip> getAllTrips() {
@@ -70,8 +81,9 @@ public class TripController {
     private TripRequest createTripRequest(Account account, Trip trip) {
         TripRequest tripRequest = new TripRequest();
         tripRequest.setAccount(account);
-        tripRequest.setStatus(TripRequestType.NEW_TRIP);
+        tripRequest.setType(TripRequestType.NEW_TRIP);
         tripRequest.setTrip(trip);
+        tripRequest.setStatus(TripRequestStatus.NEW);
         return tripRequest;
     }
 
@@ -123,7 +135,6 @@ public class TripController {
     }
 
 
-
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
     public ResponseEntity<Trip> mergeTrips(@PathVariable Integer idOne,
                                            @PathVariable Integer idTwo) {
@@ -156,7 +167,7 @@ public class TripController {
                 mergedTrip.getChecklistItems().add(item);
         }
 
-        // TODO: mergedTrip.setStatus();
+        // TODO: mergedTrip.setType();
 
         tripRepository.save(mergedTrip);
 
@@ -243,6 +254,53 @@ public class TripController {
         csvService.createTripsCsv(response);
     }
 
+    @PostMapping("/api/trip/{id}/addFile")
+    public ResponseEntity<TripAttachment> addFileToTrip(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        TripAttachment attachment = new TripAttachment();
+
+        attachment.setTrip(maybeTrip.get());
+        attachment.setFileName(file.getOriginalFilename().split("\\.")[0]);
+
+        // Extract extension from filename
+        if (file.getOriginalFilename().split("\\.").length > 1)
+            attachment.setExtension(file.getOriginalFilename().split("\\.")[1]);
+
+        try {
+            attachment.setFileData(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        tripAttachmentRepository.save(attachment);
+
+        // Dont send the file data back
+        attachment.setFileData(null);
+
+        return new ResponseEntity<>(attachment, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/{id}/attachments")
+    public ResponseEntity<List<TripAttachmentDTO>> getAttachments(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+        List<TripAttachmentDTO> list = new ArrayList<>();
+
+        for (TripAttachment attachment : trip.getTripAttachments())
+            list.add(attachment.convertToDTO());
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
     @GetMapping("/api/trip/{id}/progress")
     public ResponseEntity<Float> getProgress(@PathVariable Integer id) {
         Optional<Trip> maybeTrip = tripRepository.findById(id);
@@ -262,6 +320,16 @@ public class TripController {
         totalItems = trip.getChecklistItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/requests/{id}")
+    public List<TripRequest> getTripRequestsByTripId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer id) {
+        return tripRequestService.getMyPendingRequestByTripId(userDetails, id);
+    }
+
+    @PatchMapping("/api/trip/requests")
+    public TripRequest patchTripRequest(@RequestBody TripRequestPatchDTO tripRequestPatchDTO) {
+        return tripRequestService.patchTripRequest(tripRequestPatchDTO);
     }
 
     private void attachTripToEntities(Trip trip) {
