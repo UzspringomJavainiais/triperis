@@ -23,12 +23,26 @@ public class CsvService {
     private CsvWriter csvWriter;
 
     public void createTripsCsv(HttpServletResponse response) {
-        List<Trip> trips = tripService.getAllTrips();
 
-        String[] headers = new String[]{"name", "description"};
-
+        String[] headers = new String[]{
+                "name", "description",
+//                "status",
+                "dateFrom", "dateTo", "accounts", "organizers",
+                "checklistItems", "tripSteps"};
         List<String[]> csvLines = new ArrayList<>();
-        trips.forEach(trip -> csvLines.add(new String[]{trip.getName(), trip.getDescription()}));
+
+        List<Trip> trips = tripService.getAllTrips();
+        trips.forEach(trip -> csvLines.add(new String[]{
+                trip.getName(),
+                trip.getDescription(),
+//                trip.getStatus().toString(),
+                trip.getDateFrom().toString(),
+                trip.getDateTo().toString(),
+                trip.getAccounts().toString(),
+                trip.getOrganizers().toString(),
+                trip.getChecklistItems().toString(),
+                trip.getTripSteps().toString()
+        }));
 
         createCsv(headers, csvLines, response);
     }

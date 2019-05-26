@@ -34,4 +34,13 @@ public class StatusCode implements ConvertableEntity<Integer, StatusCodeDTO>, Se
 
         return dto;
     }
+
+    @Override
+    public String toString() {
+        return "StatusCode{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

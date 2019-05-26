@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Role implements ConvertableEntity<Integer, RoleDTO>, Serializable {
     private Timestamp dateDeleted;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private List<Account> account =  new ArrayList<>();
 
     public RoleDTO convertToDTO() {

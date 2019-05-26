@@ -59,12 +59,29 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
+        deleteCookies(request, response);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
     private void addAuthorizationCookie(String token, HttpServletResponse response) {
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge(60*60);
+        cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
+    }
+
+    private void deleteCookies(HttpServletRequest req, HttpServletResponse resp) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null)
+            for (Cookie cookie : cookies) {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                resp.addCookie(cookie);
+            }
     }
 }

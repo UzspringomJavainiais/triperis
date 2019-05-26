@@ -8,16 +8,21 @@ import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripAttachmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +46,9 @@ public class TripController {
     @Autowired
     private CsvService csvService;
 
+    @Autowired
+    private TripRequestService tripRequestService;
+
     @GetMapping("/api/trip")
     public List<Trip> getAllTrips() {
         return tripService.getAll();
@@ -52,13 +60,16 @@ public class TripController {
     }
 
     @PostMapping("/api/trip")
-    public Trip addTrip(@RequestBody Trip trip) {
+    public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
         attachTripToEntities(trip);
-        createTripRequsts(trip);
+        createTripRequests(trip);
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        account.setPassword(null);
+        trip.setOrganizers(Collections.singletonList(account));
         return tripService.save(trip);
     }
 
-    private void createTripRequsts(Trip trip) {
+    private void createTripRequests(Trip trip) {
         List<TripRequest> tripRequests = trip.getAccounts()
                 .stream()
                 .map(account -> createTripRequest(account, trip))
@@ -70,8 +81,9 @@ public class TripController {
     private TripRequest createTripRequest(Account account, Trip trip) {
         TripRequest tripRequest = new TripRequest();
         tripRequest.setAccount(account);
-        tripRequest.setStatus(TripRequestType.NEW_TRIP);
+        tripRequest.setType(TripRequestType.NEW_TRIP);
         tripRequest.setTrip(trip);
+        tripRequest.setStatus(TripRequestStatus.NEW);
         return tripRequest;
     }
 
@@ -103,6 +115,23 @@ public class TripController {
         }
 
         return ResponseEntity.ok(tripStartDate.get());
+    }
+
+    @GetMapping("/api/trip/{id}/getTotalPrice")
+    public ResponseEntity<BigDecimal> getTotalPrice(@PathVariable Integer id) {
+        Optional<Trip> tripResultById = tripRepository.findById(id);
+        if (!tripResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Trip trip = tripResultById.get();
+        List<ChecklistItem> checklistItems = trip.getChecklistItems();
+
+        BigDecimal result = checklistItems.stream()
+                .map(ChecklistItem::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return ResponseEntity.ok(result);
     }
 
 
@@ -138,7 +167,7 @@ public class TripController {
                 mergedTrip.getChecklistItems().add(item);
         }
 
-        // TODO: mergedTrip.setStatus();
+        // TODO: mergedTrip.setType();
 
         tripRepository.save(mergedTrip);
 
@@ -291,6 +320,16 @@ public class TripController {
         totalItems = trip.getChecklistItems().size();
 
         return new ResponseEntity<>((float) (completedItems / totalItems), HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/requests/{id}")
+    public List<TripRequest> getTripRequestsByTripId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer id) {
+        return tripRequestService.getMyPendingRequestByTripId(userDetails, id);
+    }
+
+    @PatchMapping("/api/trip/requests")
+    public TripRequest patchTripRequest(@RequestBody TripRequestPatchDTO tripRequestPatchDTO) {
+        return tripRequestService.patchTripRequest(tripRequestPatchDTO);
     }
 
     private void attachTripToEntities(Trip trip) {

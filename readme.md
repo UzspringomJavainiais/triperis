@@ -1,0 +1,1 @@
+To launch the program specify this Program argument `--spring.config.name=test`
