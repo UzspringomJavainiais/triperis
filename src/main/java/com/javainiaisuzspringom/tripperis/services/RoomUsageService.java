@@ -1,19 +1,22 @@
 package com.javainiaisuzspringom.tripperis.services;
 
+import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
+import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
+import com.javainiaisuzspringom.tripperis.dto.ReservationInfo.FromComparator;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoomUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.RoomRepository;
 import com.javainiaisuzspringom.tripperis.repositories.RoomUsageRepository;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,66 +56,55 @@ public class RoomUsageService implements BasicDtoToEntityService<RoomUsage, Room
         }
         Timestamp usageFrom = usage.getApartmentUsage().getFrom();
         Timestamp usageTo = usage.getApartmentUsage().getTo();
+        Room room = usage.getRoom();
 
-        List<RoomUsage> usagesInPeriod = repository.findAllRoomUsagesBetweenDates(usageFrom, usageTo);
-        if(usagesInPeriod.isEmpty()) {
-            return true;
-        }
-        Map<Duration, RoomUsage> durationToUsage = usagesInPeriod.stream()
-                .collect(Collectors.toMap(x -> new Duration(x.getApartmentUsage().getFrom(), x.getApartmentUsage().getTo(), x.getAccounts().size()), Function.identity()));
-        LinkedList<Duration> durations = new LinkedList<>(durationToUsage.keySet());
-        List<Integer> capacityList = getCapacityList(maxCapacity, durations);
+        List<ReservationInfo> reservedList = getReservedCapacities(room, usageFrom, usageTo);
 
         // If there exists a moment in given period, where available capacity is less than needed, then return false
-        return capacityList.stream()
-                .allMatch(capacityAtMoment -> capacityAtMoment >= peopleCount);
+        return reservedList.stream()
+                .allMatch(reservationsAtMoment -> (maxCapacity - reservationsAtMoment.getReservations()) >= peopleCount);
     }
 
-    protected List<Integer> getCapacityList(Integer maxCapacity, List<Duration> durations) {
+    public List<ReservationInfo> getReservedCapacities(Room room, Timestamp usageFrom, Timestamp usageTo) {
+        List<RoomUsage> usagesInPeriod = repository.findAllRoomUsagesBetweenDates(room, usageFrom, usageTo);
+        List<ReservationInfo> durations = usagesInPeriod.stream()
+                .map(x -> new ReservationInfo(x.getApartmentUsage().getFrom(), x.getApartmentUsage().getTo(), x.getAccounts().size()))
+                .collect(Collectors.toList());
+        return getReservedList(durations);
+    }
+
+    protected List<ReservationInfo> getReservedList(List<ReservationInfo> durations) {
 
         durations.sort(fromComparator); // Durations sorted by starting date
 
-        Deque<Duration> stack = new ArrayDeque<>(durations);
-        List<Duration> currentBucket = new ArrayList<>();
-        List<Integer> capacityList = new ArrayList<>();
+        Deque<ReservationInfo> stack = new ArrayDeque<>(durations);
+        List<ReservationInfo> currentBucket = new ArrayList<>();
+        List<ReservationInfo> capacityList = new ArrayList<>();
 
         Timestamp rootDate = durations.get(0).getFrom();
 
         while(!(currentBucket.isEmpty() && stack.isEmpty())) {
             // 1) Add all durations with lowest start date to bucket
-            while(stack.peek() != null && stack.peek().from.equals(rootDate)) {
+            while(stack.peek() != null && stack.peek().getFrom().equals(rootDate)) {
                 currentBucket.add(stack.pop());
             }
             // 2) Count capacity for bucket
-            capacityList.add(maxCapacity - currentBucket.stream().mapToInt(Duration::getReservations).sum());
+            int reservations = currentBucket.stream().mapToInt(ReservationInfo::getReservations).sum();
             // 3) Get next root date
-            Timestamp minToDate = currentBucket.stream().map(Duration::getTo).min(Timestamp::compareTo).get();
-            if(!stack.isEmpty() && minToDate.after(stack.peek().from)) {
-                rootDate = stack.peek().from;
+            Timestamp minToDate = currentBucket.stream().map(ReservationInfo::getTo).min(Timestamp::compareTo).get();
+            Timestamp oldRootDate = rootDate;
+            if(!stack.isEmpty() && minToDate.after(stack.peek().getFrom())) {
+                rootDate = stack.peek().getFrom();
             }
             else {
                 // Remove all expired dates
-                currentBucket.removeIf(x -> x.to == minToDate);
+                currentBucket.removeIf(x -> x.getTo() == minToDate);
                 rootDate = minToDate;
             }
+
+            ReservationInfo duration = new ReservationInfo(oldRootDate, rootDate, reservations);
+            capacityList.add(duration);
         }
         return capacityList;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    protected static class Duration {
-        Timestamp from;
-        Timestamp to;
-        int reservations;
-    }
-
-    private static class FromComparator implements Comparator<Duration> {
-
-        @Override
-        public int compare(Duration o1, Duration o2) {
-            return o1.from.compareTo(o2.from);
-        }
     }
 }

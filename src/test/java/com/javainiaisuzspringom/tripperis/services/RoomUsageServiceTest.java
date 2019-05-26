@@ -2,22 +2,19 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
+import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
 import com.javainiaisuzspringom.tripperis.repositories.RoomUsageRepository;
-import com.javainiaisuzspringom.tripperis.services.RoomUsageService.Duration;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -48,24 +45,17 @@ public class RoomUsageServiceTest {
      */
     @Test
     public void shouldReturnCorrectCapacities() {
-        int roomCapacity = 5;
         Timestamp fromDate = Timestamp.valueOf(LocalDateTime.of(2012, 12, 12, 1, 1));
         Timestamp toDate = Timestamp.valueOf(LocalDateTime.of(2012, 12, 22, 1, 1));;
 
-        Duration duration1= createDurationWithOffsetAndPeople(fromDate, toDate, -1, -1, 1);
-        Duration duration2= createDurationWithOffsetAndPeople(fromDate, toDate, 0, 1, 1);
-        Duration duration3= createDurationWithOffsetAndPeople(fromDate, toDate, 0, -2, 1);
+        ReservationInfo duration1= createDurationWithOffsetAndPeople(fromDate, toDate, -1, -1, 1);
+        ReservationInfo duration2= createDurationWithOffsetAndPeople(fromDate, toDate, 0, 1, 1);
+        ReservationInfo duration3= createDurationWithOffsetAndPeople(fromDate, toDate, 0, -2, 1);
 
-        List<Integer> capacityList = service.getCapacityList(roomCapacity, Arrays.asList(duration1, duration2, duration3));
-        List<Integer> expected = Arrays.asList(4, 2, 3, 4);
-        assertThat(capacityList, is(expected));
-    }
-
-
-    @Test
-    public void shouldReturnCorrectCapacities2() {
-        Deque<CriteriaBuilder.In> stack = new ArrayDeque(Arrays.asList(1, 2, 3 ,4 ,5));
-        System.out.println(stack);
+        List<ReservationInfo> reservedList = service.getReservedList(Arrays.asList(duration1, duration2, duration3));
+        List<Integer> expected = Arrays.asList(1, 3, 2, 1);
+        List<Integer> actualCapacities = reservedList.stream().map(ReservationInfo::getReservations).collect(Collectors.toList());
+        assertThat(actualCapacities, is(expected));
     }
 
     /**
@@ -96,7 +86,7 @@ public class RoomUsageServiceTest {
                 .thenReturn(fromDate);
         when(usagePayload.getApartmentUsage().getTo())
                 .thenReturn(toDate);
-        when(repository.findAllRoomUsagesBetweenDates(fromDate, toDate))
+        when(repository.findAllRoomUsagesBetweenDates(any(), eq(fromDate), eq(toDate)))
                 .thenReturn(Arrays.asList(reservation1, reservation2, reservation3));
 
         boolean isAvailable = service.isAvailableForUsage(usagePayload);
@@ -131,7 +121,7 @@ public class RoomUsageServiceTest {
                 .thenReturn(fromDate);
         when(usagePayload.getApartmentUsage().getTo())
                 .thenReturn(toDate);
-        when(repository.findAllRoomUsagesBetweenDates(fromDate, toDate))
+        when(repository.findAllRoomUsagesBetweenDates(any(), eq(fromDate), eq(toDate)))
                 .thenReturn(Arrays.asList(reservation1, reservation2, reservation3));
 
         boolean isAvailable = service.isAvailableForUsage(usagePayload);
@@ -149,9 +139,9 @@ public class RoomUsageServiceTest {
         return takenFor;
     }
 
-    private Duration createDurationWithOffsetAndPeople(Timestamp from, Timestamp to, int dayOffsetFrom, int dayOffsetTo, int peopleAmount) {
+    private ReservationInfo createDurationWithOffsetAndPeople(Timestamp from, Timestamp to, int dayOffsetFrom, int dayOffsetTo, int peopleAmount) {
         Timestamp fromAdjusted = Timestamp.from(from.toInstant().plus(dayOffsetFrom, ChronoUnit.DAYS));
         Timestamp toAdjusted = Timestamp.from(to.toInstant().plus(dayOffsetTo, ChronoUnit.DAYS));
-        return new Duration(fromAdjusted, toAdjusted, peopleAmount);
+        return new ReservationInfo(fromAdjusted, toAdjusted, peopleAmount);
     }
 }

@@ -2,16 +2,20 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
+import com.javainiaisuzspringom.tripperis.domain.Room;
+import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentUsageRepository;
+import com.javainiaisuzspringom.tripperis.repositories.RoomRepository;
 import com.javainiaisuzspringom.tripperis.services.ApartmentUsageService;
-import com.javainiaisuzspringom.tripperis.services.RoomUsageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +34,7 @@ public class ApartmentUsageController {
     private ApartmentRepository apartmentRepository;
 
     @Autowired
-    private RoomUsageService roomUsageService;
+    private RoomRepository roomRepository;
 
     @GetMapping("/api/apartment/usage")
     public List<ApartmentUsageDTO> getAllApartmentUsages() {
@@ -68,10 +72,27 @@ public class ApartmentUsageController {
 
         Apartment apartment = maybeApartment.get();
         ApartmentUsage apartmentUsageEntity = apartmentUsageService.getExistingOrConvert(apartmentUsage);
-        apartmentUsageService.validateUsageToApartment(apartment, apartmentUsageEntity);
+        apartmentUsageService.validateUsageToApartment(apartmentUsageEntity);
         apartment.addApartmentUsage(apartmentUsageEntity);
 
         ApartmentUsage savedEntity = apartmentUsageService.save(apartmentUsageEntity.convertToDTO());
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/api/apartment/{id}/room/{roomId}")
+    public List<ReservationInfo> getReservationsForUsage(@PathVariable(name= "id") Integer id,
+                                                         @PathVariable(name= "roomId") Integer roomId,
+                                                         @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                         @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+        Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
+        if(!maybeApartment.isPresent()) {
+            throw new IllegalStateException("Apartment doesn't exist");
+        }
+
+        Optional<Room> maybeRoom = roomRepository.findByIdAndApartment(roomId, maybeApartment.get());
+        if(!maybeRoom.isPresent()) {
+            throw new IllegalStateException("Room doesn't exist");
+        }
+        return apartmentUsageService.getCapacityListForRoom(maybeRoom.get(), dateStart, dateEnd);
     }
 }

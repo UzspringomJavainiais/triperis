@@ -1,8 +1,9 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
+import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
+import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentUsageRepository;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,18 +47,21 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
 
     /**
      * Tests if apartment is valid to be added to apartment
-     * @param apartment apartment to test with
      * @param apartmentUsage usage to test
      */
-    public void validateUsageToApartment(Apartment apartment, ApartmentUsage apartmentUsage) {
+    public void validateUsageToApartment(ApartmentUsage apartmentUsage) {
 
         for(RoomUsage roomUsage: apartmentUsage.getRoomsToUsers()) {
-            if(roomUsage.getAccounts().size() != roomUsage.getRoom().getMaxCapacity()) {
+            if(roomUsage.getAccounts().size() >= roomUsage.getRoom().getMaxCapacity()) {
                 throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
             }
             if(roomUsageService.isAvailableForUsage(roomUsage)) {
                 throw new IllegalStateException("Trying to cram too many people into room. Not enough room");
             }
         }
+    }
+
+    public List<ReservationInfo> getCapacityListForRoom(Room room, Date dateStart, Date dateEnd) {
+        return roomUsageService.getReservedCapacities(room, Timestamp.from(dateStart.toInstant()), Timestamp.from(dateEnd.toInstant()));
     }
 }
