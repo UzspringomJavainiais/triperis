@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -127,39 +128,30 @@ public class AccountController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "/api/account/{id}/tripsInPeriod")
-    public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
+    @GetMapping(value = "/api/account/{id}/availability")
+    public ResponseEntity<List<CalendarEntry>> totalAccountAvailability(@PathVariable(name = "id") Integer id) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, Date.from(Instant.now()), Date.from(Instant.now().plus(2, ChronoUnit.YEARS)));
+        return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/account/{id}/availability")
+    public ResponseEntity<List<CalendarEntry>> accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
                                                              @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
                                                              @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
-
         if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
         Account account = accountResultById.get();
-
         List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/api/account/{id}/isAccountFree")
-    public ResponseEntity<Boolean> isAccountFree(@PathVariable(name = "id") Integer id,
-                                                 @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                 @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
-        Optional<Account> accountResultById = accountService.getById(id);
-
-        if (!accountResultById.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Account account = accountResultById.get();
-
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
-
-        Boolean isAccountFreeInPeriod = accountFreeDates.isEmpty();
-        return new ResponseEntity<>(isAccountFreeInPeriod, HttpStatus.OK);
     }
 
     @GetMapping("/api/account/{id}/trips")
