@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.services;
 
+import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
 import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
@@ -66,5 +67,9 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
 
     public List<ReservationInfo> getCapacityListForRoom(Room room, Date dateStart, Date dateEnd) {
         return roomUsageService.getReservedCapacities(room, Timestamp.from(dateStart.toInstant()), Timestamp.from(dateEnd.toInstant()));
+    }
+
+    public List<ApartmentUsage> findAllApartmentUsagesInPeriod(Apartment apartment, Date dateStart, Date dateEnd) {
+        return repository.findAllApartmentUsagesInPeriod(apartment, Timestamp.from(dateStart.toInstant()), Timestamp.from(dateEnd.toInstant()));
     }
 }

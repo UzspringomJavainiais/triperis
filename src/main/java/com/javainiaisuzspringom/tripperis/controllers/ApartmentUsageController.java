@@ -59,6 +59,23 @@ public class ApartmentUsageController {
         return new ResponseEntity<>(usagesForApartment, HttpStatus.OK);
     }
 
+    @GetMapping("/api/apartment/{id}/usage")
+    public ResponseEntity<List<ApartmentUsageDTO>> getUsagesForOfApartmentInPeriod(@PathVariable(name= "id") Integer id,
+                                                                           @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                                           @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+        Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
+        if(!maybeApartment.isPresent()) {
+            throw new IllegalStateException("Apartment doesn't exist");
+        }
+        Apartment apartment = maybeApartment.get();
+
+        List<ApartmentUsageDTO> usagesForApartment = apartmentUsageService.findAllApartmentUsagesInPeriod(apartment, dateStart, dateEnd).stream()
+                .map(ApartmentUsage::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(usagesForApartment, HttpStatus.OK);
+    }
+
     @PutMapping("/api/apartment/{id}/usage")
     public ResponseEntity<ApartmentUsageDTO> addApartmentUsageToApartment(@PathVariable(name= "id") Integer id, @RequestBody ApartmentUsageDTO apartmentUsage) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
