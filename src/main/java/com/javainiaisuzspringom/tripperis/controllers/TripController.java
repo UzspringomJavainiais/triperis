@@ -10,6 +10,7 @@ import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -146,10 +149,28 @@ public class TripController {
 
         Trip tripOne = tripOneOptional.get();
         Trip tripTwo = tripTwoOptional.get();
+
+        // Check if the trips can be merged
+        if (ChronoUnit.DAYS.between(tripOne.getDateFrom().toInstant(), tripTwo.getDateFrom().toInstant()) > 1
+            || ChronoUnit.DAYS.between(tripOne.getDateTo().toInstant(), tripTwo.getDateTo().toInstant()) > 1)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         Trip mergedTrip = new Trip();
 
         mergedTrip.setName(tripOne.getName() + " & " + tripTwo.getName());
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
+
+        // Set the earliest date from
+        if (tripOne.getDateFrom().toInstant().isBefore(tripTwo.getDateFrom().toInstant()))
+            mergedTrip.setDateFrom(tripOne.getDateFrom());
+        else
+            mergedTrip.setDateFrom(tripTwo.getDateFrom());
+
+        // Do the same for the date to
+        if (tripOne.getDateTo().toInstant().isAfter(tripTwo.getDateTo().toInstant()))
+            mergedTrip.setDateTo(tripOne.getDateTo());
+        else
+            mergedTrip.setDateTo(tripTwo.getDateTo());
 
         // Add distinct accounts to the merged trip
         for (Account account : tripOne.getAccounts())
