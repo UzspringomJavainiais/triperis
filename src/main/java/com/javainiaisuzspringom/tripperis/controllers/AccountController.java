@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,28 +127,25 @@ public class AccountController {
     }
 
     @GetMapping(value = "/api/account/{id}/availability")
-    public ResponseEntity<List<CalendarEntry>> totalAccountAvailability(@PathVariable(name = "id") Integer id) {
+    public ResponseEntity accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
+                                                      @RequestParam(name = "dateStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                      @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
         if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
         Account account = accountResultById.get();
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, Date.from(Instant.now()), Date.from(Instant.now().plus(2, ChronoUnit.YEARS)));
-        return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/api/account/{id}/availability")
-    public ResponseEntity<List<CalendarEntry>> accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
-                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
-
-        Optional<Account> accountResultById = accountService.getById(id);
-        if (!accountResultById.isPresent()) {
-            return ResponseEntity.notFound().build();
+        List<CalendarEntry> accountFreeDates;
+        if(dateStart == null && dateEnd == null) {
+            accountFreeDates = accountService.getAccountCalendar(account);
         }
-        Account account = accountResultById.get();
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        else if (dateStart != null && dateEnd != null && dateStart.before(dateEnd)){
+            accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        }
+        else {
+            return ResponseEntity.badRequest().body("Invalid parameters passed");
+        }
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
 

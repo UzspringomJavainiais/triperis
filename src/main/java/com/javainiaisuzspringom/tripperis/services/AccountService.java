@@ -54,6 +54,12 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
                 .collect(Collectors.toList());
     }
 
+    public List<CalendarEntry> getAccountCalendar(Account account) {
+        return calendarProviders.stream()
+                .flatMap(provider -> provider.getAccountCalendar(account).stream())
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Account save(AccountDTO entityDto) {
         entityDto.setPassword(passwordEncoder.encode(entityDto.getPassword().trim()));

@@ -2,7 +2,6 @@ package com.javainiaisuzspringom.tripperis.services.calendar;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
-import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -12,4 +11,5 @@ import java.util.List;
  */
 public interface AccountCalendarProvider {
     List<CalendarEntry> getAccountCalendar(Account account, Date periodStart, Date periodEnd);
+    List<CalendarEntry> getAccountCalendar(Account account);
 }
