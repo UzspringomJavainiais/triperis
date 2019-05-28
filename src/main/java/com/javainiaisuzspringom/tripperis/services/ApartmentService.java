@@ -4,15 +4,15 @@ import com.javainiaisuzspringom.tripperis.domain.Apartment;
 import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
-import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
-public class ApartmentService extends AbstractBasicEntityService<Apartment, ApartmentDTO, Integer> {
+public class ApartmentService implements BasicDtoToEntityService<Apartment, ApartmentDTO, Integer> {
 
     @Getter
     @Autowired
@@ -27,7 +27,8 @@ public class ApartmentService extends AbstractBasicEntityService<Apartment, Apar
     @Autowired
     private RoomService roomService;
 
-    protected Apartment convertToEntity(ApartmentDTO dto) {
+    @Transactional
+    public Apartment convertToEntity(ApartmentDTO dto) {
         Apartment apartment = new Apartment();
 
         apartment.setName(dto.getName());

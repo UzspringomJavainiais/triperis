@@ -18,10 +18,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-
 
 @Entity(name = "Account")
 @Getter
@@ -144,10 +144,16 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Account)
-            return ((Account)obj).getId().equals(getId());
-        else
-            return obj.equals(this);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
+

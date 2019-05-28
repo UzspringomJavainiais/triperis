@@ -32,11 +32,11 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private TripRepository tripRepository;
-    @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private TripRequestService tripRequestService;
+    @Autowired
+    private TripRepository tripRepository;
 
     @GetMapping("/api/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -121,7 +121,7 @@ public class AccountController {
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll().stream()
+        return accountRepository.findAll().stream()
                 .map(Account::convertToDTO)
                 .collect(Collectors.toList());
     }
