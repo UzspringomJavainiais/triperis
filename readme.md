@@ -1,1 +1,1 @@
-To launch the program specify this Program argument `--spring.config.name=test`
+To launch the program in another environment (in the example - production), specify this VM argument `-Dspring.profiles.active=production`

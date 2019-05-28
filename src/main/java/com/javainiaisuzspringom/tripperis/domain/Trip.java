@@ -61,6 +61,10 @@ public class Trip implements Serializable {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
+    @JsonIgnoreProperties({"trip", "fileData"})
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripAttachment> tripAttachments = new ArrayList<>();
+
     public Integer getId() {
         return id;
     }
@@ -131,5 +135,13 @@ public class Trip implements Serializable {
     public Trip setTripSteps(List<TripStep> tripSteps) {
         this.tripSteps = tripSteps;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Trip)
+            return ((Trip)obj).getId().equals(getId());
+        else
+            return obj.equals(this);
     }
 }

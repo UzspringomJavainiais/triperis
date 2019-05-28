@@ -4,7 +4,8 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
+import com.javainiaisuzspringom.tripperis.repositories.TripAttachmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripRequestService;
@@ -15,9 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +36,9 @@ public class TripController {
 
     @Autowired
     private TripRepository tripRepository;
+
+    @Autowired
+    private TripAttachmentRepository tripAttachmentRepository;
 
     @Autowired
     private AccountService accountService;
@@ -171,11 +178,12 @@ public class TripController {
         Trip tripTwo = tripTwoOptional.get();
         Trip mergedTrip = new Trip();
 
-        mergedTrip.setName(tripOne + " & " + tripTwo);
+        mergedTrip.setName(tripOne.getName() + " & " + tripTwo.getName());
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
 
         // Add distinct accounts to the merged trip
-        mergedTrip.setAccounts(tripOne.getAccounts());
+        for (Account account : tripOne.getAccounts())
+            mergedTrip.getAccounts().add(account);
 
         for (Account account : tripTwo.getAccounts()) {
             if (!mergedTrip.getAccounts().contains(account))
@@ -183,11 +191,21 @@ public class TripController {
         }
 
         // Merge distinct checklist items
-        mergedTrip.setChecklistItems(tripOne.getChecklistItems());
+        for (ChecklistItem item : tripOne.getChecklistItems())
+            mergedTrip.getChecklistItems().add(item);
 
         for (ChecklistItem item : tripTwo.getChecklistItems()) {
-            if (mergedTrip.getChecklistItems().contains(item))
+            if (!mergedTrip.getChecklistItems().contains(item))
                 mergedTrip.getChecklistItems().add(item);
+        }
+
+        // Merge distinct organizers
+        for (Account account : tripOne.getOrganizers())
+            mergedTrip.getOrganizers().add(account);
+
+        for (Account organizer : tripTwo.getOrganizers()) {
+            if (!mergedTrip.getOrganizers().contains(organizer))
+                mergedTrip.getOrganizers().add(organizer);
         }
 
         // TODO: mergedTrip.setType();
@@ -275,6 +293,53 @@ public class TripController {
         response.setContentType("text/plain; charset=utf-8");
         response.setHeader("Content-disposition", "attachment; filename=" + "trips.csv");
         csvService.createTripsCsv(response);
+    }
+
+    @PostMapping("/api/trip/{id}/addFile")
+    public ResponseEntity<TripAttachment> addFileToTrip(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        TripAttachment attachment = new TripAttachment();
+
+        attachment.setTrip(maybeTrip.get());
+        attachment.setFileName(file.getOriginalFilename().split("\\.")[0]);
+
+        // Extract extension from filename
+        if (file.getOriginalFilename().split("\\.").length > 1)
+            attachment.setExtension(file.getOriginalFilename().split("\\.")[1]);
+
+        try {
+            attachment.setFileData(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        tripAttachmentRepository.save(attachment);
+
+        // Dont send the file data back
+        attachment.setFileData(null);
+
+        return new ResponseEntity<>(attachment, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/trip/{id}/attachments")
+    public ResponseEntity<List<TripAttachmentDTO>> getAttachments(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+        List<TripAttachmentDTO> list = new ArrayList<>();
+
+        for (TripAttachment attachment : trip.getTripAttachments())
+            list.add(attachment.convertToDTO());
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/api/trip/{id}/progress")
