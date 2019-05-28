@@ -20,6 +20,8 @@ public class ChecklistItemDTO implements ConvertableDTO<Integer>{
 
     private boolean isChecked;
 
+    private AttachmentDTO attachment;
+
     public String getName() {
         return name;
     }
@@ -35,6 +37,15 @@ public class ChecklistItemDTO implements ConvertableDTO<Integer>{
 
     public ChecklistItemDTO setChecked(boolean checked) {
         isChecked = checked;
+        return this;
+    }
+
+    public AttachmentDTO getAttachment() {
+        return attachment;
+    }
+
+    public ChecklistItemDTO setAttachment(AttachmentDTO attachment) {
+        this.attachment = attachment;
         return this;
     }
 }

@@ -1,7 +1,7 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
-import com.javainiaisuzspringom.tripperis.domain.TripAttachment;
-import com.javainiaisuzspringom.tripperis.repositories.TripAttachmentRepository;
+import com.javainiaisuzspringom.tripperis.domain.Attachment;
+import com.javainiaisuzspringom.tripperis.repositories.AttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -18,18 +18,18 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-public class TripAttachmentController {
+public class AttachmentController {
     @Autowired
-    private TripAttachmentRepository tripAttachmentRepository;
+    private AttachmentRepository attachmentRepository;
 
-    @GetMapping("/api/tripAttachment/{id}")
+    @GetMapping("/api/attachment/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable Integer id, HttpServletRequest request) {
-        Optional<TripAttachment> maybeTripAttachment = tripAttachmentRepository.findById(id);
+        Optional<Attachment> maybeTripAttachment = attachmentRepository.findById(id);
 
         if (!maybeTripAttachment.isPresent())
             return ResponseEntity.notFound().build();
 
-        TripAttachment attachment = maybeTripAttachment.get();
+        Attachment attachment = maybeTripAttachment.get();
 
         Resource resource = new ByteArrayResource(attachment.getFileData());
         String contentType;
