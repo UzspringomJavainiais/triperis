@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -33,11 +32,11 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private TripRepository tripRepository;
-    @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private TripRequestService tripRequestService;
+    @Autowired
+    private TripRepository tripRepository;
 
     @GetMapping("/api/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -122,7 +121,7 @@ public class AccountController {
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll().stream()
+        return accountRepository.findAll().stream()
                 .map(Account::convertToDTO)
                 .collect(Collectors.toList());
     }

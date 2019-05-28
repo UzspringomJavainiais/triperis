@@ -51,12 +51,12 @@ public class TripController {
 
     @GetMapping("/api/trip")
     public List<Trip> getAllTrips() {
-        return tripService.getAll();
+        return tripRepository.findAll();
     }
 
     @GetMapping("/api/trip/{id}")
     public Trip getTripById(@PathVariable Integer id) {
-        return tripService.getTripById(id);
+        return tripRepository.getOne(id);
     }
 
     @PostMapping("/api/trip")
@@ -66,7 +66,7 @@ public class TripController {
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         account.setPassword(null);
         trip.setOrganizers(Collections.singletonList(account));
-        return tripService.save(trip);
+        return tripRepository.save(trip);
     }
 
     private void createTripRequests(Trip trip) {

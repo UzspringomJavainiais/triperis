@@ -2,7 +2,6 @@ package com.javainiaisuzspringom.tripperis.services.calendar;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
-import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 
 import java.util.Date;
 import java.util.List;

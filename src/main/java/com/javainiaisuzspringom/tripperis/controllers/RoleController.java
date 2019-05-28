@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Role;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoleDTO;
+import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,12 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/api/role")
     public List<RoleDTO> getAllRoles() {
-        return roleService.getAll().stream()
+        return roleRepository.findAll().stream()
                 .map(Role::convertToDTO)
                 .collect(Collectors.toList());
     }

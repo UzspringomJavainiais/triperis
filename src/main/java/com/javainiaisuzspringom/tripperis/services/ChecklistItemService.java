@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChecklistItemService extends AbstractBasicEntityService<ChecklistItem, ChecklistItemDTO, Integer> {
+public class ChecklistItemService implements BasicDtoToEntityService<ChecklistItem, ChecklistItemDTO, Integer> {
 
     @Getter
     @Autowired
     private ChecklistItemRepository repository;
 
-    protected ChecklistItem convertToEntity(ChecklistItemDTO dto) {
+    public ChecklistItem convertToEntity(ChecklistItemDTO dto) {
         ChecklistItem item = new ChecklistItem();
 
         item.setName(dto.getName());

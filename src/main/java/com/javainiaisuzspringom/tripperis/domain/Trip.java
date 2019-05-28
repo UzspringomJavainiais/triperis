@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -65,83 +66,16 @@ public class Trip implements Serializable {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripAttachment> tripAttachments = new ArrayList<>();
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Trip setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Trip setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public StatusCode getStatus() {
-        return status;
-    }
-
-    public Trip setStatus(StatusCode status) {
-        this.status = status;
-        return this;
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public Trip setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-        return this;
-    }
-
-    public List<Account> getOrganizers() {
-        return organizers;
-    }
-
-    public Trip setOrganizers(List<Account> organizers) {
-        this.organizers = organizers;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Trip setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public List<ChecklistItem> getChecklistItems() {
-        return checklistItems;
-    }
-
-    public Trip setChecklistItems(List<ChecklistItem> checklistItems) {
-        this.checklistItems = checklistItems;
-        return this;
-    }
-
-    public List<TripStep> getTripSteps() {
-        return tripSteps;
-    }
-
-    public Trip setTripSteps(List<TripStep> tripSteps) {
-        this.tripSteps = tripSteps;
-        return this;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trip trip = (Trip) o;
+        return Objects.equals(id, trip.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Trip)
-            return ((Trip)obj).getId().equals(getId());
-        else
-            return obj.equals(this);
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
