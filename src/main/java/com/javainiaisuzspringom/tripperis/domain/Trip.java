@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -66,10 +67,15 @@ public class Trip implements Serializable {
     private List<TripAttachment> tripAttachments = new ArrayList<>();
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Trip)
-            return ((Trip)obj).getId().equals(getId());
-        else
-            return obj.equals(this);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trip trip = (Trip) o;
+        return Objects.equals(id, trip.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
