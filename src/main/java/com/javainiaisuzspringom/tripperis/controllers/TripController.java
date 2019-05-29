@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -361,6 +362,18 @@ public class TripController {
     @GetMapping("/api/trip/requests/{id}")
     public List<TripRequest> getTripRequestsByTripId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer id) {
         return tripRequestService.getMyPendingRequestByTripId(userDetails, id);
+    }
+
+    @GetMapping("/api/trip/{id}/apartmentUsage")
+    public ResponseEntity<List<ApartmentUsage>> getApartmentUsageByTripId(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+        
+        return ResponseEntity.ok(new ArrayList<>(trip.getTripApartmentUsages()));
     }
 
     @PatchMapping("/api/trip/requests")
