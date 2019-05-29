@@ -38,7 +38,7 @@ public class Trip implements Serializable {
     private Timestamp dateTo;
 
     @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "trip_account", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> accounts = new ArrayList<>();
 
@@ -51,19 +51,19 @@ public class Trip implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<ChecklistItem> checklistItems = new ArrayList<>();
 
     @JsonIgnoreProperties("trip")
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripStep> tripSteps = new ArrayList<>();
 
     @JsonIgnoreProperties("trip")
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
     @JsonIgnoreProperties({"trip", "fileData"})
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripAttachment> tripAttachments = new ArrayList<>();
 
     @Override
