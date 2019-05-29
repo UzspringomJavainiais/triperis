@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public class TripService {
     }
 
     public List<Trip> getMergableTrips(Trip trip) {
-        return em.createNativeQuery("SELECT t.* " +
+        List<Integer> ids = em.createNativeQuery("SELECT t.id " +
                 "FROM trip t " +
                 "WHERE t.id <> :id " +
                 "AND ABS(DATE_PART('day', t.date_from - :dateFrom)) <= 1 " +
@@ -79,5 +80,15 @@ public class TripService {
                 .setParameter("dateFrom", trip.getDateFrom())
                 .setParameter("dateTo", trip.getDateTo())
                 .getResultList();
+
+        List<Trip> trips = new ArrayList<>();
+        for (Integer id : ids) {
+            Optional<Trip> maybeTrip = repository.findById(id);
+
+            if (maybeTrip.isPresent())
+                trips.add(maybeTrip.get());
+        }
+
+        return trips;
     }
 }
