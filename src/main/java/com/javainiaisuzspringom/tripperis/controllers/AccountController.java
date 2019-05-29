@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -33,11 +32,11 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private TripRepository tripRepository;
-    @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private TripRequestService tripRequestService;
+    @Autowired
+    private TripRepository tripRepository;
 
     @GetMapping("/api/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -122,44 +121,32 @@ public class AccountController {
 
     @GetMapping("/api/account")
     public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll().stream()
+        return accountRepository.findAll().stream()
                 .map(Account::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "/api/account/{id}/tripsInPeriod")
-    public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
-                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+    @GetMapping(value = "/api/account/{id}/availability")
+    public ResponseEntity accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
+                                                      @RequestParam(name = "dateStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                      @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
-
         if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
         Account account = accountResultById.get();
-
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates;
+        if(dateStart == null && dateEnd == null) {
+            accountFreeDates = accountService.getAccountCalendar(account);
+        }
+        else if (dateStart != null && dateEnd != null && dateStart.before(dateEnd)){
+            accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        }
+        else {
+            return ResponseEntity.badRequest().body("Badly formed request, check dateStart and dateEnd params");
+        }
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/api/account/{id}/isAccountFree")
-    public ResponseEntity<Boolean> isAccountFree(@PathVariable(name = "id") Integer id,
-                                                 @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                 @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
-        Optional<Account> accountResultById = accountService.getById(id);
-
-        if (!accountResultById.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Account account = accountResultById.get();
-
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
-
-        Boolean isAccountFreeInPeriod = accountFreeDates.isEmpty();
-        return new ResponseEntity<>(isAccountFreeInPeriod, HttpStatus.OK);
     }
 
     @GetMapping("/api/account/{id}/trips")

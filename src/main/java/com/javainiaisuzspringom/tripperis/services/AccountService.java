@@ -29,7 +29,7 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 
 @Service
 @Primary
-public class AccountService extends AbstractBasicEntityService<Account, AccountDTO, Integer> implements UserDetailsService {
+public class AccountService implements BasicDtoToEntityService<Account, AccountDTO, Integer>, UserDetailsService {
 
     @Getter
     @Autowired
@@ -54,11 +54,17 @@ public class AccountService extends AbstractBasicEntityService<Account, AccountD
                 .collect(Collectors.toList());
     }
 
+    public List<CalendarEntry> getAccountCalendar(Account account) {
+        return calendarProviders.stream()
+                .flatMap(provider -> provider.getAccountCalendar(account).stream())
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Account save(AccountDTO entityDto) {
         entityDto.setPassword(passwordEncoder.encode(entityDto.getPassword().trim()));
         entityDto.setEmail(entityDto.getEmail().toLowerCase());
-        return super.save(entityDto);
+        return BasicDtoToEntityService.super.save(entityDto);
     }
 
     @Valid

@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
 import lombok.Getter;
 import lombok.Setter;

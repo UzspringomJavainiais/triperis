@@ -8,18 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RoomService extends AbstractBasicEntityService<Room, RoomDTO, Integer> {
+public class RoomService implements BasicDtoToEntityService<Room, RoomDTO, Integer> {
 
     @Autowired
     @Getter
     private RoomRepository repository;
 
     @Override
-    protected Room convertToEntity(RoomDTO dto) {
+    public Room convertToEntity(RoomDTO dto) {
         Room entity = new Room();
 
-        entity.setMaxCapacity(dto.getMaxCapacity());
-        entity.setRoomNumber(dto.getRoomNumber());
+        entity.setCapacity(dto.getCapacity());
+        entity.setNumber(dto.getNumber());
 
         return entity;
     }

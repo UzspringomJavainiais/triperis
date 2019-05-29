@@ -20,11 +20,11 @@ public class Room implements ConvertableEntity<Integer, RoomDTO>, Serializable {
 
     @Size(max = 100)
     @Column(name = "ROOM_NUMBER")
-    private String roomNumber;
+    private String number;
 
     @PositiveOrZero
     @Column(name = "MAX_CAPACITY")
-    private Integer maxCapacity;
+    private Integer capacity;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "apartment_id")
@@ -35,8 +35,8 @@ public class Room implements ConvertableEntity<Integer, RoomDTO>, Serializable {
         RoomDTO dto = new RoomDTO();
 
         dto.setId(this.getId());
-        dto.setMaxCapacity(this.getMaxCapacity());
-        dto.setRoomNumber(this.getRoomNumber());
+        dto.setCapacity(this.getCapacity());
+        dto.setNumber(this.getNumber());
 
         return dto;
     }

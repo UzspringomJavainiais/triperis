@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
-import com.javainiaisuzspringom.tripperis.domain.Account;
 import lombok.Data;
 
 import java.sql.Timestamp;
