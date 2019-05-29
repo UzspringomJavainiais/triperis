@@ -2,11 +2,13 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
+import com.javainiaisuzspringom.tripperis.domain.TripRequest;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
+import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,10 +32,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private TripRequestService tripRequestService;
+    @Autowired
     private TripRepository tripRepository;
 
     @GetMapping("/api/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities()
@@ -44,6 +50,23 @@ public class AccountController {
         return ok(model);
     }
 
+    @GetMapping("/api/me/pendingRequests")
+    public List<TripRequest> getMyPendingRequests(@AuthenticationPrincipal UserDetails userDetails) {
+        return tripRequestService.getMyPendingRequests(userDetails);
+    }
+
+    @GetMapping("/api/me/trips")
+    public List<Trip> currentUserTrips(@AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        return account.getTrips();
+    }
+
+    @GetMapping("/api/me/organizing")
+    public List<Trip> getMyOrganizingTrips(@AuthenticationPrincipal UserDetails userDetails) {
+        Account account = accountService.loadUserByUsername(userDetails.getUsername());
+        return account.getOrganizedTrips();
+    }
+
     @PostMapping("/api/account")
     public ResponseEntity<AccountDTO> addAccount(@RequestBody AccountDTO account) {
         if (accountService.exists(account.getEmail())) {
@@ -52,7 +75,7 @@ public class AccountController {
         if (account.getPassword().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must not be empty");
         }
-        if (account.getRoleIds().size() < 1) {
+        if (account.getRoleIds().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User must have roles");
         }
 
@@ -60,27 +83,69 @@ public class AccountController {
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/account")
-    public List<AccountDTO> getAllAccounts() {
-        return accountService.getAll().stream()
-                .map(Account::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping(value = "/api/account/{id}/tripsInPeriod")
-    public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
-                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+    @PutMapping("/api/account/{id}")
+    public ResponseEntity<AccountDTO> editAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
 
         Optional<Account> accountResultById = accountService.getById(id);
 
         if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
         Account account = accountResultById.get();
+        Account newVersion = accountService.convertToEntity(newVersionDto);
+        newVersion.setId(account.getId());
+        newVersion.setPassword(account.getPassword());
+        newVersion.setEmail(account.getEmail());
 
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        Account savedEntity = accountRepository.save(newVersion);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
+
+    @PatchMapping("/api/account/{id}")
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        Account newVersion = accountService.convertToEntity(newVersionDto);
+        account = accountService.mergeChanges(account, newVersion);
+
+        Account savedEntity = accountRepository.save(account);
+        return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/api/account")
+    public List<AccountDTO> getAllAccounts() {
+        return accountRepository.findAll().stream()
+                .map(Account::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/api/account/{id}/availability")
+    public ResponseEntity accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
+                                                      @RequestParam(name = "dateStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                      @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+
+        Optional<Account> accountResultById = accountService.getById(id);
+        if (!accountResultById.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = accountResultById.get();
+        List<CalendarEntry> accountFreeDates;
+        if(dateStart == null && dateEnd == null) {
+            accountFreeDates = accountService.getAccountCalendar(account);
+        }
+        else if (dateStart != null && dateEnd != null && dateStart.before(dateEnd)){
+            accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        }
+        else {
+            return ResponseEntity.badRequest().body("Badly formed request, check dateStart and dateEnd params");
+        }
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
 

@@ -13,8 +13,9 @@ public class CsvWriter implements Writer {
 
     public void writeDataToFile(String[] headers, List<String[]> csvLines, PrintWriter writer) throws IOException {
 
-            CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
-            printer.printRecord("test1", "test2");
+            CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT
+                    .withHeader(headers)
+                    .withDelimiter(';'));
 
             csvLines.forEach(line -> {
                 try {

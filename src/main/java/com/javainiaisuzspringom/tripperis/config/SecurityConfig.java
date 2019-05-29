@@ -47,9 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/status-code/**").hasRole("ADMIN")
                 .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
                 .and()
-                .logout()
-                .logoutSuccessUrl("/auth/login")
-                .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }
 

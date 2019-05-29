@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TripStepService extends AbstractBasicEntityService<TripStep, TripStepDTO, Integer> {
+public class TripStepService implements BasicDtoToEntityService<TripStep, TripStepDTO, Integer> {
 
     @Getter
     @Autowired
@@ -17,7 +17,7 @@ public class TripStepService extends AbstractBasicEntityService<TripStep, TripSt
     @Autowired
     private LocationService locationService;
 
-    protected TripStep convertToEntity(TripStepDTO dto) {
+    public TripStep convertToEntity(TripStepDTO dto) {
         TripStep tripStep = new TripStep();
 
         tripStep.setStartDate(dto.getStartDate());

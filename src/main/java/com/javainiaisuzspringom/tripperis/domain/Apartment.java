@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.domain;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -58,6 +59,7 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
         return dto;
     }
 
+    @Transactional
     public void addApartmentUsage(ApartmentUsage usage) {
         if(usage != null && !apartmentUsages.contains(usage)) {
             apartmentUsages.add(usage);

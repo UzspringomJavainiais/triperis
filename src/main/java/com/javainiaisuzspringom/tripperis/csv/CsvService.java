@@ -1,8 +1,6 @@
 package com.javainiaisuzspringom.tripperis.csv;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
-import com.javainiaisuzspringom.tripperis.domain.TripStep;
-import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.services.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +21,26 @@ public class CsvService {
     private CsvWriter csvWriter;
 
     public void createTripsCsv(HttpServletResponse response) {
-        List<Trip> trips = tripService.getAllTrips();
 
-        String[] headers = new String[]{"name", "description"};
-
+        String[] headers = new String[]{
+                "name", "description",
+//                "status",
+                "dateFrom", "dateTo", "accounts", "organizers",
+                "checklistItems", "tripSteps"};
         List<String[]> csvLines = new ArrayList<>();
-        trips.forEach(trip -> csvLines.add(new String[]{trip.getName(), trip.getDescription()}));
+
+        List<Trip> trips = tripService.getAllTrips();
+        trips.forEach(trip -> csvLines.add(new String[]{
+                trip.getName(),
+                trip.getDescription(),
+//                trip.getStatus().toString(),
+                trip.getDateFrom().toString(),
+                trip.getDateTo().toString(),
+                trip.getAccounts().toString(),
+                trip.getOrganizers().toString(),
+                trip.getChecklistItems().toString(),
+                trip.getTripSteps().toString()
+        }));
 
         createCsv(headers, csvLines, response);
     }

@@ -26,13 +26,7 @@ public class CalendarTripEntry implements CalendarEntry {
         this.tripId = tripId;
         this.start = startDate;
         this.end = endDate;
-    }
-
-    public CalendarTripEntry(Integer tripId, Timestamp startDate, Timestamp endDate, CalendarEntryType type) {
-        this.tripId = tripId;
-        this.start = startDate;
-        this.end = endDate;
-        this.type = type;
+        this.type = CalendarEntryType.TRIP;
     }
 
     /**
@@ -42,5 +36,6 @@ public class CalendarTripEntry implements CalendarEntry {
         this.tripId = tripId;
         this.start = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
         this.end = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
+        this.type = CalendarEntryType.TRIP;
     }
 }

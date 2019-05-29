@@ -1,14 +1,20 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "checklist_item")
 @JsonIgnoreProperties("trip")
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
@@ -31,9 +37,9 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @Version
-    @Column(name = "opt_lock_version")
-    private Integer optLockVersion;
+    @JsonIgnore
+    @OneToOne
+    private Attachment attachment;
 
     public ChecklistItemDTO convertToDTO() {
         ChecklistItemDTO dto = new ChecklistItemDTO();
@@ -42,52 +48,32 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         dto.setName(this.getName());
         dto.setChecked(this.isChecked());
 
+        if (getAttachment() != null)
+            dto.setAttachment(getAttachment().convertToDTO());
+
         return dto;
     }
 
     @Override
-    public Integer getId() {
-        return id;
+    public String toString() {
+        return "ChecklistItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isChecked=" + isChecked +
+                ", price=" + price +
+                '}';
     }
 
-    public ChecklistItem setId(Integer id) {
-        this.id = id;
-        return this;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChecklistItem that = (ChecklistItem) o;
+        return Objects.equals(id, that.id);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public ChecklistItem setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public ChecklistItem setChecked(boolean checked) {
-        isChecked = checked;
-        return this;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public ChecklistItem setPrice(BigDecimal price) {
-        this.price = price;
-        return this;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public ChecklistItem setTrip(Trip trip) {
-        this.trip = trip;
-        return this;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

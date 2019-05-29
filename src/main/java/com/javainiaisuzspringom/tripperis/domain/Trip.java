@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -27,8 +28,8 @@ public class Trip implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @OneToOne
-    private StatusCode status;
+    @Column(name = "trip_status")
+    private TripStatus status;
 
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateFrom;
@@ -36,12 +37,12 @@ public class Trip implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateTo;
 
-@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "trip_account", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> accounts = new ArrayList<>();
 
-@JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
+    @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
     @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_organizers", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> organizers = new ArrayList<>();
@@ -50,15 +51,15 @@ public class Trip implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<ChecklistItem> checklistItems = new ArrayList<>();
 
     @JsonIgnoreProperties("trip")
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripStep> tripSteps = new ArrayList<>();
 
     @JsonIgnoreProperties("trip")
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripRequest> tripRequests = new ArrayList<>();
 
     @Version
@@ -83,11 +84,11 @@ public class Trip implements Serializable {
         return this;
     }
 
-    public StatusCode getStatus() {
+    public TripStatus getStatus() {
         return status;
     }
 
-    public Trip setStatus(StatusCode status) {
+    public Trip setStatus(TripStatus status) {
         this.status = status;
         return this;
     }
@@ -96,44 +97,21 @@ public class Trip implements Serializable {
         return accounts;
     }
 
-    public Trip setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-        return this;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trip trip = (Trip) o;
+        return Objects.equals(id, trip.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public List<Account> getOrganizers() {
+
         return organizers;
-    }
-
-    public Trip setOrganizers(List<Account> organizers) {
-        this.organizers = organizers;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Trip setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public List<ChecklistItem> getChecklistItems() {
-        return checklistItems;
-    }
-
-    public Trip setChecklistItems(List<ChecklistItem> checklistItems) {
-        this.checklistItems = checklistItems;
-        return this;
-    }
-
-    public List<TripStep> getTripSteps() {
-        return tripSteps;
-    }
-
-    public Trip setTripSteps(List<TripStep> tripSteps) {
-        this.tripSteps = tripSteps;
-        return this;
     }
 }

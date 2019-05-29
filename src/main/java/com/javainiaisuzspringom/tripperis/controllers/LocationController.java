@@ -2,6 +2,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Location;
 import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
+import com.javainiaisuzspringom.tripperis.repositories.LocationRepository;
 import com.javainiaisuzspringom.tripperis.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,12 @@ public class LocationController {
 
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private LocationRepository locationRepository;
 
     @GetMapping("/api/location")
     public List<LocationDTO> getAllLocations() {
-        return locationService.getAll().stream()
+        return locationRepository.findAll().stream()
                 .map(Location::convertToDTO)
                 .collect(Collectors.toList());
     }

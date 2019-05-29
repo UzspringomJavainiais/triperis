@@ -1,6 +1,8 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,20 +12,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-
 
 @Entity(name = "Account")
 @Getter
 @Setter
 @Table(name = "account")
+@JsonInclude(Include.NON_NULL)
 public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDetails, Serializable {
 
     @Id
@@ -47,20 +51,15 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @NotEmpty
     private List<Role> roles = new ArrayList<>();
 
     @JsonIgnoreProperties("account")
-    @ManyToMany(mappedBy = "accounts")
+    @ManyToMany(mappedBy = "accounts", fetch = FetchType.EAGER)
     private List<Trip> trips = new ArrayList<>();
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "trip_organizers",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "trip_id")
-    )
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "trip_organizers", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> organizedTrips;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -80,7 +79,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         dto.setFirstName(this.getFirstName());
         dto.setLastName(this.getLastName());
         dto.setEmail(this.getEmail());
-        dto.setPassword(null);
+        dto.setPassword(this.getPassword());
 
         if (this.getRoles() != null) {
             dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(toList()));
@@ -131,4 +130,28 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
+

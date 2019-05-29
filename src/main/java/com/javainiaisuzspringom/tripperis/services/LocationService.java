@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LocationService extends AbstractBasicEntityService<Location, LocationDTO, Integer> {
+public class LocationService implements BasicDtoToEntityService<Location, LocationDTO, Integer> {
 
     @Getter
     @Autowired
     private LocationRepository repository;
 
-    protected Location convertToEntity(LocationDTO dto) {
+    public Location convertToEntity(LocationDTO dto) {
         Location location = new Location();
 
         location.setAddress(dto.getAddress());

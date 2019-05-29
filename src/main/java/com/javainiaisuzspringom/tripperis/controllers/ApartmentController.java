@@ -30,7 +30,7 @@ public class ApartmentController {
 
     @GetMapping("/api/apartment")
     public List<ApartmentDTO> getAllApartments() {
-        return apartmentService.getAll().stream()
+        return apartmentRepository.findAll().stream()
                 .map(Apartment::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -51,7 +51,7 @@ public class ApartmentController {
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/apartment/{id}/rooms")
+    @PutMapping("/api/apartment/{id}/rooms")
     public ResponseEntity<ApartmentDTO> addRooms(@PathVariable(name = "id") Integer id, @RequestBody List<RoomDTO> rooms) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
@@ -61,7 +61,7 @@ public class ApartmentController {
         rooms.stream()
                 .map(dto -> roomService.getExistingOrConvert(dto))
                 .forEach(apartment::addRoom);
-        apartmentRepository.save(apartment);
-        return new ResponseEntity<>(apartment.convertToDTO(), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(apartment.convertToDTO(), HttpStatus.OK);
     }
 }

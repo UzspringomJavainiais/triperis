@@ -1,0 +1,1 @@
+To launch the program in another environment (in the example - production), specify this VM argument `-Dspring.profiles.active=production`

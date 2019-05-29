@@ -2,7 +2,6 @@ package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.TripStep;
-import lombok.Data;
 
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
