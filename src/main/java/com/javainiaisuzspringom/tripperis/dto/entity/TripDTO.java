@@ -1,6 +1,7 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
+import com.javainiaisuzspringom.tripperis.domain.TripStatus;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class TripDTO implements ConvertableDTO<Integer>{
     @Size(max = 2000)
     private String description;
 
-    private Integer statusCode;
+    private TripStatus tripStatus;
 
     private List<Integer> accounts = new ArrayList<>();
 
@@ -57,12 +58,13 @@ public class TripDTO implements ConvertableDTO<Integer>{
         return this;
     }
 
-    public Integer getStatusCode() {
-        return statusCode;
+
+    public TripStatus getTripStatus() {
+        return tripStatus;
     }
 
-    public TripDTO setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
+    public TripDTO setTripStatus(TripStatus tripStatus) {
+        this.tripStatus = tripStatus;
         return this;
     }
 

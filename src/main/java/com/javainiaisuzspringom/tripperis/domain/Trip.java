@@ -28,8 +28,8 @@ public class Trip implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @OneToOne
-    private StatusCode status;
+    @Column(name = "trip_status")
+    private TripStatus status;
 
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp dateFrom;
@@ -65,6 +65,37 @@ public class Trip implements Serializable {
     @JsonIgnoreProperties({"trip", "fileData"})
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripAttachment> tripAttachments = new ArrayList<>();
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Trip setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Trip setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public TripStatus getStatus() {
+        return status;
+    }
+
+    public Trip setStatus(TripStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
 
     @Override
     public boolean equals(Object o) {

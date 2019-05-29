@@ -10,7 +10,6 @@ import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripRequestService;
 import com.javainiaisuzspringom.tripperis.services.TripService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -65,11 +63,51 @@ public class TripController {
 
     @PostMapping("/api/trip")
     public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        trip.setStatus(TripStatus.TRIP_CREATED);
+
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         trip.setOrganizers(Collections.singletonList(account));
+
         return tripRepository.save(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/cancelTrip")
+    public ResponseEntity<Trip> cancelTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_CANCELLED);
+
+        return ResponseEntity.ok(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/startTrip")
+    public ResponseEntity<Trip> startTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_IN_PROGRESS);
+
+        return ResponseEntity.ok(trip);
+    }
+
+    private void createTripRequests(Trip trip) {
+        List<TripRequest> tripRequests = trip.getAccounts()
+                .stream()
+                .map(account -> createTripRequest(account, trip))
+                .collect(Collectors.toList());
+
+        trip.setTripRequests(tripRequests);
     }
 
 
@@ -161,7 +199,7 @@ public class TripController {
 
         // Check if the trips can be merged
         if (ChronoUnit.DAYS.between(tripOne.getDateFrom().toInstant(), tripTwo.getDateFrom().toInstant()) > 1
-            || ChronoUnit.DAYS.between(tripOne.getDateTo().toInstant(), tripTwo.getDateTo().toInstant()) > 1)
+                || ChronoUnit.DAYS.between(tripOne.getDateTo().toInstant(), tripTwo.getDateTo().toInstant()) > 1)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Trip mergedTrip = new Trip();
@@ -371,15 +409,6 @@ public class TripController {
     @PatchMapping("/api/trip/requests")
     public TripRequest patchTripRequest(@RequestBody TripRequestPatchDTO tripRequestPatchDTO) {
         return tripRequestService.patchTripRequest(tripRequestPatchDTO);
-    }
-
-    private void createTripRequests(Trip trip) {
-        List<TripRequest> tripRequests = trip.getAccounts()
-                .stream()
-                .map(account -> createTripRequest(account, trip))
-                .collect(Collectors.toList());
-
-        trip.setTripRequests(tripRequests);
     }
 
     private TripRequest createTripRequest(Account account, Trip trip) {

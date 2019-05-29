@@ -4,7 +4,6 @@ import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
-import com.javainiaisuzspringom.tripperis.repositories.StatusCodeRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -34,9 +33,6 @@ public class TripService {
     private ChecklistItemService checklistItemService;
 
     @Autowired
-    private StatusCodeRepository statusCodeRepo;
-
-    @Autowired
     private AccountRepository accountRepo;
 
     public Optional<TripDuration> getTripDuration(Trip trip) {
@@ -61,8 +57,8 @@ public class TripService {
 
         trip.setName(dto.getName());
         trip.setDescription(dto.getDescription());
-        if(dto.getStatusCode() != null)
-            trip.setStatus(statusCodeRepo.getOne(dto.getStatusCode()));
+        if(dto.getTripSteps() != null)
+            trip.setStatus(dto.getTripStatus());
         trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
         trip.setChecklistItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
         trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
