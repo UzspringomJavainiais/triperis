@@ -78,4 +78,12 @@ public class Trip implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public List<Account> getOrganizers() {
+        this.organizers.forEach(organizer -> {
+            organizer.setPassword(null);
+        });
+
+        return organizers;
+    }
 }

@@ -65,7 +65,6 @@ public class TripController {
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
-        account.setPassword(null);
         trip.setOrganizers(Collections.singletonList(account));
         return tripRepository.save(trip);
     }
