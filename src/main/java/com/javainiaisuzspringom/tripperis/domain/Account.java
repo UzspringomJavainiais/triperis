@@ -97,6 +97,8 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
             dto.setAccessLog(this.getAccessLog().stream().map(AccessLog::getId).collect(Collectors.toList()));
         }
 
+        dto.setOptLockVersion(getOptLockVersion());
+
         return dto;
     }
 

@@ -52,4 +52,6 @@ public class AccountDTO implements ConvertableDTO<Integer>{
 
     @Builder.Default
     private List<Integer> accessLog = new ArrayList<>();
+
+    private Integer optLockVersion;
 }

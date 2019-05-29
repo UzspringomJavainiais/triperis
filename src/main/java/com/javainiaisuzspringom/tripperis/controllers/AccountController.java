@@ -1,11 +1,13 @@
 package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.domain.Role;
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.domain.TripRequest;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
+import com.javainiaisuzspringom.tripperis.repositories.RoleRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripRequestService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.persistence.OptimisticLockException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,8 @@ public class AccountController {
     private TripRequestService tripRequestService;
     @Autowired
     private TripRepository tripRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/api/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -84,7 +89,7 @@ public class AccountController {
     }
 
     @PutMapping("/api/account/{id}")
-    public ResponseEntity<AccountDTO> editAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
+    public ResponseEntity editAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
 
         Optional<Account> accountResultById = accountService.getById(id);
 
@@ -92,12 +97,29 @@ public class AccountController {
             return ResponseEntity.notFound().build();
         }
         Account account = accountResultById.get();
-        Account newVersion = accountService.convertToEntity(newVersionDto);
-        newVersion.setId(account.getId());
-        newVersion.setPassword(account.getPassword());
-        newVersion.setEmail(account.getEmail());
 
-        Account savedEntity = accountRepository.save(newVersion);
+        // Needed for handling the OptimisticLockException
+        account.setOptLockVersion(newVersionDto.getOptLockVersion());
+
+        account.setFirstName(newVersionDto.getFirstName());
+        account.setLastName(newVersionDto.getLastName());
+
+        account.getRoles().clear();
+        for (Integer roleId : newVersionDto.getRoleIds()) {
+            Optional<Role> maybeRole = roleRepository.findById(roleId);
+
+            if (maybeRole.isPresent())
+                account.getRoles().add(maybeRole.get());
+        }
+
+        Account savedEntity;
+        try {
+            savedEntity = accountRepository.save(account);
+        } catch (OptimisticLockException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("err.optimistic.lock");
+        }
+
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
     }
 
