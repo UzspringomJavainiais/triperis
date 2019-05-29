@@ -144,7 +144,7 @@ public class AccountController {
             accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
         }
         else {
-            return ResponseEntity.badRequest().body("Invalid parameters passed");
+            return ResponseEntity.badRequest().body("Badly formed request, check dateStart and dateEnd params");
         }
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
     }
