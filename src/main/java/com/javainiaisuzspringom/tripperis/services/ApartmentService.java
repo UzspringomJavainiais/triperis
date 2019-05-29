@@ -27,7 +27,6 @@ public class ApartmentService implements BasicDtoToEntityService<Apartment, Apar
     @Autowired
     private RoomService roomService;
 
-    @Transactional
     public Apartment convertToEntity(ApartmentDTO dto) {
         Apartment apartment = new Apartment();
 
