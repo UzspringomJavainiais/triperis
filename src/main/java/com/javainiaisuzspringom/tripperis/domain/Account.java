@@ -75,7 +75,7 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         dto.setFirstName(this.getFirstName());
         dto.setLastName(this.getLastName());
         dto.setEmail(this.getEmail());
-        dto.setPassword(null);
+        dto.setPassword(this.getPassword());
 
         if (this.getRoles() != null) {
             dto.setRoleIds(this.getRoles().stream().map(Role::getId).collect(toList()));

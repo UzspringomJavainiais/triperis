@@ -107,9 +107,6 @@ public class Trip implements Serializable {
     }
 
     public List<Account> getOrganizers() {
-        this.organizers.forEach(organizer -> {
-            organizer.setPassword(null);
-        });
 
         return organizers;
     }
