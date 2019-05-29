@@ -14,8 +14,7 @@ public interface RoomUsageRepository extends JpaRepository<RoomUsage, Integer> {
 
     @Query("SELECT ru FROM RoomUsage ru " +
                 "LEFT JOIN ru.apartmentUsage au " +
-            "WHERE ((au.from >= :from AND au.to <= :to) " +
-                "OR (au.to > :from AND au.from < :to)) " +
+            "WHERE NOT (au.from > :to OR au.to < :from) " +
             "AND ru.room = :room")
-    public List<RoomUsage> findAllRoomUsagesBetweenDates(Room room, Timestamp from, Timestamp to);
+    List<RoomUsage> findAllRoomUsagesBetweenDates(Room room, Timestamp from, Timestamp to);
 }

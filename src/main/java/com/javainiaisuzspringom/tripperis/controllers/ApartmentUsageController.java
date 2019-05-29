@@ -49,7 +49,7 @@ public class ApartmentUsageController {
                                                                            @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
-            throw new IllegalStateException("Apartment doesn't exist");
+            return ResponseEntity.notFound().build();
         }
         Apartment apartment = maybeApartment.get();
 

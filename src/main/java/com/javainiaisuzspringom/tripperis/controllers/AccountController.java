@@ -126,39 +126,27 @@ public class AccountController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "/api/account/{id}/tripsInPeriod")
-    public ResponseEntity<List<CalendarEntry>> tripsInPeriod(@PathVariable(name = "id") Integer id,
-                                                             @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                             @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
+    @GetMapping(value = "/api/account/{id}/availability")
+    public ResponseEntity accountAvailabilityInPeriod(@PathVariable(name = "id") Integer id,
+                                                      @RequestParam(name = "dateStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                      @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
 
         Optional<Account> accountResultById = accountService.getById(id);
-
         if (!accountResultById.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
         Account account = accountResultById.get();
-
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        List<CalendarEntry> accountFreeDates;
+        if(dateStart == null && dateEnd == null) {
+            accountFreeDates = accountService.getAccountCalendar(account);
+        }
+        else if (dateStart != null && dateEnd != null && dateStart.before(dateEnd)){
+            accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
+        }
+        else {
+            return ResponseEntity.badRequest().body("Badly formed request, check dateStart and dateEnd params");
+        }
         return new ResponseEntity<>(accountFreeDates, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/api/account/{id}/isAccountFree")
-    public ResponseEntity<Boolean> isAccountFree(@PathVariable(name = "id") Integer id,
-                                                 @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                 @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
-        Optional<Account> accountResultById = accountService.getById(id);
-
-        if (!accountResultById.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Account account = accountResultById.get();
-
-        List<CalendarEntry> accountFreeDates = accountService.getAccountCalendar(account, dateStart, dateEnd);
-
-        Boolean isAccountFreeInPeriod = accountFreeDates.isEmpty();
-        return new ResponseEntity<>(isAccountFreeInPeriod, HttpStatus.OK);
     }
 
     @GetMapping("/api/account/{id}/trips")

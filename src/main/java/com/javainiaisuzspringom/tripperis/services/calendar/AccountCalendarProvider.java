@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface AccountCalendarProvider {
     List<CalendarEntry> getAccountCalendar(Account account, Date periodStart, Date periodEnd);
+    List<CalendarEntry> getAccountCalendar(Account account);
 }
