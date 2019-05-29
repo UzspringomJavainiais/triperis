@@ -37,6 +37,9 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
     @OneToMany(mappedBy = "apartmentUsage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomUsage> roomsToUsers = new ArrayList<>();
 
+    @ManyToOne
+    private Trip trip;
+
     public void addRoomUsage(RoomUsage roomUsage) {
         roomsToUsers.add(roomUsage);
         roomUsage.setApartmentUsage(this);
@@ -53,6 +56,9 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
         dto.setId(this.getId());
         dto.setFrom(this.getFrom());
         dto.setTo(this.getTo());
+        if (this.getTrip() != null) {
+            dto.setTripId(getTrip().getId());
+        }
         if(this.getApartment() != null) {
             dto.setApartmentId(this.getApartment().getId());
         }
