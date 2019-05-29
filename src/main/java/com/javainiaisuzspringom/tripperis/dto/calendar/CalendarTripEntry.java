@@ -36,5 +36,6 @@ public class CalendarTripEntry implements CalendarEntry {
         this.tripId = tripId;
         this.start = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
         this.end = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
+        this.type = CalendarEntryType.TRIP;
     }
 }
