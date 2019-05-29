@@ -13,9 +13,9 @@ public class RoomDTO implements ConvertableDTO<Integer> {
 
     @NotNull
     @Size(max = 100)
-    private String roomNumber;
+    private String number;
 
     @PositiveOrZero
     @NotNull
-    private Integer maxCapacity;
+    private Integer capacity;
 }

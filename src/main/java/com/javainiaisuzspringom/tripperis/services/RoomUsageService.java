@@ -46,7 +46,7 @@ public class RoomUsageService implements BasicDtoToEntityService<RoomUsage, Room
     }
 
     public boolean isAvailableForUsage(RoomUsage usage) {
-        Integer maxCapacity = usage.getRoom().getMaxCapacity();
+        Integer maxCapacity = usage.getRoom().getCapacity();
         int peopleCount = usage.getAccounts().size();
         if(peopleCount > maxCapacity) {
             return false;

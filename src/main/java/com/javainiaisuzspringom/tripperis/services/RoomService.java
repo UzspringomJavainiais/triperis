@@ -18,8 +18,8 @@ public class RoomService implements BasicDtoToEntityService<Room, RoomDTO, Integ
     public Room convertToEntity(RoomDTO dto) {
         Room entity = new Room();
 
-        entity.setMaxCapacity(dto.getMaxCapacity());
-        entity.setRoomNumber(dto.getRoomNumber());
+        entity.setCapacity(dto.getCapacity());
+        entity.setNumber(dto.getNumber());
 
         return entity;
     }

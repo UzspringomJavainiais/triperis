@@ -56,7 +56,7 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
     public void validateUsageToApartment(ApartmentUsage apartmentUsage) {
 
         for(RoomUsage roomUsage: apartmentUsage.getRoomsToUsers()) {
-            if(roomUsage.getAccounts().size() > roomUsage.getRoom().getMaxCapacity()) {
+            if(roomUsage.getAccounts().size() > roomUsage.getRoom().getCapacity()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trying to cram too many people into room. Not enough room");
             }
             if(!roomUsageService.isAvailableForUsage(roomUsage)) {

@@ -78,7 +78,7 @@ public class RoomUsageServiceTest {
         RoomUsage reservation3 = getUsageWithOffsetAndPeople(fromDate, toDate, 0, -2, 1);
 
 
-        when(usagePayload.getRoom().getMaxCapacity())
+        when(usagePayload.getRoom().getCapacity())
                 .thenReturn(roomCapacity);
         when(usagePayload.getAccounts())
                 .thenReturn(Arrays.asList(reservingAccount, reservingAccount));
@@ -113,7 +113,7 @@ public class RoomUsageServiceTest {
         RoomUsage reservation3 = getUsageWithOffsetAndPeople(fromDate, toDate, 0, -2, 1);
 
 
-        when(usagePayload.getRoom().getMaxCapacity())
+        when(usagePayload.getRoom().getCapacity())
                 .thenReturn(roomCapacity);
         when(usagePayload.getAccounts())
                 .thenReturn(Arrays.asList(reservingAccount, reservingAccount));
