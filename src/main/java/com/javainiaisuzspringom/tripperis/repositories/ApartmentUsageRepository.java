@@ -13,8 +13,7 @@ import java.util.List;
 public interface ApartmentUsageRepository extends JpaRepository<ApartmentUsage, Integer> {
 
     @Query("SELECT au FROM ApartmentUsage au " +
-            "WHERE ((au.from >= :from AND au.to <= :to) " +
-            "OR (au.to > :from AND au.from < :to)) " +
+            "WHERE NOT (au.from > :to OR au.to < :from) " +
             "AND au.apartment = :apartment")
     List<ApartmentUsage> findAllApartmentUsagesInPeriod(Apartment apartment, Timestamp from, Timestamp to);
 }

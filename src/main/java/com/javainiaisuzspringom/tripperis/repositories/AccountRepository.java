@@ -25,8 +25,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
             "(t.id, t.dateFrom, t.dateTo) " +
             "FROM Account a " +
                 "LEFT JOIN a.trips t " +
-            "WHERE ((t.dateFrom >= :periodStart AND t.dateTo <= :periodEnd) " +
-                "OR (t.dateTo > :periodStart AND t.dateFrom < :periodEnd)) " +
+            "WHERE NOT (t.dateFrom > :periodEnd OR t.dateTo < :periodStart) " +
                 "AND a = :account ")
     List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
 

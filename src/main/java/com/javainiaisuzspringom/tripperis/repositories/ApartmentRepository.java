@@ -11,5 +11,5 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Integer> {
     @Query("SELECT SUM(room.maxCapacity) " +
             "FROM Apartment a LEFT JOIN a.rooms room " +
             "WHERE a = :apartment")
-    public Long getCapacity(Apartment apartment);
+    Long getCapacity(Apartment apartment);
 }

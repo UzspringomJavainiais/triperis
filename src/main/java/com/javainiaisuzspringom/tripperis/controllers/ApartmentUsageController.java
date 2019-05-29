@@ -47,7 +47,7 @@ public class ApartmentUsageController {
     public ResponseEntity<List<ApartmentUsageDTO>> getUsagesForOfApartment(@PathVariable(name= "id") Integer id) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
-            throw new IllegalStateException("Apartment doesn't exist");
+            return ResponseEntity.notFound().build();
         }
 
         Apartment apartment = maybeApartment.get();
