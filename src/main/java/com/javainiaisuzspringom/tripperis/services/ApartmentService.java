@@ -1,15 +1,11 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Apartment;
-import com.javainiaisuzspringom.tripperis.domain.Room;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ApartmentService implements BasicDtoToEntityService<Apartment, ApartmentDTO, Integer> {

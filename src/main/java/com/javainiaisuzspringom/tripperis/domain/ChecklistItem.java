@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
 import lombok.Getter;
@@ -36,12 +37,19 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
+    @JsonIgnore
+    @OneToOne
+    private Attachment attachment;
+
     public ChecklistItemDTO convertToDTO() {
         ChecklistItemDTO dto = new ChecklistItemDTO();
 
         dto.setId(this.getId());
         dto.setName(this.getName());
         dto.setChecked(this.isChecked());
+
+        if (getAttachment() != null)
+            dto.setAttachment(getAttachment().convertToDTO());
 
         return dto;
     }

@@ -1,6 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.javainiaisuzspringom.tripperis.dto.entity.TripAttachmentDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.AttachmentDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +11,8 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-@Table(name = "trip_attachment")
-public class TripAttachment implements ConvertableEntity<Integer, TripAttachmentDTO>, Serializable {
+@Table(name = "attachment")
+public class Attachment implements ConvertableEntity<Integer, AttachmentDTO>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,19 +28,14 @@ public class TripAttachment implements ConvertableEntity<Integer, TripAttachment
     @Column(name = "file_data")
     private byte[] fileData;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
-
     @Override
-    public TripAttachmentDTO convertToDTO() {
-        TripAttachmentDTO dto = new TripAttachmentDTO();
+    public AttachmentDTO convertToDTO() {
+        AttachmentDTO dto = new AttachmentDTO();
 
         dto.setId(getId());
         dto.setFileName(getFileName());
         dto.setExtension(getExtension());
         // dto.setFileData(getFileData());
-        dto.setTrip(getTrip());
 
         return dto;
     }

@@ -1,8 +1,8 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
 import lombok.Data;
 
