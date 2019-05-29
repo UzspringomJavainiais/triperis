@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class TripService {
     @Getter
     @Autowired
     private TripRepository repository;
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private TripStepService tripStepService;
@@ -64,5 +67,17 @@ public class TripService {
         trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
 
         return trip;
+    }
+
+    public List<Trip> getMergableTrips(Trip trip) {
+        return em.createNativeQuery("SELECT t.* " +
+                "FROM trip t " +
+                "WHERE t.id <> :id " +
+                "AND ABS(DATE_PART('day', t.date_from - :dateFrom)) <= 1 " +
+                "AND ABS(DATE_PART('day', t.date_to - :dateTo)) <= 1")
+                .setParameter("id", trip.getId())
+                .setParameter("dateFrom", trip.getDateFrom())
+                .setParameter("dateTo", trip.getDateTo())
+                .getResultList();
     }
 }

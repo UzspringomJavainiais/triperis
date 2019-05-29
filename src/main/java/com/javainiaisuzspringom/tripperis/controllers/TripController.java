@@ -176,6 +176,18 @@ public class TripController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/api/trip/{id}/tripsForMerge")
+    public ResponseEntity<List<Trip>> getTripsAvailableForMerge(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        return ResponseEntity.ok(tripService.getMergableTrips(trip));
+    }
+
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
     public ResponseEntity<Trip> mergeTrips(@PathVariable Integer idOne,
