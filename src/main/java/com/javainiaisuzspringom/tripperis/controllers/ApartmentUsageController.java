@@ -44,34 +44,29 @@ public class ApartmentUsageController {
     }
 
     @GetMapping("/api/apartment/{id}/usage")
-    public ResponseEntity<List<ApartmentUsageDTO>> getUsagesForOfApartment(@PathVariable(name= "id") Integer id) {
+    public ResponseEntity getUsagesForOfApartmentInPeriod(@PathVariable(name= "id") Integer id,
+                                                                           @RequestParam(name = "dateStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
+                                                                           @RequestParam(name = "dateEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-
         Apartment apartment = maybeApartment.get();
 
-        List<ApartmentUsageDTO> usagesForApartment = apartment.getApartmentUsages().stream()
-                .map(ApartmentUsage::convertToDTO)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(usagesForApartment, HttpStatus.OK);
-    }
-
-    @GetMapping("/api/apartment/{id}/usage")
-    public ResponseEntity<List<ApartmentUsageDTO>> getUsagesForOfApartmentInPeriod(@PathVariable(name= "id") Integer id,
-                                                                           @RequestParam(name = "dateStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateStart,
-                                                                           @RequestParam(name = "dateEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dateEnd) {
-        Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
-        if(!maybeApartment.isPresent()) {
-            throw new IllegalStateException("Apartment doesn't exist");
+        List<ApartmentUsageDTO> usagesForApartment;
+        if(dateStart != null && dateEnd != null && dateStart.before(dateEnd)) {
+            usagesForApartment = apartmentUsageService.findAllApartmentUsagesInPeriod(apartment, dateStart, dateEnd).stream()
+                    .map(ApartmentUsage::convertToDTO)
+                    .collect(Collectors.toList());
         }
-        Apartment apartment = maybeApartment.get();
-
-        List<ApartmentUsageDTO> usagesForApartment = apartmentUsageService.findAllApartmentUsagesInPeriod(apartment, dateStart, dateEnd).stream()
-                .map(ApartmentUsage::convertToDTO)
-                .collect(Collectors.toList());
+        else if(dateStart == null && dateEnd == null) {
+            usagesForApartment = apartment.getApartmentUsages().stream()
+                    .map(ApartmentUsage::convertToDTO)
+                    .collect(Collectors.toList());
+        }
+        else {
+            return ResponseEntity.badRequest().body("Badly formed request, check dateStart and dateEnd params");
+        }
 
         return new ResponseEntity<>(usagesForApartment, HttpStatus.OK);
     }
