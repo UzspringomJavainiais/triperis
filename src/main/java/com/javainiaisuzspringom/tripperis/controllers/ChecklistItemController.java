@@ -2,11 +2,10 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.domain.Attachment;
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
-import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.entity.AttachmentDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
-import com.javainiaisuzspringom.tripperis.repositories.ChecklistItemRepository;
 import com.javainiaisuzspringom.tripperis.repositories.AttachmentRepository;
+import com.javainiaisuzspringom.tripperis.repositories.ChecklistItemRepository;
 import com.javainiaisuzspringom.tripperis.services.ChecklistItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +30,7 @@ public class ChecklistItemController {
 
     @GetMapping("/api/checklist-item")
     public List<ChecklistItemDTO> getAllChecklistItems() {
-        return checklistItemService.getAll().stream()
+        return checklistItemRepository.findAll().stream()
                 .map(ChecklistItem::convertToDTO)
                 .collect(Collectors.toList());
     }

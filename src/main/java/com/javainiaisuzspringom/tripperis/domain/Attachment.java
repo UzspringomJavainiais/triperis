@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javainiaisuzspringom.tripperis.dto.entity.AttachmentDTO;
 import lombok.Getter;
 import lombok.Setter;

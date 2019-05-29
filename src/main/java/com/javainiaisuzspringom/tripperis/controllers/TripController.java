@@ -4,7 +4,6 @@ import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
-import com.javainiaisuzspringom.tripperis.repositories.AttachmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
 import com.javainiaisuzspringom.tripperis.services.TripRequestService;
@@ -14,10 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,22 +45,52 @@ public class TripController {
 
     @GetMapping("/api/trip")
     public List<Trip> getAllTrips() {
-        return tripService.getAll();
+        return tripRepository.findAll();
     }
 
     @GetMapping("/api/trip/{id}")
     public Trip getTripById(@PathVariable Integer id) {
-        return tripService.getTripById(id);
+        return tripRepository.getOne(id);
     }
 
     @PostMapping("/api/trip")
     public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        trip.setStatus(TripStatus.TRIP_CREATED);
+
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
-        account.setPassword(null);
         trip.setOrganizers(Collections.singletonList(account));
-        return tripService.save(trip);
+
+        return tripRepository.save(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/cancelTrip")
+    public ResponseEntity<Trip> cancelTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_CANCELLED);
+
+        return ResponseEntity.ok(trip);
+    }
+
+    @PostMapping("/api/trip/{id}/startTrip")
+    public ResponseEntity<Trip> startTrip(@PathVariable Integer id) {
+        Optional<Trip> maybeTrip = tripRepository.findById(id);
+
+        if (!maybeTrip.isPresent())
+            return ResponseEntity.notFound().build();
+
+        Trip trip = maybeTrip.get();
+
+        trip.setStatus(TripStatus.TRIP_IN_PROGRESS);
+
+        return ResponseEntity.ok(trip);
     }
 
     private void createTripRequests(Trip trip) {
@@ -71,14 +102,6 @@ public class TripController {
         trip.setTripRequests(tripRequests);
     }
 
-    private TripRequest createTripRequest(Account account, Trip trip) {
-        TripRequest tripRequest = new TripRequest();
-        tripRequest.setAccount(account);
-        tripRequest.setType(TripRequestType.NEW_TRIP);
-        tripRequest.setTrip(trip);
-        tripRequest.setStatus(TripRequestStatus.NEW);
-        return tripRequest;
-    }
 
     @DeleteMapping("/api/trip/{id}")
     public ResponseEntity removeTrip(@PathVariable Integer id) {
@@ -92,6 +115,32 @@ public class TripController {
         }
         tripRepository.delete(maybeTrip.get());
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/api/trip")
+    @Transactional
+    public Trip updateTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        Trip persistedTrip = tripRepository.getOne(trip.getId());
+
+        List<TripRequest> editTripRequests = tripRequestService.createEditTripRequests(persistedTrip, trip);
+
+        persistedTrip.setName(trip.getName());
+        persistedTrip.setDescription(trip.getDescription());
+        persistedTrip.setStatus(trip.getStatus());
+        persistedTrip.setDateFrom(trip.getDateFrom());
+        persistedTrip.setDateTo(trip.getDateTo());
+
+        persistedTrip.getTripRequests().addAll(editTripRequests);
+        persistedTrip.setChecklistItems(trip.getChecklistItems());
+        persistedTrip.setAccounts(trip.getAccounts());
+//        persistedTrip.setTripSteps();
+//        persistedTrip.setTripAttachments();
+
+        persistedTrip.getChecklistItems().forEach(item -> {
+            item.setTrip(persistedTrip);
+        });
+
+        return tripRepository.save(persistedTrip);
     }
 
     @GetMapping("/api/trip/{id}/getTotalDuration")
@@ -139,10 +188,28 @@ public class TripController {
 
         Trip tripOne = tripOneOptional.get();
         Trip tripTwo = tripTwoOptional.get();
+
+        // Check if the trips can be merged
+        if (ChronoUnit.DAYS.between(tripOne.getDateFrom().toInstant(), tripTwo.getDateFrom().toInstant()) > 1
+                || ChronoUnit.DAYS.between(tripOne.getDateTo().toInstant(), tripTwo.getDateTo().toInstant()) > 1)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         Trip mergedTrip = new Trip();
 
         mergedTrip.setName(tripOne.getName() + " & " + tripTwo.getName());
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
+
+        // Set the earliest date from
+        if (tripOne.getDateFrom().toInstant().isBefore(tripTwo.getDateFrom().toInstant()))
+            mergedTrip.setDateFrom(tripOne.getDateFrom());
+        else
+            mergedTrip.setDateFrom(tripTwo.getDateFrom());
+
+        // Do the same for the date to
+        if (tripOne.getDateTo().toInstant().isAfter(tripTwo.getDateTo().toInstant()))
+            mergedTrip.setDateTo(tripOne.getDateTo());
+        else
+            mergedTrip.setDateTo(tripTwo.getDateTo());
 
         // Add distinct accounts to the merged trip
         for (Account account : tripOne.getAccounts())
@@ -287,6 +354,15 @@ public class TripController {
     @PatchMapping("/api/trip/requests")
     public TripRequest patchTripRequest(@RequestBody TripRequestPatchDTO tripRequestPatchDTO) {
         return tripRequestService.patchTripRequest(tripRequestPatchDTO);
+    }
+
+    private TripRequest createTripRequest(Account account, Trip trip) {
+        TripRequest tripRequest = new TripRequest();
+        tripRequest.setAccount(account);
+        tripRequest.setType(TripRequestType.NEW_TRIP);
+        tripRequest.setTrip(trip);
+        tripRequest.setStatus(TripRequestStatus.NEW);
+        return tripRequest;
     }
 
     private void attachTripToEntities(Trip trip) {

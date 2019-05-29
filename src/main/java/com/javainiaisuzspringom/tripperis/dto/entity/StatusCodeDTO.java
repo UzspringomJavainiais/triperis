@@ -1,6 +1,5 @@
 package com.javainiaisuzspringom.tripperis.dto.entity;
 
-import com.javainiaisuzspringom.tripperis.domain.StatusCode;
 import lombok.Data;
 
 import javax.validation.constraints.Size;

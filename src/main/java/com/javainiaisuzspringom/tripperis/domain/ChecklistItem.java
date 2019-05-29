@@ -3,13 +3,18 @@ package com.javainiaisuzspringom.tripperis.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.ChecklistItemDTO;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "checklist_item")
 @JsonIgnoreProperties("trip")
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
@@ -50,61 +55,6 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     }
 
     @Override
-    public Integer getId() {
-        return id;
-    }
-
-    public ChecklistItem setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ChecklistItem setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public ChecklistItem setChecked(boolean checked) {
-        isChecked = checked;
-        return this;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public ChecklistItem setPrice(BigDecimal price) {
-        this.price = price;
-        return this;
-    }
-
-    public Trip getTrip() {
-        return trip;
-    }
-
-    public ChecklistItem setTrip(Trip trip) {
-        this.trip = trip;
-        return this;
-    }
-
-    public Attachment getAttachment() {
-        return attachment;
-    }
-
-    public ChecklistItem setAttachment(Attachment attachment) {
-        this.attachment = attachment;
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "ChecklistItem{" +
                 "id=" + id +
@@ -115,10 +65,15 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ChecklistItem)
-            return ((ChecklistItem)obj).getId().equals(getId());
-        else
-            return obj.equals(this);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChecklistItem that = (ChecklistItem) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -2,6 +2,8 @@ package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
+import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TripService {
@@ -23,13 +26,14 @@ public class TripService {
     @Autowired
     private TripRepository repository;
 
-    public Trip getTripById(Integer tripId) {
-        return repository.getOne(tripId);
-    }
+    @Autowired
+    private TripStepService tripStepService;
 
-    public Trip save(Trip trip) {
-        return repository.save(trip);
-    }
+    @Autowired
+    private ChecklistItemService checklistItemService;
+
+    @Autowired
+    private AccountRepository accountRepo;
 
     public Optional<TripDuration> getTripDuration(Trip trip) {
         List<TripDuration> durationList = repository.getDuration(trip);
@@ -48,8 +52,17 @@ public class TripService {
         return repository.findAll();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Trip> getAll() {
-        return repository.findAll();
+    public Trip convertToEntity(TripDTO dto) {
+        Trip trip = new Trip();
+
+        trip.setName(dto.getName());
+        trip.setDescription(dto.getDescription());
+        if(dto.getTripSteps() != null)
+            trip.setStatus(dto.getTripStatus());
+        trip.setAccounts(dto.getAccounts().stream().map(accountId -> accountRepo.getOne(accountId)).collect(Collectors.toList()));
+        trip.setChecklistItems(dto.getItems().stream().map(itemDTO -> checklistItemService.getExistingOrConvert(itemDTO)).collect(Collectors.toList()));
+        trip.setTripSteps(dto.getTripSteps().stream().map(tripStep -> tripStepService.getExistingOrConvert(tripStep)).collect(Collectors.toList()));
+
+        return trip;
     }
 }

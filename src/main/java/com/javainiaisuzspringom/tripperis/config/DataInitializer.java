@@ -27,16 +27,20 @@ public class DataInitializer implements CommandLineRunner {
 
     public void run(String... args) {
         Map<String, Integer> collect = roleRepo.findAll().stream().collect(Collectors.toMap(Role::getName, Role::getId));
-        if(!accounts.exists("admin@admin.admin")) {
+        if(!accounts.exists("admin@gmail.com")) {
             accounts.save(AccountDTO.builder()
-                    .email("admin@admin.admin")
+                    .firstName("Adminas")
+                    .lastName("Adminiauskas")
+                    .email("admin@gmail.com")
                     .password("admin")
                     .roleIds(new ArrayList<>(collect.values()))
                     .build());
         }
-        if(!accounts.exists("user@user.user")) {
+        if(!accounts.exists("user@gmail.com")) {
             accounts.save(AccountDTO.builder()
-                    .email("user@user.user")
+                    .email("user@gmail.com")
+                    .firstName("Vartotojas")
+                    .lastName("Vartotijauskas")
                     .password("user")
                     .roleIds(Optional.ofNullable(collect.get("ROLE_USER")).map(Arrays::asList).orElseGet(ArrayList::new))
                     .build());
