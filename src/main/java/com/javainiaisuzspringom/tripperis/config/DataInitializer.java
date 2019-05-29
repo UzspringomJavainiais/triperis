@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
             accounts.save(AccountDTO.builder()
                     .email("user@gmail.com")
                     .firstName("Vartotojas")
-                    .lastName("Vartotijauskas")
+                    .lastName("Vartotijauskass")
                     .password("user")
                     .roleIds(Optional.ofNullable(collect.get("ROLE_USER")).map(Arrays::asList).orElseGet(ArrayList::new))
                     .build());
