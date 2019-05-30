@@ -65,7 +65,7 @@ public class ChecklistItemController {
         ChecklistItem item = new ChecklistItem();
 
         item.setName(checklistItem.getName());
-        item.setChecked(checklistItem.isChecked());
+        item.setChecked(checklistItem.getChecked());
         item.setPrice(checklistItem.getPrice());
         item.setTrip(maybeTrip.get());
 
