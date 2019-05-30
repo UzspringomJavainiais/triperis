@@ -26,7 +26,7 @@ public class CsvService {
                 "name", "description",
 //                "status",
                 "dateFrom", "dateTo", "accounts", "organizers",
-                "checklistItems", "tripSteps"};
+                "checklistItems"};
         List<String[]> csvLines = new ArrayList<>();
 
         List<Trip> trips = tripService.getAllTrips();
@@ -39,7 +39,6 @@ public class CsvService {
                 trip.getAccounts().toString(),
                 trip.getOrganizers().toString(),
                 trip.getChecklistItems().toString(),
-                trip.getTripSteps().toString()
         }));
 
         createCsv(headers, csvLines, response);

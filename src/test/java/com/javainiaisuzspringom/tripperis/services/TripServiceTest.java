@@ -39,59 +39,5 @@ public class TripServiceTest {
         initMocks(this);
     }
 
-    @Test
-    public void shouldParseRepoResultsCorrectly() {
 
-        int tripId = 30;
-        Timestamp tripStart = Timestamp.valueOf("2019-04-31 10:10:00");
-        Timestamp tripEnd = Timestamp.valueOf("2019-05-01 10:10:00");
-        List<TripDuration> objects = new ArrayList<>();
-
-        objects.add(new TripDuration(tripId, tripStart, tripEnd));
-
-        when(mockTrip.getId())
-                .thenReturn(tripId);
-        when(mockRepository.getDuration(any()))
-                .thenReturn(objects);
-
-        Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
-        assertThat(maybeTripDuration.isPresent(), is(true));
-        TripDuration tripDuration = maybeTripDuration.get();
-        assertThat(tripDuration.getTripId(), is(tripId));
-        assertThat(tripDuration.getStart(), is(tripStart));
-        assertThat(tripDuration.getEnd(), is(tripEnd));
-    }
-
-    @Test
-    public void shouldReturnEmptyWhenNoResult() {
-
-        List<TripDuration> objects = Collections.emptyList();
-
-        Integer tripId = 455;
-        when(mockTrip.getId())
-                .thenReturn(tripId);
-
-        when(mockRepository.getDuration(any()))
-                .thenReturn(objects);
-
-        Optional<TripDuration> maybeTripDuration = accountService.getTripDuration(mockTrip);
-        assertThat(maybeTripDuration.isPresent(), is(false));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenMultipleQueryResults() {
-        Integer tripId = 414;
-        List<TripDuration> listOfObjects = new ArrayList<>();
-        TripDuration duration = new TripDuration(tripId, Timestamp.from(Instant.now()), Timestamp.from(Instant.now()));
-        listOfObjects.add(duration);
-        listOfObjects.add(duration);
-
-        when(mockTrip.getId())
-                .thenReturn(tripId);
-
-        when(mockRepository.getDuration(any()))
-                .thenReturn(listOfObjects);
-
-        accountService.getTripDuration(mockTrip);
-    }
 }

@@ -28,8 +28,6 @@ public class TripDTO implements ConvertableDTO<Integer>{
 
     private List<ChecklistItemDTO> items = new ArrayList<>();
 
-    private List<TripStepDTO> tripSteps = new ArrayList<>();
-
     @Override
     public Integer getId() {
         return id;
@@ -95,12 +93,4 @@ public class TripDTO implements ConvertableDTO<Integer>{
         return this;
     }
 
-    public List<TripStepDTO> getTripSteps() {
-        return tripSteps;
-    }
-
-    public TripDTO setTripSteps(List<TripStepDTO> tripSteps) {
-        this.tripSteps = tripSteps;
-        return this;
-    }
 }

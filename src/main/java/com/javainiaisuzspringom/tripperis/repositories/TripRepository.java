@@ -11,12 +11,4 @@ import java.util.List;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Integer> {
 
-    @Query(value = "SELECT NEW com.javainiaisuzspringom.tripperis.dto.TripDuration" +
-            "(t.id, MIN(ts.startDate), MAX(ts.endDate)) " +
-            "FROM Trip t " +
-                "LEFT JOIN t.tripSteps ts " +
-            "WHERE t = :trip " +
-            "GROUP BY t")
-    List<TripDuration> getDuration(Trip trip);
-
 }

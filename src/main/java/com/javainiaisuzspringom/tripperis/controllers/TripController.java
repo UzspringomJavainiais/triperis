@@ -134,7 +134,6 @@ public class TripController {
         persistedTrip.getTripRequests().addAll(editTripRequests);
         persistedTrip.setChecklistItems(trip.getChecklistItems());
         persistedTrip.setAccounts(trip.getAccounts());
-//        persistedTrip.setTripSteps();
 //        persistedTrip.setTripAttachments();
 
         persistedTrip.getChecklistItems().forEach(item -> {
@@ -142,22 +141,6 @@ public class TripController {
         });
 
         return tripRepository.save(persistedTrip);
-    }
-
-    @GetMapping("/api/trip/{id}/getTotalDuration")
-    public ResponseEntity<TripDuration> getTotalDuration(@PathVariable Integer id) {
-        Optional<Trip> tripResultById = tripRepository.findById(id);
-        if (!tripResultById.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Trip trip = tripResultById.get();
-        Optional<TripDuration> tripStartDate = tripService.getTripDuration(trip);
-        if (!tripStartDate.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(tripStartDate.get());
     }
 
     @GetMapping("/api/trip/{id}/getTotalPrice")
@@ -391,7 +374,6 @@ public class TripController {
     }
 
     private void attachTripToEntities(Trip trip) {
-        trip.getTripSteps().forEach(tripStep -> tripStep.setTrip(trip));
         trip.getChecklistItems().forEach(checklistItem -> checklistItem.setTrip(trip));
     }
 }
