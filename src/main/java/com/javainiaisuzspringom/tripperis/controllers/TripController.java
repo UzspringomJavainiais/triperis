@@ -58,6 +58,8 @@ public class TripController {
 
     @PostMapping("/api/trip")
     public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("ATejo cia");
+        System.out.println(trip.getAccounts().size());
         trip.setStatus(TripStatus.TRIP_CREATED);
 
         attachTripToEntities(trip);

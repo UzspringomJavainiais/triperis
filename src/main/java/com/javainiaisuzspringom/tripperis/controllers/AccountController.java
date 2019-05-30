@@ -99,7 +99,7 @@ public class AccountController {
         Account account = accountResultById.get();
 
         // Needed for handling the OptimisticLockException
-        account.setOptLockVersion(newVersionDto.getOptLockVersion());
+//        account.setOptLockVersion(newVersionDto.getOptLockVersion());
 
         account.setFirstName(newVersionDto.getFirstName());
         account.setLastName(newVersionDto.getLastName());
