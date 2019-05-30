@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.dto.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.javainiaisuzspringom.tripperis.domain.Account;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,4 +55,7 @@ public class AccountDTO implements ConvertableDTO<Integer>{
     private List<Integer> accessLog = new ArrayList<>();
 
     private Integer optLockVersion;
+
+    @Builder.Default
+    private List<CalendarEntry> calendarEntries = new ArrayList<>();
 }

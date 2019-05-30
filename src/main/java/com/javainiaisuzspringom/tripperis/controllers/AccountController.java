@@ -142,9 +142,14 @@ public class AccountController {
 
 
     @GetMapping("/api/account")
-    public List<AccountDTO> getAllAccounts() {
+    public List<AccountDTO> getAllAccounts(@RequestParam(name = "includeBusyDays", required = false) boolean includeBusyDays) {
         return accountRepository.findAll().stream()
-                .map(Account::convertToDTO)
+                .map(account -> {
+                    AccountDTO dto = account.convertToDTO();
+                    if(includeBusyDays)
+                        dto.setCalendarEntries(accountService.getAccountCalendar(account));
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

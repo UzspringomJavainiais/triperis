@@ -29,17 +29,5 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
                 "AND a = :account ")
     List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
 
-    /**
-     * Query returns all account trip ids and their period.
-     * @param account account for which trips will be retrieved
-     * @return an array, where the first element is trip id, second trip start, and last is trip end
-     */
-    @Query("SELECT NEW com.javainiaisuzspringom.tripperis.dto.calendar.CalendarTripEntry" +
-            "(t.id, t.dateFrom, t.dateTo) " +
-            "FROM Account a " +
-                "LEFT JOIN a.trips t " +
-            "WHERE t.dateTo >= current_timestamp AND a = :account ")
-    List<CalendarTripEntry> getTripDates(Account account);
-
     Optional<Account> findByEmail(String username);
 }
