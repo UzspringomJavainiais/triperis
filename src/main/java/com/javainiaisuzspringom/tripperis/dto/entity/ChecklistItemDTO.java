@@ -16,7 +16,7 @@ public class ChecklistItemDTO implements ConvertableDTO<Integer>{
     @Size(max = 100)
     private String name;
 
-    private boolean isChecked;
+    private Boolean checked;
 
     private AttachmentDTO attachment;
 }

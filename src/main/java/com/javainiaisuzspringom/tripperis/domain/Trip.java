@@ -31,10 +31,10 @@ public class Trip implements Serializable {
     @Column(name = "trip_status")
     private TripStatus status;
 
-    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Helsinki")
     private Timestamp dateFrom;
 
-    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Helsinki")
     private Timestamp dateTo;
 
     @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
@@ -56,11 +56,11 @@ public class Trip implements Serializable {
 
     @JsonIgnoreProperties("trip")
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
-    private List<TripStep> tripSteps = new ArrayList<>();
+    private List<TripRequest> tripRequests = new ArrayList<>();
 
     @JsonIgnoreProperties("trip")
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
-    private List<TripRequest> tripRequests = new ArrayList<>();
+    private List<ApartmentUsage> tripApartmentUsages = new ArrayList<>();
 
     @Version
     @Column(name = "opt_lock_version")

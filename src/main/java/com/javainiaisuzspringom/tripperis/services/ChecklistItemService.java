@@ -18,7 +18,7 @@ public class ChecklistItemService implements BasicDtoToEntityService<ChecklistIt
         ChecklistItem item = new ChecklistItem();
 
         item.setName(dto.getName());
-        item.setChecked(dto.isChecked());
+        item.setChecked(dto.getChecked());
 
         return item;
     }

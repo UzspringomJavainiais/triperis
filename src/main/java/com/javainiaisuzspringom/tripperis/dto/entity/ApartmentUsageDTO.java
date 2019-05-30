@@ -26,6 +26,8 @@ public class ApartmentUsageDTO implements ConvertableDTO<Integer>{
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
     private Timestamp to;
 
+    private Integer tripId;
+
     private Integer apartmentId;
 
     @NotEmpty

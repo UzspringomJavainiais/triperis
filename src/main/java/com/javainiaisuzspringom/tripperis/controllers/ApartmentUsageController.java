@@ -72,7 +72,8 @@ public class ApartmentUsageController {
     }
 
     @PutMapping("/api/apartment/{id}/usage")
-    public ResponseEntity<ApartmentUsageDTO> addApartmentUsageToApartment(@PathVariable(name= "id") Integer id, @RequestBody ApartmentUsageDTO apartmentUsage) {
+    public ResponseEntity<ApartmentUsageDTO> addApartmentUsageToApartment(@PathVariable(name= "id") Integer id,
+                                                                          @RequestBody ApartmentUsageDTO apartmentUsage) {
         Optional<Apartment> maybeApartment = apartmentRepository.findById(id);
         if(!maybeApartment.isPresent()) {
             throw new IllegalStateException("Apartment doesn't exist");

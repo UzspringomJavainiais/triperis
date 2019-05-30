@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -71,14 +73,17 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletResponse response) throws IOException {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             Date expirationDate = claims.getBody().getExpiration();
             return !expirationDate.before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired or invalid JWT token");
+
+//            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
         }
+        return false;
     }
 
     private static Cookie findCookie(String cookieName, Cookie[] cookies) {

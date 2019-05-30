@@ -28,7 +28,7 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
     private String name;
 
     @Column(name = "IS_CHECKED")
-    private boolean isChecked;
+    private Boolean checked;
 
     @Column(name = "PRICE")
     private BigDecimal price;
@@ -46,7 +46,7 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
 
         dto.setId(this.getId());
         dto.setName(this.getName());
-        dto.setChecked(this.isChecked());
+        dto.setChecked(this.getChecked());
 
         if (getAttachment() != null)
             dto.setAttachment(getAttachment().convertToDTO());
@@ -59,7 +59,7 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         return "ChecklistItem{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", isChecked=" + isChecked +
+                ", checked=" + checked +
                 ", price=" + price +
                 '}';
     }
