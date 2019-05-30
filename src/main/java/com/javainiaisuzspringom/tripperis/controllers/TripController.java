@@ -351,7 +351,7 @@ public class TripController {
         Trip trip = maybeTrip.get();
 
         for (ChecklistItem item : trip.getChecklistItems()) {
-            if (item.isChecked())
+            if (item.getChecked())
                 completedItems++;
         }
 

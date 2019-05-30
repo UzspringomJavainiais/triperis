@@ -68,6 +68,10 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccessLog> accessLog = new ArrayList<>();
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public AccountDTO convertToDTO() {
         AccountDTO dto = new AccountDTO();
 
@@ -92,6 +96,8 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
         if (this.getAccessLog() != null) {
             dto.setAccessLog(this.getAccessLog().stream().map(AccessLog::getId).collect(Collectors.toList()));
         }
+
+        dto.setOptLockVersion(getOptLockVersion());
 
         return dto;
     }

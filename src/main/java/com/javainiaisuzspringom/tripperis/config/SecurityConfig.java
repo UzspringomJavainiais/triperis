@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/location/**").hasAnyRole("ADMIN", "ORGANIZER")
                 .antMatchers("/api/role/**").hasAnyRole("ADMIN", "ORGANIZER")
                 .antMatchers("/api/statistics/**").hasAnyRole("ADMIN", "ORGANIZER")
-                .antMatchers("/api/trip/**").hasAnyRole("ADMIN", "ORGANIZER")
+                .antMatchers("/api/trip/**").hasAnyRole("ADMIN", "ORGANIZER", "USER")
                 .antMatchers("/api/tripRequests/**").hasAnyRole("ADMIN", "ORGANIZER", "USER")
                 .antMatchers("/api/**").permitAll()
                 .and()

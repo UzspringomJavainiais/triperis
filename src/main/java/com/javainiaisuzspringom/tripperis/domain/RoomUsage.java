@@ -28,6 +28,10 @@ public class RoomUsage implements ConvertableEntity<Integer, RoomUsageDTO>, Seri
     @ManyToOne(cascade = CascadeType.ALL)
     private ApartmentUsage apartmentUsage;
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     @Override
     public RoomUsageDTO convertToDTO() {
         RoomUsageDTO dto = new RoomUsageDTO();

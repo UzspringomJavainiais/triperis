@@ -37,6 +37,10 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<>();
 
+    @Version
+    @Column(name = "opt_lock_version")
+    private Integer optLockVersion;
+
     public ApartmentDTO convertToDTO() {
         ApartmentDTO dto = new ApartmentDTO();
 
