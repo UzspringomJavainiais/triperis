@@ -31,9 +31,8 @@ public class AccountTripCalendarProvider implements AccountCalendarProvider {
     }
 
     public List<CalendarEntry> getAccountCalendar(Account account) {
-        List<CalendarTripEntry> tripDates = accountRepository.getTripDates(account);
-
-        return tripDates.stream()
+        return account.getTrips().stream()
+                .map(t -> new CalendarTripEntry(t.getId(), t.getDateFrom(), t.getDateTo()))
                 .map(dates -> (CalendarEntry) dates)
                 .collect(Collectors.toList());
     }
