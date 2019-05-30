@@ -37,7 +37,8 @@ public class ApartmentUsage implements ConvertableEntity<Integer, ApartmentUsage
     @OneToMany(mappedBy = "apartmentUsage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomUsage> roomsToUsers = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "trip_id")
     private Trip trip;
 
     public void addRoomUsage(RoomUsage roomUsage) {
