@@ -12,7 +12,7 @@ public class StatisticsResultMapper implements RowMapper<StatisticsResult> {
 
         String name = rs.getString("name");
         if (name != null && !name.isEmpty()) {
-            x.setTripName(name);
+            x.setName(name);
         }
 
         String dateDiff = rs.getString("dateDiff");

@@ -22,12 +22,12 @@ public class StatisticsRepository {
     JdbcTemplate jdbcTemplate;
 
     public List<StatisticsResult> getTripsByDurationOrderASC() {
-        return jdbcTemplate.query("select name , EXTRACT(DAY FROM date_to - date_from) AS dateDiff from trip ORDER BY dateDiff ASC;",
+        return jdbcTemplate.query("select name , EXTRACT(DAY FROM date_to - date_from) + 1 AS dateDiff from trip ORDER BY dateDiff ASC;",
                 new StatisticsResultMapper());
     }
 
     public List<StatisticsResult> getTripsByDurationOrderDESC() {
-        return jdbcTemplate.query("select name , EXTRACT(DAY FROM date_to - date_from) AS dateDiff from trip ORDER BY dateDiff DESC;",
+        return jdbcTemplate.query("select name , EXTRACT(DAY FROM date_to - date_from) + 1 AS dateDiff from trip ORDER BY dateDiff DESC;",
                 new StatisticsResultMapper());
 
     }
@@ -39,7 +39,7 @@ public class StatisticsRepository {
 
     public List<StatisticsTripPrice> getTripsByPriceDESC() {
         return jdbcTemplate.query(
-                "select t.id, t.name as name, SUM(ci.price) as sum from trip t INNER JOIN checklist_item ci ON t.id = ci.trip_id GROUP BY (t.id, t.name, ci.price) ORDER BY sum ASC;", new StatisticsTripPriceMapper());
+                "select t.id, t.name as name, SUM(ci.price) as sum from trip t INNER JOIN checklist_item ci ON t.id = ci.trip_id GROUP BY (t.id, t.name, ci.price) ORDER BY sum DESC;", new StatisticsTripPriceMapper());
     }
 
     public List<StatisticsTripPrice> getTripCountByEmployeeASC() {

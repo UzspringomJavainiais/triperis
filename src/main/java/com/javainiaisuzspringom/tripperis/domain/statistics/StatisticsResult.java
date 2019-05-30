@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 public class StatisticsResult implements Serializable {
 
-    private String tripName;
+    private String name;
     private Integer dateDiff;
 
-    public String getTripName() {
-        return tripName;
+    public String getName() {
+        return name;
     }
 
-    public StatisticsResult setTripName(String tripName) {
-        this.tripName = tripName;
+    public StatisticsResult setName(String name) {
+        this.name = name;
         return this;
     }
 
