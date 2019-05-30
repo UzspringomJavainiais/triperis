@@ -18,4 +18,5 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
             "WHERE t = :trip " +
             "GROUP BY t")
     List<TripDuration> getDuration(Trip trip);
+
 }
