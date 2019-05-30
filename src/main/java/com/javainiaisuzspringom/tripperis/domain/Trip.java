@@ -31,10 +31,10 @@ public class Trip implements Serializable {
     @Column(name = "trip_status")
     private TripStatus status;
 
-    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Helsinki")
     private Timestamp dateFrom;
 
-    @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Helsinki")
     private Timestamp dateTo;
 
     @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
