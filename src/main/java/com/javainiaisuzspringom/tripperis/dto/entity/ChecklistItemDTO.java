@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 /**
  * Maps to {@link ChecklistItem}
@@ -19,4 +20,8 @@ public class ChecklistItemDTO implements ConvertableDTO<Integer>{
     private boolean isChecked;
 
     private AttachmentDTO attachment;
+
+    private BigDecimal price;
+
+    private Integer tripId;
 }
