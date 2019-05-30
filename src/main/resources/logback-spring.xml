@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_PATH" value="logs/"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <logger name="org.springframework.web" level="DEBUG"/>
+
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+    <springProfile name="production">
+        <appender name="SAVE-TO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/log.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n</Pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/archived/log_%d{dd-MM-yyyy}.log</fileNamePattern>
+                <totalSizeCap>100MB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+        <root level="WARN">
+            <appender-ref ref="SAVE-TO-FILE" />
+        </root>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+</configuration>
