@@ -3,6 +3,7 @@ package com.javainiaisuzspringom.tripperis.controllers;
 import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import com.javainiaisuzspringom.tripperis.services.AccountService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -174,7 +176,7 @@ public class TripController {
 
 
     @PostMapping("/api/trip/merge/{idOne}&{idTwo}")
-    public ResponseEntity<Trip> mergeTrips(@PathVariable Integer idOne,
+    public ResponseEntity mergeTrips(@PathVariable Integer idOne,
                                            @PathVariable Integer idTwo) {
         Optional<Trip> tripOneOptional = tripRepository.findById(idOne);
         Optional<Trip> tripTwoOptional = tripRepository.findById(idTwo);
@@ -190,31 +192,47 @@ public class TripController {
                 || ChronoUnit.DAYS.between(tripOne.getDateTo().toInstant(), tripTwo.getDateTo().toInstant()) > 1)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        Timestamp dateFrom, dateTo;
+
+        // Set the earliest date from
+        if (tripOne.getDateFrom().toInstant().isBefore(tripTwo.getDateFrom().toInstant()))
+            dateFrom = tripOne.getDateFrom();
+        else
+            dateFrom = tripTwo.getDateFrom();
+
+        // Do the same for the date to
+        if (tripOne.getDateTo().toInstant().isAfter(tripTwo.getDateTo().toInstant()))
+            dateTo = tripOne.getDateTo();
+        else
+            dateTo = tripTwo.getDateTo();
+
+        // Check if accounts can participate in the event
+        List<Account> accounts = new ArrayList<>();
+
+        for (Account account : tripOne.getAccounts())
+            accounts.add(account);
+
+        for (Account account : tripTwo.getAccounts()) {
+            if (!accounts.contains(account))
+                accounts.add(account);
+        }
+
+        for (Account account : accounts) {
+            List<CalendarEntry> entries = accountService.getAccountCalendar(account, dateFrom, dateTo);
+
+            if (!entries.isEmpty())
+                return ResponseEntity.badRequest().body(account.getFirstName() + " " + account.getLastName() + " is busy between " + dateFrom.toString() + " and " + dateTo.toString());
+        }
+
         Trip mergedTrip = new Trip();
 
         mergedTrip.setName(tripOne.getName() + " & " + tripTwo.getName());
         mergedTrip.setDescription("Trip \"" + tripOne.getName() + "\" merged with \"" + tripTwo.getName() + "\"");
-
-        // Set the earliest date from
-        if (tripOne.getDateFrom().toInstant().isBefore(tripTwo.getDateFrom().toInstant()))
-            mergedTrip.setDateFrom(tripOne.getDateFrom());
-        else
-            mergedTrip.setDateFrom(tripTwo.getDateFrom());
-
-        // Do the same for the date to
-        if (tripOne.getDateTo().toInstant().isAfter(tripTwo.getDateTo().toInstant()))
-            mergedTrip.setDateTo(tripOne.getDateTo());
-        else
-            mergedTrip.setDateTo(tripTwo.getDateTo());
+        mergedTrip.setDateFrom(dateFrom);
+        mergedTrip.setDateTo(dateTo);
 
         // Add distinct accounts to the merged trip
-        for (Account account : tripOne.getAccounts())
-            mergedTrip.getAccounts().add(account);
-
-        for (Account account : tripTwo.getAccounts()) {
-            if (!mergedTrip.getAccounts().contains(account))
-                mergedTrip.getAccounts().add(account);
-        }
+        mergedTrip.setAccounts(accounts);
 
         // Merge distinct checklist items
         for (ChecklistItem item : tripOne.getChecklistItems())
