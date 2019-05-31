@@ -114,4 +114,14 @@ public class Trip implements Serializable {
 
         return organizers;
     }
+
+    public void addUsage(ApartmentUsage proposedUsage) {
+        tripApartmentUsages.add(proposedUsage);
+        proposedUsage.setTrip(this);
+    }
+
+    public void removeUsage(ApartmentUsage proposedUsage) {
+        tripApartmentUsages.remove(proposedUsage);
+        proposedUsage.setTrip(null);
+    }
 }

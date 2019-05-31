@@ -2,13 +2,16 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
-import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.TripReservationRequest;
+import com.javainiaisuzspringom.tripperis.dto.TripReservationResponse;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.RoomUsageDTO;
+import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
-import com.javainiaisuzspringom.tripperis.services.AccountService;
-import com.javainiaisuzspringom.tripperis.services.TripRequestService;
-import com.javainiaisuzspringom.tripperis.services.TripService;
+import com.javainiaisuzspringom.tripperis.services.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +44,12 @@ public class TripController {
     private AccountService accountService;
 
     @Autowired
+    private ApartmentRepository apartmentRepository;
+
+    @Autowired
+    private ApartmentUsageService apartmentUsageService;
+
+    @Autowired
     private CsvService csvService;
 
     @Autowired
@@ -57,7 +66,62 @@ public class TripController {
     }
 
     @PostMapping("/api/trip")
-    public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity reserveTrip(@RequestBody TripReservationRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+
+        List<Account> accounts = request.getAccounts();
+        Timestamp dateFrom = request.getFrom();
+        Timestamp dateTo = request.getTo();
+        ApartmentDTO apartmentFrom = request.getApartmentFrom();
+        ApartmentDTO apartmentToDto = request.getApartmentTo();
+        Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(apartmentToDto.getId());
+        if(!apartmentRepository.existsById(apartmentFrom.getId())) {
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", apartmentToDto.getId()));
+        }
+        if(!maybeApartmentTo.isPresent()) {
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", apartmentToDto.getId()));
+        }
+
+        List<Account> unavailablePeople = accounts.stream()
+                .filter(acc -> accountService.getAccountCalendar(acc, dateFrom, dateTo).isEmpty())
+                .collect(Collectors.toList());
+        if(!unavailablePeople.isEmpty()) {
+            return ResponseEntity.badRequest().body("People with names" + unavailablePeople.stream()
+                    .map(person -> person.getFirstName() + person.getLastName()).collect(Collectors.joining(", "))
+                    + "are not available in period " + dateFrom + " - " + dateTo);
+        }
+
+        // Create trip from request info
+        Trip trip = new Trip();
+        trip.setAccounts(accounts);
+        trip.setName(request.getName());
+        trip.setDescription(request.getDescription());
+        trip.setDateFrom(dateFrom);
+        trip.setDateTo(dateTo);
+        trip.setChecklistItems(request.getChecklistItems());
+
+        // Validacija
+        ApartmentUsage proposedUsage = new ApartmentUsage();
+        proposedUsage.setFrom(dateFrom);
+        proposedUsage.setTo(dateTo);
+        proposedUsage.setApartment(maybeApartmentTo.get());
+
+        // Sukišimas
+        Pair<List<RoomUsage>, List<Account>> listListPair = apartmentUsageService.autoAssignRooms(proposedUsage, accounts);
+        // Pervaliduojam
+        apartmentUsageService.validateUsageToApartment(proposedUsage);
+        // Saugojam
+        trip.addUsage(proposedUsage);
+        trip = addTrip(trip, userDetails);
+        tripRepository.saveAndFlush(trip);
+
+        List<RoomUsageDTO> successfulReservations = listListPair.getLeft().stream().map(RoomUsage::convertToDTO).collect(Collectors.toList());
+        List<Integer> unsuccessfulReservations = listListPair.getRight().stream().map(Account::getId).collect(Collectors.toList());
+
+        return new ResponseEntity<>(new TripReservationResponse(dateFrom, dateTo, trip.getId(), apartmentToDto.getId(), successfulReservations, unsuccessfulReservations), HttpStatus.OK);
+    }
+
+//    @PostMapping("/api/trip") // deprecated
+    private Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
         trip.setStatus(TripStatus.TRIP_CREATED);
 
         attachTripToEntities(trip);

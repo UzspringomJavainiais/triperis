@@ -1,14 +1,12 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Apartment;
-import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
-import com.javainiaisuzspringom.tripperis.domain.Room;
-import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
+import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentUsageRepository;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +46,12 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
                 .forEach(usage::addRoomUsage);
 
         return usage;
+    }
+
+
+    public Pair<List<RoomUsage>, List<Account>> autoAssignRooms(ApartmentUsage apartmentUsage, List<Account> accounts) {
+//        apartmentUsage.getApartment().getRooms()
+        return Pair.of(Collections.emptyList(), Collections.emptyList());
     }
 
     /**
