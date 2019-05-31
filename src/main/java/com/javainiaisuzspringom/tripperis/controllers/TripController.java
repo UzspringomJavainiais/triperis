@@ -71,14 +71,12 @@ public class TripController {
         List<Account> accounts = request.getAccounts();
         Timestamp dateFrom = request.getDateFrom();
         Timestamp dateTo = request.getDateTo();
-        ApartmentDTO apartmentFrom = request.getApartmentFrom();
-        ApartmentDTO apartmentToDto = request.getApartmentTo();
-        Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(apartmentToDto.getId());
-        if(!apartmentRepository.existsById(apartmentFrom.getId())) {
-            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", apartmentToDto.getId()));
+        Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(request.getTo());
+        if(request.getFrom() != null && !apartmentRepository.existsById(request.getFrom())) {
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", request.getFrom()));
         }
         if(!maybeApartmentTo.isPresent()) {
-            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", apartmentToDto.getId()));
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", request.getTo()));
         }
 
         List<Account> unavailablePeople = accounts.stream()
@@ -117,7 +115,7 @@ public class TripController {
         List<RoomUsageDTO> successfulReservations = listListPair.getLeft().stream().map(RoomUsage::convertToDTO).collect(Collectors.toList());
         List<Integer> unsuccessfulReservations = listListPair.getRight().stream().map(Account::getId).collect(Collectors.toList());
 
-        return new ResponseEntity<>(new TripReservationResponse(dateFrom, dateTo, trip.getId(), apartmentToDto.getId(), successfulReservations, unsuccessfulReservations), HttpStatus.OK);
+        return new ResponseEntity<>(new TripReservationResponse(dateFrom, dateTo, trip.getId(), request.getTo(), successfulReservations, unsuccessfulReservations), HttpStatus.OK);
     }
 
 //    @PostMapping("/api/trip") // deprecated

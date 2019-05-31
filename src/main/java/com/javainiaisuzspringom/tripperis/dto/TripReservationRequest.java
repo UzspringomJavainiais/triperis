@@ -3,7 +3,6 @@ package com.javainiaisuzspringom.tripperis.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.domain.ChecklistItem;
-import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import lombok.Data;
 import org.springframework.lang.NonNull;
 
@@ -32,10 +31,8 @@ public class TripReservationRequest {
 
     private List<Account> accounts = new ArrayList<>();
 
-    @NonNull
-    private ApartmentDTO apartmentFrom;
+    private Integer from;
 
     @NonNull
-    private ApartmentDTO apartmentTo;
-
+    private Integer to;
 }

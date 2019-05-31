@@ -53,9 +53,13 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
         List<RoomUsage> createdUsages = new ArrayList<>();
         List<Account> unsuccessfulPeople = new ArrayList<>();
 /*        for (Room room : apartmentUsage.getApartment().getRooms()) {
-            Integer maxTakenPlacesInPeriod = getReservedListForRoom(room, from, to).stream().map(x -> x.getReservations()).max(Comparator.naturalOrder()).orElse(0);
-            List<ReservationInfo> capacityListForRoom = room.getCapacity() - maxTakenPlacesInPeriod;
-
+            Integer maxTakenPlacesInPeriod = getReservedListForRoom(room, from, to).stream().map(ReservationInfo::getReservations).max(Comparator.naturalOrder()).orElse(0);
+            Integer availableSpace = room.getCapacity() - maxTakenPlacesInPeriod;
+            if(availableSpace <= 0) continue;
+            RoomUsage roomUsage = new RoomUsage();
+            roomUsage.setAccounts(accounts.subList());
+            apartmentUsage.addRoomUsage(roomUsage);
+            createdUsages.add(roomUsage);
         }*/
         return Pair.of(createdUsages, unsuccessfulPeople);
     }
