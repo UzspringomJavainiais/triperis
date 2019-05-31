@@ -69,8 +69,8 @@ public class TripController {
     public ResponseEntity reserveTrip(@RequestBody TripReservationRequest request, @AuthenticationPrincipal UserDetails userDetails) {
 
         List<Account> accounts = request.getAccounts();
-        Timestamp dateFrom = request.getFrom();
-        Timestamp dateTo = request.getTo();
+        Timestamp dateFrom = request.getDateFrom();
+        Timestamp dateTo = request.getDateTo();
         ApartmentDTO apartmentFrom = request.getApartmentFrom();
         ApartmentDTO apartmentToDto = request.getApartmentTo();
         Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(apartmentToDto.getId());
@@ -82,7 +82,7 @@ public class TripController {
         }
 
         List<Account> unavailablePeople = accounts.stream()
-                .filter(acc -> accountService.getAccountCalendar(acc, dateFrom, dateTo).isEmpty())
+                .filter(acc -> !accountService.getAccountCalendar(acc, dateFrom, dateTo).isEmpty())
                 .collect(Collectors.toList());
         if(!unavailablePeople.isEmpty()) {
             return ResponseEntity.badRequest().body("People with names" + unavailablePeople.stream()
@@ -129,7 +129,7 @@ public class TripController {
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         trip.setOrganizers(Collections.singletonList(account));
 
-        return tripRepository.save(trip);
+        return trip;
     }
 
     @PostMapping("/api/trip/{id}/cancelTrip")

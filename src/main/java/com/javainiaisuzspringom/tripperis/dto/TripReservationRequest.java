@@ -20,11 +20,13 @@ public class TripReservationRequest {
     @Size(max = 2000)
     private String description;
 
+    @NonNull
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
-    private Timestamp from;
+    private Timestamp dateFrom;
 
+    @NonNull
     @JsonFormat(pattern="yyyy-MM-dd", timezone="Europe/Helsinki")
-    private Timestamp to;
+    private Timestamp dateTo;
 
     private List<ChecklistItem> checklistItems = new ArrayList<>();
 

@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentUsage, ApartmentUsageDTO, Integer> {
@@ -50,8 +48,16 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
 
 
     public Pair<List<RoomUsage>, List<Account>> autoAssignRooms(ApartmentUsage apartmentUsage, List<Account> accounts) {
-//        apartmentUsage.getApartment().getRooms()
-        return Pair.of(Collections.emptyList(), Collections.emptyList());
+        Timestamp from = apartmentUsage.getFrom();
+        Timestamp to = apartmentUsage.getTo();
+        List<RoomUsage> createdUsages = new ArrayList<>();
+        List<Account> unsuccessfulPeople = new ArrayList<>();
+/*        for (Room room : apartmentUsage.getApartment().getRooms()) {
+            Integer maxTakenPlacesInPeriod = getReservedListForRoom(room, from, to).stream().map(x -> x.getReservations()).max(Comparator.naturalOrder()).orElse(0);
+            List<ReservationInfo> capacityListForRoom = room.getCapacity() - maxTakenPlacesInPeriod;
+
+        }*/
+        return Pair.of(createdUsages, unsuccessfulPeople);
     }
 
     /**
@@ -70,7 +76,7 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
         }
     }
 
-    public List<ReservationInfo> getCapacityListForRoom(Room room, Date dateStart, Date dateEnd) {
+    public List<ReservationInfo> getReservedListForRoom(Room room, Date dateStart, Date dateEnd) {
         return roomUsageService.getReservedCapacities(room, Timestamp.from(dateStart.toInstant()), Timestamp.from(dateEnd.toInstant()));
     }
 

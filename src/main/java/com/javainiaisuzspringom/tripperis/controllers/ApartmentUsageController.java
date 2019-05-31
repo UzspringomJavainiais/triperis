@@ -106,6 +106,6 @@ public class ApartmentUsageController {
         if(!maybeRoom.isPresent()) {
             throw new IllegalStateException("Room doesn't exist");
         }
-        return apartmentUsageService.getCapacityListForRoom(maybeRoom.get(), dateStart, dateEnd);
+        return apartmentUsageService.getReservedListForRoom(maybeRoom.get(), dateStart, dateEnd);
     }
 }
