@@ -13,6 +13,7 @@ import java.util.List;
  */
 @Data
 public class ApartmentDTO implements ConvertableDTO<Integer>{
+
     private Integer id;
 
     @NotNull
