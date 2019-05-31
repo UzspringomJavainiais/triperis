@@ -9,7 +9,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -22,7 +24,10 @@ public class RoomUsage implements ConvertableEntity<Integer, RoomUsageDTO>, Seri
     private Integer id;
 
     @JsonIgnoreProperties({"trips", "organizedTrips", "tripRequests", "accessLog", "roles"})
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "room_usage_accounts",
+            joinColumns = { @JoinColumn(name = "room_usage_id") },
+            inverseJoinColumns = { @JoinColumn(name = "accounts_id") })
     private List<Account> accounts = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)

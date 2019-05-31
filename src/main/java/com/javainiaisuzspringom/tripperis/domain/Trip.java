@@ -66,37 +66,6 @@ public class Trip implements Serializable {
     @Column(name = "opt_lock_version")
     private Integer optLockVersion;*/
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Trip setId(Integer id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Trip setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public TripStatus getStatus() {
-        return status;
-    }
-
-    public Trip setStatus(TripStatus status) {
-        this.status = status;
-        return this;
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,9 +79,14 @@ public class Trip implements Serializable {
         return Objects.hash(id);
     }
 
-    public List<Account> getOrganizers() {
+    public void addChecklistItem(ChecklistItem item) {
+        checklistItems.add(item);
+        item.setTrip(this);
+    }
 
-        return organizers;
+    public void removeChecklistItem(ChecklistItem item) {
+        checklistItems.remove(item);
+        item.setTrip(null);
     }
 
     public void addUsage(ApartmentUsage proposedUsage) {

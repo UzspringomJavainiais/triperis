@@ -57,9 +57,9 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
             int availableSpace = room.getCapacity() - maxTakenPlacesInPeriod;
             if(availableSpace <= 0) continue;
             RoomUsage roomUsage = new RoomUsage();
-            for(int i = 0; i < availableSpace && !unsuccessfulPeople.isEmpty(); i++) {
+            for(int i = 0; i < availableSpace && !unsuccessfulPeople.isEmpty(); i++) {/*
                 Account successfulAccount = unsuccessfulPeople.remove(0);
-                roomUsage.getAccounts().add(successfulAccount);
+                roomUsage.getAccounts().add(successfulAccount);*/ // TODO this must be fixed :)))
             }
             roomUsage.setRoom(room);
             apartmentUsage.addRoomUsage(roomUsage);
@@ -72,6 +72,7 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
      * Tests if apartment is valid to be added to apartment
      * @param apartmentUsage usage to test
      */
+    @Transactional
     public void validateUsageToApartment(ApartmentUsage apartmentUsage) {
 
         for(RoomUsage roomUsage: apartmentUsage.getRoomsToUsers()) {

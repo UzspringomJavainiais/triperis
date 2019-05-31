@@ -24,10 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -66,9 +63,13 @@ public class TripController {
     }
 
     @PostMapping("/api/trip")
+    @Transactional
     public ResponseEntity reserveTrip(@RequestBody TripReservationRequest request, @AuthenticationPrincipal UserDetails userDetails) {
 
-        List<Account> accounts = request.getAccounts();
+        List<Account> accounts = request.getAccounts().stream().map(accountFromRequest -> accountService.getById(accountFromRequest.getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
         Timestamp dateFrom = request.getDateFrom();
         Timestamp dateTo = request.getDateTo();
         Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(request.getTo());
@@ -95,21 +96,24 @@ public class TripController {
         trip.setDescription(request.getDescription());
         trip.setDateFrom(dateFrom);
         trip.setDateTo(dateTo);
-        trip.setChecklistItems(request.getChecklistItems());
+        request.getChecklistItems().forEach(trip::addChecklistItem);
 
-        // Validacija
         ApartmentUsage proposedUsage = new ApartmentUsage();
         proposedUsage.setFrom(dateFrom);
         proposedUsage.setTo(dateTo);
         proposedUsage.setApartment(maybeApartmentTo.get());
 
+        trip.addUsage(proposedUsage);
+
         // Sukišimas
         Pair<List<RoomUsage>, List<Account>> listListPair = apartmentUsageService.autoAssignRooms(proposedUsage, accounts);
+
+        addTrip(trip, userDetails);
+
         // Pervaliduojam
         apartmentUsageService.validateUsageToApartment(proposedUsage);
+
         // Saugojam
-        trip.addUsage(proposedUsage);
-        trip = addTrip(trip, userDetails);
         tripRepository.saveAndFlush(trip);
 
         List<RoomUsageDTO> successfulReservations = listListPair.getLeft().stream().map(RoomUsage::convertToDTO).collect(Collectors.toList());
@@ -121,12 +125,10 @@ public class TripController {
 //    @PostMapping("/api/trip") // deprecated
     private Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
         trip.setStatus(TripStatus.TRIP_CREATED);
-
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         trip.setOrganizers(Collections.singletonList(account));
-
         return trip;
     }
 
