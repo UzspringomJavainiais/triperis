@@ -1,5 +1,7 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoomUsageDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,12 +21,14 @@ public class RoomUsage implements ConvertableEntity<Integer, RoomUsageDTO>, Seri
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnoreProperties("trips, organizedTrips, tripRequests, accessLog")
     @OneToMany
     private List<Account> accounts = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Room room;
 
+    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     private ApartmentUsage apartmentUsage;
 
