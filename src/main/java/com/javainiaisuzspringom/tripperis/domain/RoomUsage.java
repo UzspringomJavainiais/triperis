@@ -21,7 +21,7 @@ public class RoomUsage implements ConvertableEntity<Integer, RoomUsageDTO>, Seri
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JsonIgnoreProperties("trips, organizedTrips, tripRequests, accessLog")
+    @JsonIgnoreProperties({"trips", "organizedTrips", "tripRequests", "accessLog", "roles"})
     @OneToMany
     private List<Account> accounts = new ArrayList<>();
 
