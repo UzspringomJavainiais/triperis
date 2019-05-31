@@ -38,7 +38,7 @@ public class Trip implements Serializable {
     private Timestamp dateTo;
 
     @JsonIgnoreProperties({"trips", "roles", "organizedTrips", "tripRequests", "accessLog"})
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(name = "trip_account", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> accounts = new ArrayList<>();
 

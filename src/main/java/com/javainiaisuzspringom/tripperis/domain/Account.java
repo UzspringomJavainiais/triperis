@@ -55,10 +55,10 @@ public class Account implements ConvertableEntity<Integer, AccountDTO>, UserDeta
     private List<Role> roles = new ArrayList<>();
 
     @JsonIgnoreProperties("account")
-    @ManyToMany(mappedBy = "accounts", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "accounts")
     private List<Trip> trips = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "trip_organizers", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> organizedTrips;
 
