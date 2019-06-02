@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoomDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Room implements ConvertableEntity<Integer, RoomDTO>, Serializable {
     @Column(name = "MAX_CAPACITY")
     private Integer capacity;
 
+    @JsonBackReference
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;

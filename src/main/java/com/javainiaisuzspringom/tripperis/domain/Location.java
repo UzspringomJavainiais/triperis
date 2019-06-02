@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.javainiaisuzspringom.tripperis.dto.entity.LocationDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "location")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Location implements ConvertableEntity<Integer, LocationDTO>, Serializable {
 
     @Id

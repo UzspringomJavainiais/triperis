@@ -1,5 +1,6 @@
 package com.javainiaisuzspringom.tripperis.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class Apartment implements ConvertableEntity<Integer, ApartmentDTO>, Seri
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Location location;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
     private List<ApartmentUsage> apartmentUsages = new ArrayList<>();
 

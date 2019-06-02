@@ -1,14 +1,10 @@
 package com.javainiaisuzspringom.tripperis.repositories;
 
-import com.javainiaisuzspringom.tripperis.domain.TripRequest;
-import com.javainiaisuzspringom.tripperis.domain.TripRequestStatus;
 import com.javainiaisuzspringom.tripperis.domain.statistics.StatisticsResult;
 import com.javainiaisuzspringom.tripperis.domain.statistics.StatisticsResultMapper;
 import com.javainiaisuzspringom.tripperis.domain.statistics.StatisticsTripPrice;
 import com.javainiaisuzspringom.tripperis.domain.statistics.StatisticsTripPriceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

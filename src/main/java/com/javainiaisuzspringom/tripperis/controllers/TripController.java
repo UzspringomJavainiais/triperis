@@ -2,13 +2,16 @@ package com.javainiaisuzspringom.tripperis.controllers;
 
 import com.javainiaisuzspringom.tripperis.csv.CsvService;
 import com.javainiaisuzspringom.tripperis.domain.*;
-import com.javainiaisuzspringom.tripperis.dto.TripDuration;
+import com.javainiaisuzspringom.tripperis.dto.TripReservationRequest;
+import com.javainiaisuzspringom.tripperis.dto.TripReservationResponse;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
+import com.javainiaisuzspringom.tripperis.dto.entity.RoomUsageDTO;
+import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
-import com.javainiaisuzspringom.tripperis.services.AccountService;
-import com.javainiaisuzspringom.tripperis.services.TripRequestService;
-import com.javainiaisuzspringom.tripperis.services.TripService;
+import com.javainiaisuzspringom.tripperis.services.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,6 +39,12 @@ public class TripController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private ApartmentRepository apartmentRepository;
+
+    @Autowired
+    private ApartmentUsageService apartmentUsageService;
 
     @Autowired
     private CsvService csvService;
@@ -57,17 +63,73 @@ public class TripController {
     }
 
     @PostMapping("/api/trip")
-    public Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println("ATejo cia");
-        System.out.println(trip.getAccounts().size());
-        trip.setStatus(TripStatus.TRIP_CREATED);
+    @Transactional
+    public ResponseEntity reserveTrip(@RequestBody TripReservationRequest request, @AuthenticationPrincipal UserDetails userDetails) {
 
+        List<Account> accounts = request.getAccounts().stream().map(accountFromRequest -> accountService.getById(accountFromRequest.getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        Timestamp dateFrom = request.getDateFrom();
+        Timestamp dateTo = request.getDateTo();
+        Optional<Apartment> maybeApartmentTo = apartmentRepository.findById(request.getTo());
+        if(request.getFrom() != null && !apartmentRepository.existsById(request.getFrom())) {
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", request.getFrom()));
+        }
+        if(!maybeApartmentTo.isPresent()) {
+            return ResponseEntity.badRequest().body(String.format("Apartment with id %s does not exist", request.getTo()));
+        }
+
+        List<Account> unavailablePeople = accounts.stream()
+                .filter(acc -> !accountService.getAccountCalendar(acc, dateFrom, dateTo).isEmpty())
+                .collect(Collectors.toList());
+        if(!unavailablePeople.isEmpty()) {
+            return ResponseEntity.badRequest().body("People with names" + unavailablePeople.stream()
+                    .map(person -> person.getFirstName() + person.getLastName()).collect(Collectors.joining(", "))
+                    + "are not available in period " + dateFrom + " - " + dateTo);
+        }
+
+        // Create trip from request info
+        Trip trip = new Trip();
+        trip.setAccounts(accounts);
+        trip.setName(request.getName());
+        trip.setDescription(request.getDescription());
+        trip.setDateFrom(dateFrom);
+        trip.setDateTo(dateTo);
+        request.getChecklistItems().forEach(trip::addChecklistItem);
+
+        ApartmentUsage proposedUsage = new ApartmentUsage();
+        proposedUsage.setFrom(dateFrom);
+        proposedUsage.setTo(dateTo);
+        proposedUsage.setApartment(maybeApartmentTo.get());
+
+        trip.addUsage(proposedUsage);
+
+        // Sukišimas
+        Pair<List<RoomUsage>, List<Account>> listListPair = apartmentUsageService.autoAssignRooms(proposedUsage, accounts);
+
+        addTrip(trip, userDetails);
+
+        // Pervaliduojam
+        apartmentUsageService.validateUsageToApartment(proposedUsage);
+
+        // Saugojam
+        tripRepository.saveAndFlush(trip);
+
+        List<RoomUsageDTO> successfulReservations = listListPair.getLeft().stream().map(RoomUsage::convertToDTO).collect(Collectors.toList());
+        List<Integer> unsuccessfulReservations = listListPair.getRight().stream().map(Account::getId).collect(Collectors.toList());
+
+        return new ResponseEntity<>(new TripReservationResponse(dateFrom, dateTo, trip.getId(), request.getTo(), successfulReservations, unsuccessfulReservations), HttpStatus.OK);
+    }
+
+//    @PostMapping("/api/trip") // deprecated
+    private Trip addTrip(@RequestBody Trip trip, @AuthenticationPrincipal UserDetails userDetails) {
+        trip.setStatus(TripStatus.TRIP_CREATED);
         attachTripToEntities(trip);
         createTripRequests(trip);
         Account account = accountService.loadUserByUsername(userDetails.getUsername());
         trip.setOrganizers(Collections.singletonList(account));
-
-        return tripRepository.save(trip);
+        return trip;
     }
 
     @PostMapping("/api/trip/{id}/cancelTrip")

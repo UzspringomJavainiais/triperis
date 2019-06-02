@@ -1,14 +1,12 @@
 package com.javainiaisuzspringom.tripperis.services;
 
-import com.javainiaisuzspringom.tripperis.domain.Apartment;
-import com.javainiaisuzspringom.tripperis.domain.ApartmentUsage;
-import com.javainiaisuzspringom.tripperis.domain.Room;
-import com.javainiaisuzspringom.tripperis.domain.RoomUsage;
+import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.ReservationInfo;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentUsageDTO;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentRepository;
 import com.javainiaisuzspringom.tripperis.repositories.ApartmentUsageRepository;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentUsage, ApartmentUsageDTO, Integer> {
@@ -49,10 +46,33 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
         return usage;
     }
 
+    // Pls don't look at this code
+    public Pair<List<RoomUsage>, List<Account>> autoAssignRooms(ApartmentUsage apartmentUsage, List<Account> accounts) {
+        Timestamp from = apartmentUsage.getFrom();
+        Timestamp to = apartmentUsage.getTo();
+        List<RoomUsage> createdUsages = new ArrayList<>();
+        List<Account> unsuccessfulPeople = new ArrayList<>(accounts);
+        for (Room room : apartmentUsage.getApartment().getRooms()) {
+            Integer maxTakenPlacesInPeriod = getReservedListForRoom(room, from, to).stream().map(ReservationInfo::getReservations).max(Comparator.naturalOrder()).orElse(0);
+            int availableSpace = room.getCapacity() - maxTakenPlacesInPeriod;
+            if(availableSpace <= 0) continue;
+            RoomUsage roomUsage = new RoomUsage();
+            for(int i = 0; i < availableSpace && !unsuccessfulPeople.isEmpty(); i++) {/*
+                Account successfulAccount = unsuccessfulPeople.remove(0);
+                roomUsage.getAccounts().add(successfulAccount);*/ // TODO this must be fixed :)))
+            }
+            roomUsage.setRoom(room);
+            apartmentUsage.addRoomUsage(roomUsage);
+            createdUsages.add(roomUsage);
+        }
+        return Pair.of(createdUsages, unsuccessfulPeople);
+    }
+
     /**
      * Tests if apartment is valid to be added to apartment
      * @param apartmentUsage usage to test
      */
+    @Transactional
     public void validateUsageToApartment(ApartmentUsage apartmentUsage) {
 
         for(RoomUsage roomUsage: apartmentUsage.getRoomsToUsers()) {
@@ -65,7 +85,7 @@ public class ApartmentUsageService implements BasicDtoToEntityService<ApartmentU
         }
     }
 
-    public List<ReservationInfo> getCapacityListForRoom(Room room, Date dateStart, Date dateEnd) {
+    public List<ReservationInfo> getReservedListForRoom(Room room, Date dateStart, Date dateEnd) {
         return roomUsageService.getReservedCapacities(room, Timestamp.from(dateStart.toInstant()), Timestamp.from(dateEnd.toInstant()));
     }
 
