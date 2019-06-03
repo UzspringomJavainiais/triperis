@@ -5,6 +5,7 @@ import com.javainiaisuzspringom.tripperis.domain.*;
 import com.javainiaisuzspringom.tripperis.dto.TripReservationRequest;
 import com.javainiaisuzspringom.tripperis.dto.TripReservationResponse;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarEntry;
+import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarTripEntry;
 import com.javainiaisuzspringom.tripperis.dto.entity.AccountDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.ApartmentDTO;
 import com.javainiaisuzspringom.tripperis.dto.entity.RoomUsageDTO;
@@ -281,12 +282,26 @@ public class TripController {
                 accounts.add(account);
         }
 
+        List<String> busyAccounts = new ArrayList<>();
         for (Account account : accounts) {
             List<CalendarEntry> entries = accountService.getAccountCalendar(account, dateFrom, dateTo);
+            List<CalendarTripEntry> tripIdsThatUserIsIn = entries.stream()
+                    .filter(calendar -> calendar instanceof CalendarTripEntry)
+                    .map(entry -> (CalendarTripEntry) entry)
+                    .collect(Collectors.toList());
 
-            if (!entries.isEmpty())
-                return ResponseEntity.badRequest().body(account.getFirstName() + " " + account.getLastName() + " is busy between " + dateFrom.toString() + " and " + dateTo.toString());
+            if (!entries.isEmpty()) {
+                for (CalendarTripEntry entry : tripIdsThatUserIsIn) {
+                    if (!tripOne.getId().equals(entry.getTripId()) && !tripTwo.getId().equals(entry.getTripId())) {
+                        busyAccounts.add(account.getFirstName() + " " + account.getLastName() + " is busy between " + entry.getEnd().toString() + " and " + entry.getEnd());
+                        break;
+                    }
+                }
+            }
         }
+
+        if (!busyAccounts.isEmpty())
+            return ResponseEntity.badRequest().body(busyAccounts);
 
         Trip mergedTrip = new Trip();
 
