@@ -126,7 +126,6 @@ public class AccountController {
 
     @PatchMapping("/api/account/{id}")
     public ResponseEntity<AccountDTO> updateAccount(@PathVariable(name = "id") Integer id, @RequestBody AccountDTO newVersionDto) {
-
         Optional<Account> accountResultById = accountService.getById(id);
 
         if (!accountResultById.isPresent()) {
@@ -138,6 +137,18 @@ public class AccountController {
 
         Account savedEntity = accountRepository.save(account);
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
+    }
+
+    @PostMapping("/api/account/{id}/remove")
+    public ResponseEntity<AccountDTO> deleteAccountById(@PathVariable Integer id) {
+        Optional<Account> maybeAccount = accountService.getById(id);
+
+        if (!maybeAccount.isPresent())
+            return ResponseEntity.notFound().build();
+
+        accountRepository.delete(maybeAccount.get());
+
+        return ResponseEntity.ok().build();
     }
 
 
