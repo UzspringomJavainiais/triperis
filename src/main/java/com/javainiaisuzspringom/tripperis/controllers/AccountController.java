@@ -139,14 +139,20 @@ public class AccountController {
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/account/{id}")
+    @PostMapping("/api/account/{id}/remove")
     public ResponseEntity<AccountDTO> deleteAccountById(@PathVariable Integer id) {
         Optional<Account> maybeAccount = accountService.getById(id);
 
         if (!maybeAccount.isPresent())
             return ResponseEntity.notFound().build();
 
-        accountRepository.delete(maybeAccount.get());
+        Account account = maybeAccount.get();
+        // Remove trip relationships
+        account.getTrips().clear();
+        account.getOrganizedTrips().clear();
+
+        account = accountRepository.save(account);
+        accountRepository.deleteById(account.getId());
 
         return ResponseEntity.ok().build();
     }
