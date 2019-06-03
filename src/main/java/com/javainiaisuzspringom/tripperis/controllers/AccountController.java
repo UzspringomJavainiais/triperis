@@ -139,7 +139,7 @@ public class AccountController {
         return new ResponseEntity<>(savedEntity.convertToDTO(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/account/{id}/remove")
+    @DeleteMapping("/api/account/{id}")
     public ResponseEntity<AccountDTO> deleteAccountById(@PathVariable Integer id) {
         Optional<Account> maybeAccount = accountService.getById(id);
 
