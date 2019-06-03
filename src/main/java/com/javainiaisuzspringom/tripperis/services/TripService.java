@@ -1,13 +1,10 @@
 package com.javainiaisuzspringom.tripperis.services;
 
 import com.javainiaisuzspringom.tripperis.domain.Trip;
-import com.javainiaisuzspringom.tripperis.dto.TripDuration;
 import com.javainiaisuzspringom.tripperis.dto.entity.TripDTO;
 import com.javainiaisuzspringom.tripperis.repositories.AccountRepository;
 import com.javainiaisuzspringom.tripperis.repositories.TripRepository;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,8 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class TripService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TripService.class);
 
     @Getter
     @Autowired
