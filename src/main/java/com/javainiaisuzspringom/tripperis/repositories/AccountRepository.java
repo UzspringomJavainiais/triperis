@@ -4,6 +4,7 @@ import com.javainiaisuzspringom.tripperis.domain.Account;
 import com.javainiaisuzspringom.tripperis.dto.calendar.CalendarTripEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -27,7 +28,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
                 "LEFT JOIN a.trips t " +
             "WHERE NOT (t.dateFrom > :periodEnd OR t.dateTo < :periodStart) " +
                 "AND a = :account ")
-    List<CalendarTripEntry> getTripDates(Account account, Timestamp periodStart, Timestamp periodEnd);
+    List<CalendarTripEntry> getTripDates(@Param("account") Account account,
+                                         @Param("periodStart") Timestamp periodStart,
+                                         @Param("periodEnd") Timestamp periodEnd);
 
     Optional<Account> findByEmail(String username);
 }
