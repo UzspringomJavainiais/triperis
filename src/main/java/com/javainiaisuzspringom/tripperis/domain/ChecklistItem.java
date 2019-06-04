@@ -22,6 +22,13 @@ public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDT
         
     }
 
+    public ChecklistItem(ChecklistItem item) {
+        this.name = item.name;
+        this.checked = false;
+        this.price = item.price;
+        this.attachment = item.getAttachment() == null ? null : new Attachment(item.getAttachment());
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
