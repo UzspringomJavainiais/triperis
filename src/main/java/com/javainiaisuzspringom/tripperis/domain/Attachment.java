@@ -13,6 +13,16 @@ import java.io.Serializable;
 @Setter
 @Table(name = "attachment")
 public class Attachment implements ConvertableEntity<Integer, AttachmentDTO>, Serializable {
+    public Attachment() {
+
+    }
+
+    public Attachment(Attachment attachment) {
+        this.fileName = attachment.fileName;
+        this.extension = attachment.extension;
+        this.fileData = attachment.fileData;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

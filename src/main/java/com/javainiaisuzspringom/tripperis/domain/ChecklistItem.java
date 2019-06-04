@@ -18,6 +18,9 @@ import java.util.Objects;
 @Table(name = "checklist_item")
 @JsonIgnoreProperties("trip")
 public class ChecklistItem implements ConvertableEntity<Integer, ChecklistItemDTO>, Serializable {
+    public ChecklistItem() {
+        
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
